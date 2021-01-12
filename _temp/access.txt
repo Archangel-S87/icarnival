@@ -1,0 +1,22 @@
+http://new.icarnival.ru/
+http://new.icarnival.ru/fivecms
+
+http://icarnival.loc
+http://icarnival.loc/fivecms
+
+Админка
+admin
+admin
+
+FTP
+188.225.57.9
+admin_sergey
+7yuhq5aPdw
+
+ДБ
+http://188.225.57.9/phpmyadmin/
+login admin_icar
+Password Ga7N8x8TLh
+
+// Скопировать изображения товаров
+cp -r -u /home/admin/web/icarnival.ru//public_html/files/originals /home/admin/web/new.icarnival.ru/public_html/files

@@ -1,0 +1,26 @@
+.treecontrol {
+	margin-bottom:10px;
+}
+.treeview .hitarea {
+	height: 16px;
+	width: 16px;
+	margin-left: -10px;
+	float: left;
+	cursor: pointer;
+	padding: 12px 0 7px 0;
+}
+/* fix for IE6 */
+* html .hitarea {
+	display: inline;
+	float:none;
+}
+.treeview li { 
+	margin: 0;
+	padding: 3px 0pt 3px 16px;
+}
+.treeview .collapsable-hitarea {
+	background: url(../images/open.png) 0 50% no-repeat; 
+}
+.treeview .expandable-hitarea {
+	background: url(../images/close.png) 0 50% no-repeat;
+}

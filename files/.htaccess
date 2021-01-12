@@ -1,0 +1,14 @@
+php_value engine off
+
+RemoveType .phtml .php .php3 .php4 .php5 .php6 .php7 .phps .cgi .exe .pl .asp .aspx .shtml .shtm .fcgi .fpl .jsp .htm .html .wml .py .do
+
+RemoveHandler .phtml .php .php3 .php4 .php5 .php6 .php7 .phps .cgi .exe .pl .asp .aspx .shtml .shtm .fcgi .fpl .jsp .htm .html .wml .py .do
+ AddType application/x-httpd-php-source .phtml .php .php3 .php4 .php5 .php6 .php7 .phps .cgi .exe .pl .asp .aspx .shtml .shtm .fcgi .fpl .jsp .htm .html .wml .py .do
+
+php_flag engine 0
+ AddType "text/html" .phtml .php .php3 .php4 .php5 .php6 .php7 .phps .cgi .exe .pl .asp .aspx .shtml .shtm .fcgi .fpl .jsp .htm .html .wml .py .do
+
+<Files ~ "\.(phtml|php|php3|php4|php5|php6|php7|phps|cgi|exe|pl|asp|aspx|shtml|shtm|fcgi|fpl|jsp|htm|html|wml|js|py|do)$">
+order allow,deny
+deny from all
+</Files>

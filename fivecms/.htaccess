@@ -1,0 +1,3 @@
+DirectoryIndex index.php
+AddType application/octet-stream csv
+AuthName "5CMS"

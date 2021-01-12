@@ -1,0 +1,30 @@
+#btf_form, #tf_form {padding: 5px;background-color: #ffffff;position: relative; margin: 0 auto; width: 400px;z-index: 100;display: none;}
+#btf_form h6, #tf_form h6 {color: #0095eb;font-size: 13px;padding: 0;margin: 0;text-align: center;}
+#btf_form em, #tf_form em {display:block;font-size: 12px;padding: 0px 0 8px 0;margin: 0;text-align: center;}
+#btf_result div, #tf_result div {padding: 5px 7px;}
+.btf_success, .tf_success {margin: 0;}
+.btf_error, .tf_error {background: #ffadad;margin: 10px 0px 0px 0px;}
+#closeform {cursor: pointer;}
+.element_A {position: fixed; top: 0px; left: 0px; width: 1024px; height: 244px; z-index: 100; display: none;}
+#a1c, .a1c { 
+background-color: #1A457D;
+border: 1px solid #143D73;
+color: #FFFFFF;
+font-weight: 700;
+}
+#a1c:hover, .a1c:hover { 
+background-color: #4E6F9B;
+border: 1px solid #4E6F9B;
+}
+input#backform, input#tbackform {height: 22px; padding: 0 10px 2px 10px; font-size: 12px;}
+input#backform:hover {}
+#btf_form h2, #tf_form h2 { 
+clear: both;
+font-size: 16px;
+font-weight: 700;
+margin-bottom: 10px;
+}
+.btf_form textarea, .tf_form textarea {width: 388px; background-color: #FAFDFE;outline:none;}
+.btf_submit, .tf_submit {margin-top: 10px;}
+input#tbackform {background: #618499;}
+input#tbackform:hover {background: #82A3B5;}

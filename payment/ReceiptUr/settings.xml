@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+	<name>
+		Счет для юридических лиц
+	</name>
+	<settings>
+		<variable>recipient</variable>
+		<name>Получатель</name>
+	</settings>
+	<settings>
+		<variable>inn</variable>
+		<name>ИНН получателя</name>
+	</settings>
+	<settings>
+		<variable>kpp</variable>
+		<name>КПП</name>
+	</settings>
+	<settings>
+		<variable>account</variable>
+		<name>Счет получателя</name>
+	</settings>
+	<settings>
+		<variable>bank</variable>
+		<name>Банк получателя</name>
+	</settings>
+	<settings>
+		<variable>bik</variable>
+		<name>БИК</name>
+	</settings>
+	<settings>
+		<variable>address_seller</variable>
+		<name>Адрес</name>
+	</settings>
+	<settings>
+		<variable>index_seller</variable>
+		<name>Индекс</name>
+	</settings>
+	<settings>
+		<variable>phone_seller</variable>
+		<name>Номер телефона</name>
+	</settings>
+	<settings>
+		<variable>correspondent_account</variable>
+		<name>Кор. счет</name>
+	</settings>
+	<settings>
+		<variable>rukov</variable>
+		<name>Руководитель</name>
+	</settings>
+	<settings>
+		<variable>sef</variable>
+		<name>Главный бухгалтер</name>
+	</settings>
+	<settings>
+		<variable>banknote</variable>
+		<name>Обозначение валюты</name>
+	</settings>
+	<settings>
+		<variable>pense</variable>
+		<name>Обозначение копеек</name>
+	</settings>
+	<settings>
+		<variable>vat</variable>
+		<name>Размер НДС % (только число)</name>
+	</settings>
+</module>

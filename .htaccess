@@ -1,0 +1,245 @@
+AddDefaultCharset UTF-8
+ErrorDocument 404 /404
+ErrorDocument 401 /password.php
+RewriteEngine on
+
+php_value error_reporting 0
+php_flag display_errors off
+php_value max_input_vars 30000
+php_value max_input_time 1200
+php_value max_execution_time 1200
+#php_value memory_limit 1047527424
+#php_value post_max_size 1047527424
+#php_value upload_max_filesize 1047527424
+
+# HTTP&WWW->HTTPS раскомментировать строки ниже
+#RewriteBase /
+#RewriteCond %{HTTPS} off [OR]
+#RewriteCond %{HTTP_HOST} ^www\.
+#RewriteRule (.*) https://site.ru%{REQUEST_URI} [R=301,L]
+#RewriteCond %{REQUEST_FILENAME} robots.txt$ [NC]
+
+# Редирект с повторяющихся слешей
+RewriteCond %{REQUEST_URI} ^(.*)/{2,}(.*)$
+RewriteRule ^(.*)$ %1/%2 [R=301,L]
+
+# Редирект со слеша в конце на без него
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} ^(.+)/$
+RewriteRule ^(.+)/$ %1 [R=301,L]
+
+# Запрет на открытие сайта во фрейме
+#<IfModule mod_headers.c>
+#	Header always set X-Frame-Options SAMEORIGIN
+#</IfModule>
+
+# Cache
+<Ifmodule mod_expires.c>
+    <filesmatch "\.(jpg|jpeg|png|gif|js|css|swf|ico|pdf|webp|jp2|jxr|woff|woff2)$">
+        ExpiresActive on
+        ExpiresDefault "access plus 1 year"
+    </filesmatch>
+</Ifmodule>
+
+# Cache-Control
+<IfModule mod_headers.c>
+	<filesMatch "\.(ico|pdf|jpg|jpeg|png|gif|swf|css|js|webp|jp2|jxr)$">
+		Header set Cache-Control "max-age=31536000, public"
+	</filesMatch>
+</IfModule>
+
+<IfModule mod_gzip.c>
+	mod_gzip_on Yes
+	mod_gzip_dechunk Yes
+	mod_gzip_item_include file \.js$
+	mod_gzip_item_include file \.css$
+	mod_gzip_item_include mime ^application/x-font-woff.*
+	mod_gzip_item_include mime ^application/x-font-woff2.*
+	mod_gzip_item_exclude rspheader ^Content-Encoding:.*gzip.*
+</IfModule>
+
+# Gzip
+<ifmodule mod_deflate.c>
+    AddOutputFilterByType DEFLATE application/javascript text/javascript application/x-javascript text/css application/x-font-woff application/x-font-woff2
+    <ifmodule mod_setenvif.c>
+        BrowserMatch ^Mozilla/4 gzip-only-text/html
+        BrowserMatch ^Mozilla/4\.0[678] no-gzip
+        BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+    </ifmodule>
+	<FilesMatch "\.(ttf|woff|woff2|otf|eot|svg)$" >
+	    SetOutputFilter DEFLATE
+	</FilesMatch>
+</ifmodule>
+
+# Google PageSpeed Insights модуль PageSpeed,есть не на всех хостингах и не везде может работать, нужно уточнять у хостеров
+<IfModule pagespeed_module>
+	ModPagespeed on
+	ModPagespeedRewriteLevel CoreFilters
+	ModPagespeedEnableFilters make_google_analytics_async
+	ModPagespeedEnableFilters prioritize_critical_css
+	ModPagespeedEnableFilters sprite_images
+	ModPagespeedEnableFilters convert_png_to_jpeg,convert_jpeg_to_webp
+	ModPagespeedEnableFilters collapse_whitespace
+</IfModule>
+
+# Каталог товаров
+RewriteRule ^catalog/([^/]+)/?$	index.php?module=ProductsView&category=$1 [L,QSA]
+RewriteRule ^catalog/([^/]+)/([^/]+)/?$	index.php?module=ProductsView&category=$1&brand=$2 [L,QSA]
+
+RewriteRule ^products/([^/]+)/?$	index.php?module=ProductView&product_url=$1 [L,QSA]
+RewriteRule ^products/?$	index.php?module=ProductsView [L,QSA]
+
+RewriteRule ^products_ajax/([^/]+)/?$	index.php?module=ProductAjaxView&product_url=$1 [L,QSA]
+
+RewriteRule ^pages/?$	index.php?module=SpeccatalogView [L,QSA]
+RewriteRule ^pages/([^/]+)/?$	index.php?module=SpeccatalogView&link_url=$1 [L,QSA]
+
+RewriteRule ^browsed/?$	index.php?module=BrowsedView [L,QSA]
+RewriteRule ^hits/?$ index.php?module=ProductsView&mode=hits [L,QSA]
+RewriteRule ^discounted/?$ index.php?module=ProductsView&mode=discounted [L,QSA]
+RewriteRule ^new/?$ index.php?module=ProductsView&mode=is_new [L,QSA]
+RewriteRule ^popular/?$ index.php?module=ProductsView&mode=popular&sort=views [L,QSA]
+RewriteRule ^rated/?$ index.php?module=ProductsView&mode=rated&sort=rating [L,QSA]
+
+RewriteRule ^brands/([^/]+)/?$	index.php?module=ProductsView&brand=$1 [L,QSA]
+RewriteRule ^brands/([^/]+)/page_([^/]+)/?$	index.php?module=ProductsView&brand=$1&page=$2 [L,QSA]
+
+# Поиск товаров
+RewriteRule ^search/([^/]+)/?$	index.php?module=ProductsView&keyword=$1 [L,QSA]
+RewriteRule ^search/?$	index.php?module=ProductsView [L,QSA]
+
+# Блог
+RewriteRule ^blog/([^/]+)/?$	index.php?module=BlogView&url=$1 [L,QSA]
+RewriteRule ^blog/?$	index.php?module=BlogView [L,QSA]
+RewriteRule ^sections/([^/]+)/?$	index.php?module=BlogView&category=$1 [L,QSA]
+# Tags
+RewriteRule ^tags/?$    index.php?module=TagsView  [L,QSA]
+
+# Статьи
+RewriteRule ^article/([^/]+)/?$	index.php?module=ArticlesView&article_url=$1 [L,QSA]
+RewriteRule ^articles/([^/]+)/?$	index.php?module=ArticlesView&category=$1 [L,QSA]
+RewriteRule ^articles/?$	index.php?module=ArticlesView [L,QSA]
+
+# Опросы
+RewriteRule ^survey/([^/]+)/?$	index.php?module=SurveysView&survey_url=$1 [L,QSA]
+RewriteRule ^surveys/([^/]+)/?$	index.php?module=SurveysView&category=$1 [L,QSA]
+RewriteRule ^surveys/?$	index.php?module=SurveysView [L,QSA]
+
+# Услуги
+RewriteRule ^services/([^/]+)/?$	index.php?module=ServicesView&category=$1 [L,QSA]
+RewriteRule ^services/?$	index.php?module=ServicesView [L,QSA]
+
+# Избранное
+RewriteRule ^wishlist/?$    index.php?module=WishlistView [L,QSA]
+RewriteRule ^wishlist/([^/]+)/?$    index.php?module=WishlistView&id=$1 [L,QSA]
+RewriteRule ^wishlist/remove/([^/]+)/?$    index.php?module=WishlistView&id=$1&action=delete [L,QSA]
+
+# Корзина и заказы
+RewriteRule ^cart/?$	index.php?module=CartView   [L,QSA]
+RewriteRule ^cart/([^/]+)/?$	index.php?module=CartView&add_variant=$1  [L,QSA]
+RewriteRule ^cart/remove/([^/]+)/?$	index.php?module=CartView&delete_variant=$1  [L,QSA]
+RewriteRule ^order/([^/]+)/?$	index.php?module=OrderView&url=$1  [L,QSA]
+RewriteRule ^order/?$	index.php?module=OrderView  [L,QSA]
+
+# Сравнение товаров
+RewriteRule ^compare/?$ index.php?module=CompareView [L]
+RewriteRule ^compare/remove/([^/]+)/?$ index.php?module=CompareView&remove_id=$1 [L]
+RewriteRule ^compare/products/([^/]+)/?$ index.php?module=CompareView&product_id=$1 [L]
+
+# Для пользователей
+RewriteRule ^user/login/?$	index.php?module=LoginView  [L,QSA]
+RewriteRule ^user/register/?$	index.php?module=RegisterView  [L,QSA]
+RewriteRule ^user/logout/?$	index.php?module=LoginView&action=logout  [L,QSA]
+RewriteRule ^user/preminder/?$	index.php?module=LoginView&action=password_remind  [L,QSA]
+RewriteRule ^user/preminder/([0-9a-z]+)/?$	index.php?module=LoginView&action=password_remind&code=$1  [L,QSA]
+RewriteRule ^user/?$	index.php?module=UserView  [L,QSA]
+
+# Отзывы
+RewriteRule ^responses$ index.php?module=ResponsesView&page_url=responses [L,QSA]
+
+# Карта сайта HTML
+RewriteRule ^sitemap/?$    index.php?module=SitemapView  [L,QSA]
+
+# Sitemap
+RewriteRule ^sitemap.xml?$	sitemap.php  [L,QSA]
+
+# XML
+RewriteRule ^yandex.xml?$	yandex.php  [L,QSA]
+RewriteRule ^price?$	price.php  [L,QSA]
+
+# RSS
+RewriteRule ^rss?$	rss.php  [L,QSA]
+RewriteRule ^articles_rss?$	articles_rss.php  [L,QSA]
+RewriteRule ^turbo_blog.xml?$ turbo_blog.php  [L,QSA]
+RewriteRule ^turbo_articles.xml?$ turbo_articles.php  [L,QSA]
+
+# Обратная связь
+RewriteRule ^contacts/?$	index.php?module=FeedbackView  [L,QSA]
+
+# Downloads
+RewriteRule ^order/([^/]+)/([^/]+)/?$	index.php?module=OrderView&url=$1&file=$2  [L,QSA]
+
+# Статические страницы
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^/]*)/?$	index.php?module=PageView&page_url=$1 [L,QSA]
+RewriteRule ^/?$	index.php?module=MainView&page_url= [L,QSA]
+
+# Ресайз картинок на лету
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^files/(.+)/(.+) resize/resize.php?type=$1&file=$2 [L,QSA]
+
+# Скрывает подпись сервера
+ServerSignature Off
+
+# Поддержка STS для https
+<IfModule mod_headers.c>
+Header unset Strict-Transport-Security
+Header always set Strict-Transport-Security "max-age=31536000; includeSubdomains" env=HTTPS
+</IfModule>
+
+# Закрываемся от libwww-perl user-agent (защита)
+RewriteCond %{HTTP_USER_AGENT} libwww-perl.*
+RewriteRule .* ? [F,L]
+
+# Защита от инъекций
+Options +FollowSymLinks
+# XSS
+RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
+# выставление переменной PHP GLOBALS
+RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
+# возможность изменять переменную _REQUEST
+RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2}) [OR]
+# MySQL инъекции, RFI, base64, и др.
+RewriteCond %{QUERY_STRING} \=PHP[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12} [NC,OR]
+RewriteCond %{QUERY_STRING} \=\|w\| [NC,OR]
+RewriteCond %{QUERY_STRING} ^(.*)/self/(.*)$ [NC,OR]
+RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
+RewriteCond %{QUERY_STRING} (<|%3C)([^s]*s)+cript.*(>|%3E) [NC,OR]
+RewriteCond %{QUERY_STRING} (\<|%3C).*iframe.*(\>|%3E) [NC,OR]
+RewriteCond %{QUERY_STRING} (<|%3C)([^i]*i)+frame.*(>|%3E) [NC,OR]
+RewriteCond %{QUERY_STRING} mosConfig_[a-zA-Z_]{1,21}(=|%3D) [OR]
+RewriteCond %{QUERY_STRING} base64_encode.*\(.*\) [NC,OR]
+RewriteCond %{QUERY_STRING} base64_(en|de)code[^(]*\([^)]*\) [NC,OR]
+RewriteCond %{QUERY_STRING} (NULL|OUTFILE|LOAD_FILE) [OR]
+RewriteCond %{QUERY_STRING} (\./|\../|\.../)+(motd|etc|bin) [NC,OR]
+RewriteCond %{QUERY_STRING} (localhost|loopback|127\.0\.0\.1) [NC,OR]
+RewriteCond %{QUERY_STRING} (<|>|'|%0A|%0D|%27|%3C|%3E|%00) [NC,OR]
+RewriteCond %{QUERY_STRING} concat[^\(]*\( [NC,OR]
+RewriteCond %{QUERY_STRING} union([^s]*s)+elect [NC,OR]
+RewriteCond %{QUERY_STRING} union([^a]*a)+ll([^s]*s)+elect [NC,OR]
+RewriteCond %{QUERY_STRING} (;|<|>|'|"|\)|%0A|%0D|%22|%27|%3C|%3E|%00).*(/\*|union|select|insert|drop|delete|update|cast|create|char|convert|alter|declare|order|script|set|md5|benchmark|encode) [NC,OR]
+RewriteCond %{QUERY_STRING} (boot\.ini|etc/passwd|self/environ) [NC,OR]
+RewriteCond %{QUERY_STRING} (thumbs?(_editor|open)?|tim(thumb)?)\.php [NC,OR]
+RewriteCond %{QUERY_STRING} (sp_executesql) [NC]
+RewriteCond %{QUERY_STRING} (eval\() [NC,OR]
+RewriteCond %{QUERY_STRING} (127\.0\.0\.1) [NC,OR]
+RewriteCond %{QUERY_STRING} ([a-z0-9]{2000,}) [NC,OR]
+RewriteRule ^(.*)$ - [F,L]
+# Отклонение запросов TRACE|TRACK
+RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)  
+RewriteRule .* - [F]
+# Запрет любых запросов кроме GET,PROPFIND,POST,OPTIONS,PUT,HEAD
+RewriteCond %{REQUEST_METHOD} !^(GET|HEAD|POST|PROPFIND|OPTIONS|PUT)$ [NC]
+RewriteRule .* - [F,NS,L]

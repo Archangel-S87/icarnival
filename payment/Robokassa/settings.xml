@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+	<name>
+		Робокасса 54-ФЗ
+	</name>
+	
+	<settings>
+		<variable>test</variable>
+		<name>Тестовый</name>
+		<options>
+			<name>Нет</name>
+			<value>0</value>
+		</options>
+		<options>
+			<name>Да</name>
+			<value>1</value>
+		</options>
+	</settings>
+	
+	<settings>
+		<variable>login</variable>
+		<name>Идентификатор магазина (MerchantLogin)</name>
+	</settings>
+	<settings>
+		<variable>password1</variable>
+		<name>Пароль1</name>
+	</settings>
+	<settings>
+		<variable>password2</variable>
+		<name>Пароль2</name>
+	</settings>
+	<settings>
+		<variable>language</variable>
+		<name>Язык шлюза</name>
+		<options>
+			<name>Русский</name>
+			<value>ru</value>
+		</options>
+		<options>
+			<name>Английский</name>
+			<value>en</value>
+		</options>
+	</settings>
+	<settings>
+		<variable>vat</variable>
+		<name>НДС</name>
+		<options>
+			<name>Без НДС</name>
+			<value>none</value>
+		</options>
+		<options>
+			<name>0%</name>
+			<value>vat0</value>
+		</options>
+		<options>
+			<name>10%</name>
+			<value>vat10</value>
+		</options>
+		<options>
+			<name>18%</name>
+			<value>vat18</value>
+		</options>
+		<options>
+			<name>20%</name>
+			<value>vat20</value>
+		</options>
+		<options>
+			<name>10/110</name>
+			<value>vat110</value>
+		</options>
+		<options>
+			<name>18/118</name>
+			<value>vat118</value>
+		</options>
+		<options>
+			<name>20/120</name>
+			<value>vat120</value>
+		</options>
+	</settings>
+	<settings>
+		<variable>sno</variable>
+		<name>Система налогообложения</name>
+		<options>
+			<name>общая СН</name>
+			<value>osn</value>
+		</options>
+		<options>
+			<name>упрощенная СН (доходы)</name>
+			<value>usn_income</value>
+		</options>
+		<options>
+			<name>упрощенная СН (доходы минус расходы)</name>
+			<value>usn_income_outcome</value>
+		</options>
+		<options>
+			<name>единый налог на вмененный доход</name>
+			<value>envd</value>
+		</options>
+		<options>
+			<name>единый сельскохозяйственный налог</name>
+			<value>esn</value>
+		</options>
+		<options>
+			<name>патентная СН</name>
+			<value>patent</value>
+		</options>
+	</settings>
+	<settings>
+		<variable>payment_method</variable>
+		<name>Признак способа расчёта</name>
+		<options>
+			<name>предоплата 100% (реком.)</name>
+			<value>full_prepayment</value>
+		</options>
+		<options>
+			<name>предоплата</name>
+			<value>prepayment</value>
+		</options>
+		<options>
+			<name>аванс</name>
+			<value>advance</value>
+		</options>
+		<options>
+			<name>полный расчёт</name>
+			<value>full_payment</value>
+		</options>
+		<options>
+			<name>частичный расчёт и кредит</name>
+			<value>partial_payment</value>
+		</options>
+		<options>
+			<name>передача в кредит</name>
+			<value>credit</value>
+		</options>
+		<options>
+			<name>оплата кредита</name>
+			<value>credit_payment</value>
+		</options>
+	</settings>
+	<settings>
+		<variable>payment_object</variable>
+		<name>Признак предмета расчёта</name>
+		<options>
+			<name>товар</name>
+			<value>commodity</value>
+		</options>
+		<options>
+			<name>подакцизный товар</name>
+			<value>excise</value>
+		</options>
+		<options>
+			<name>работа</name>
+			<value>job</value>
+		</options>
+		<options>
+			<name>услуга</name>
+			<value>service</value>
+		</options>
+		<options>
+			<name>платёж</name>
+			<value>payment</value>
+		</options>
+		<options>
+			<name>лотерейный билет</name>
+			<value>lottery</value>
+		</options>
+	</settings>
+</module>

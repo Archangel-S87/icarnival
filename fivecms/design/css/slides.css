@@ -1,0 +1,165 @@
+#list{max-width:755px;}
+
+#list .cell{
+	float: none;
+	margin: 0 auto;
+	padding-bottom: 12px;
+}
+.slide li{
+	overflow: hidden;
+	margin-bottom: 10px;
+	line-height: 35px;
+	min-height: 35px;
+}
+.slide li label{
+	font-weight: 700;
+}
+.slide > li > div{
+	float: right;
+	width: 755px;
+}
+.slide input[type=text], .slide textarea{
+	width: 80% !important;
+	margin: 2px;
+	display: inline-block;
+	padding: 4px;
+	font-size: 16px;
+	line-height: 18px;
+	border: 1px solid #ccc;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	background-color: #fff;
+	vertical-align: top;
+}
+.slide input[type=text]:focus, .slide textarea:focus{
+	outline: 0;
+	outline: thin dotted \9;
+	border-color: rgba(82, 168, 236, 0.8);
+	-webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
+	-moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
+	box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
+}
+.slide .tip{
+	margin: 0 7px;
+	float: left;
+	word-wrap: break-word;
+}
+.slide .image{
+	border-top: 1px dashed #B4B4B4;
+	margin: 10px 0;
+	padding: 20px 0;
+	text-align: center;
+	border-bottom: 1px dashed #B4B4B4;
+}
+.slide .image img{
+	vertical-align: middle;
+	max-width: 100%;
+}
+.slide .description{
+	max-width: 740px;
+	min-width: 740px;
+	min-height: 100px;
+	margin: 0px;
+	height: 100px;
+}
+.button_slide{
+	float: right;
+	background-color: #e25454;
+	border: none;
+	padding: 7px 20px;
+	border-radius: 5px;
+	color: #ECFFEC;
+	font-weight: 700;
+	text-align: center;
+	cursor: pointer;
+	position: relative;
+	font-size:14px;
+	line-height: 14px;
+	text-transform:uppercase;
+}
+.button_slide_delete{
+	position: relative;
+	text-align: center;
+	float: right;
+	border: none;
+	padding: 7px 20px;
+	border-radius: 5px;
+	color: #FFEAEA;
+	font-weight: 700;
+	line-height: 16px;
+	text-decoration: none;
+	background-color: #5f3f3f;
+	font-size:14px;
+	line-height: 14px;
+	text-transform:uppercase;
+}
+
+.cell.name{
+	font-size: 13px;
+	width: 200px;
+}
+.cell.slide{
+	width: 500px;
+	text-align: center;
+}
+.cell.slide input[type=checkbox]{
+	float: left;
+}
+.slide_wrapper img{
+	max-width: 100%;
+	max-height: 200px;
+	vertical-align: middle;
+}
+.slide_wrapper{
+	border: 15px solid #fff;
+	box-shadow: 1px 1px 4px #B4B4B4;
+	background: #fff;
+	border-radius: 3px;
+	cursor: move;
+}
+.slide_wrapper .title{
+	margin-bottom: 15px;
+	overflow: hidden;
+}
+.slide_wrapper .title a{
+	font-size: 15px;
+	font-weight: bold;
+	color: #71A9E6;
+}
+.slide_wrapper .slide{
+	margin-bottom: 15px;
+}
+.slide_wrapper .slide a{
+	line-height: 40px;
+	color: #888;
+}
+.slide_wrapper .tip{
+	float: none;
+}
+.slide .title .delete{
+	float:right;
+	background-image: url(../images/cross.png);
+	padding: 8px;
+	margin: 2px;
+	zoom: 1;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+.slide .title .enable{    float:right;
+    background-image: url(../images/lightbulb.png);
+    padding: 8px;
+    margin: 2px;
+    zoom: 1;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+.invisible .slide .title .enable{
+    float:right;
+    background-image: url(../images/lightbulb_off.png);
+    padding: 8px;
+    margin: 2px;
+    zoom: 1;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
