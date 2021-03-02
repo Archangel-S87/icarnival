@@ -13,9 +13,12 @@ class OrderAdmin extends Fivecms
 			$order->name = $this->request->post('name');
 			$order->email = $this->request->post('email');
 			$order->phone = $this->request->post('phone');
+            $order->phone_delivery = $this->request->post('phone_delivery');
 			$order->address = $this->request->post('address');
 			if(!empty($this->request->post('shipping_date'))) 
 				$order->shipping_date = date('Y-m-d H:i', strtotime($this->request->post('shipping_date')));
+            if(!empty($this->request->post('delivery_date')))
+                $order->delivery_date = date('Y-m-d H:i', strtotime($this->request->post('delivery_date')));
 			if($this->request->post('calc')) $order->calc = $this->request->post('calc');
 			$order->comment = $this->request->post('comment');
 			$order->note = $this->request->post('note');
@@ -133,6 +136,13 @@ class OrderAdmin extends Fivecms
 					else
 						$this->orders->update_order($order->id, array('status'=>1));
 				}
+                elseif($new_status == 5)
+                {
+                    if(!$this->orders->close(intval($order->id)))
+                        $this->design->assign('message_error', 'error_closing');
+                    else
+                        $this->orders->update_order($order->id, array('status'=>5));
+                }
 				elseif($new_status == 2)					
 				{
 					if(!$this->orders->close(intval($order->id)))
@@ -459,7 +469,7 @@ class OrderAdmin extends Fivecms
 			$objWriter->save('php://output');	
 			
 		} 
-/* ---- ДОКУМЕНТ ТОРГ-12 ---- */		
+        /* ---- ДОКУМЕНТ ТОРГ-12 ---- */
 		elseif ($this->request->get('view') == 'torg12') {
 			//ini_set('display_errors', 'On');
 			//error_reporting(E_ALL | E_STRICT);
@@ -503,6 +513,7 @@ class OrderAdmin extends Fivecms
 						
 			$baseRow = 35; $count = 1; $fcount = 1;
 			$list = array();
+            $user = $this->users->get_user(intval($order->user_id));
 			
 			// ШАПКА
 			// Получаем дату из текстового значения
@@ -700,7 +711,7 @@ class OrderAdmin extends Fivecms
 			$objWriter->save('php://output');	
 				
 		}
-/* ---- СЧЕТ НА ОПЛАТУ ---- */		
+        /* ---- СЧЕТ НА ОПЛАТУ ---- */
 		elseif($this->request->get('view') == 'invoice') {
 			require_once 'fivecms/classes/PHPExcel.php';
 			$objReader = PHPExcel_IOFactory::createReader('Excel5');
@@ -715,6 +726,8 @@ class OrderAdmin extends Fivecms
 			// Получаем полную дату для вставки в Ecxel 
 			$excel_full_date = PHPExcel_Shared_Date::PHPToExcel( gmmktime(0,0,0,date('m',$order_date),date('d',$order_date),date('Y',$order_date)) );
 			$total_price = ($order->separate_delivery ? $order->total_price+$order->delivery_price : $order->total_price);
+
+            $user = $this->users->get_user(intval($order->user_id));
 			
 			$objPHPExcel->setActiveSheetIndex(0);
 			$objPHPExcel->getActiveSheet()->setCellValue('B6', 'ИНН '.$payment_settings['inn'])

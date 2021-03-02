@@ -16,99 +16,101 @@
 	</div>
 {/if}
 
-{if $settings->mainhits}
-{* hits *}			
-	{* available sort (or remove): position, name, date, views, rating, rand *}
-	{get_products var=featured_products featured=1 sort=rand limit=12}
-	{if !empty($featured_products)}
-		{if $settings->addfield2}
-		<div class="mainproduct block-header hits_carousel">
-			<div class="block-header__title">Лидеры продаж / бестселлеры</div>
-			<div class="block-header__divider"></div>
-			<div class="block-header__arrows-list">
-				<button class="block-header__arrow arrow_left" type="button">
-					<svg><use xlink:href='#arrow-rounded-left-7x11' /></svg>
-				</button>
-				<button class="block-header__arrow arrow_right" type="button">
-					<svg><use xlink:href='#arrow-rounded-right-7x11' /></svg>
-				</button>
-			</div>
-		</div>
-		{/if}
-		<div id="hitcarusel" class="tiny_products hoverable owl-carousel">
-			{foreach $featured_products as $product}
-				<div class="product_wrap" style="display:none;">	
-					{include file='products_item.tpl'}
+{foreach from=$settings->position_carousel key=$carousel item=$i}
+	{if $settings->mainhits && $carousel == 'mainhits'}
+		{* hits *}
+		{* available sort (or remove): position, name, date, views, rating, rand *}
+		{get_products var=featured_products featured=1 sort=rand limit=12}
+		{if !empty($featured_products)}
+			{if $settings->addfield2}
+				<div class="mainproduct block-header hits_carousel">
+					<div class="block-header__title">Лидеры продаж / бестселлеры</div>
+					<div class="block-header__divider"></div>
+					<div class="block-header__arrows-list">
+						<button class="block-header__arrow arrow_left" type="button">
+							<svg><use xlink:href='#arrow-rounded-left-7x11' /></svg>
+						</button>
+						<button class="block-header__arrow arrow_right" type="button">
+							<svg><use xlink:href='#arrow-rounded-right-7x11' /></svg>
+						</button>
+					</div>
 				</div>
-			{/foreach}
-		</div>
+			{/if}
+			<div id="hitcarusel" class="tiny_products hoverable owl-carousel">
+				{foreach $featured_products as $product}
+					<div class="product_wrap" style="display:none;">
+						{include file='products_item.tpl'}
+					</div>
+				{/foreach}
+			</div>
+		{/if}
+		{* hits end *}
 	{/if}
-{* hits end *}
-{/if}
 
-{if $settings->mainnew}
-{* new *}
-	{* available sort (or remove): position, name, date, views, rating, rand *}
-	{get_products var=is_new_products is_new=1 sort=rand limit=12}
-	{if !empty($is_new_products)}
-		{if $settings->mainnew || $settings->addfield2}
-		<div class="mainproduct block-header new_carousel">
-			<div class="block-header__title">Новинки в магазине</div>
-			<div class="block-header__divider"></div>
-			<div class="block-header__arrows-list">
-				<button class="block-header__arrow arrow_left" type="button">
-					<svg><use xlink:href='#arrow-rounded-left-7x11' /></svg>
-				</button>
-				<button class="block-header__arrow arrow_right" type="button">
-					<svg><use xlink:href='#arrow-rounded-right-7x11' /></svg>
-				</button>
-			</div>
-		</div>
-		{/if}
-		<div id="newcarusel" class="tiny_products hoverable owl-carousel">
-			{foreach $is_new_products as $product}
-				<div class="product_wrap" style="display:none;">	
-					{include file='products_item.tpl'}
+	{if $settings->mainnew && $carousel == 'mainnew'}
+		{* new *}
+		{* available sort (or remove): position, name, date, views, rating, rand *}
+		{get_products var=is_new_products is_new=1 sort=rand limit=12}
+		{if !empty($is_new_products)}
+			{if $settings->mainnew || $settings->addfield2}
+				<div class="mainproduct block-header new_carousel">
+					<div class="block-header__title">Новинки в магазине</div>
+					<div class="block-header__divider"></div>
+					<div class="block-header__arrows-list">
+						<button class="block-header__arrow arrow_left" type="button">
+							<svg><use xlink:href='#arrow-rounded-left-7x11' /></svg>
+						</button>
+						<button class="block-header__arrow arrow_right" type="button">
+							<svg><use xlink:href='#arrow-rounded-right-7x11' /></svg>
+						</button>
+					</div>
 				</div>
-			{/foreach}
-		</div>
+			{/if}
+			<div id="newcarusel" class="tiny_products hoverable owl-carousel">
+				{foreach $is_new_products as $product}
+					<div class="product_wrap" style="display:none;">
+						{include file='products_item.tpl'}
+					</div>
+				{/foreach}
+			</div>
+		{/if}
+		{* new end *}
 	{/if}
-{* new end *}
-{/if}
+
+	{if $settings->mainsale && $carousel == 'mainsale'}
+		{* discounted *}
+		{* available sort (or remove): position, name, date, views, rating, rand *}
+		{get_products var=discounted_products discounted=1 sort=rand limit=12}
+		{if !empty($discounted_products)}
+			<div class="mainproduct block-header discounted_carousel">
+				<div class="block-header__title">Снижена цена</div>
+				<div class="block-header__divider"></div>
+				<div class="block-header__arrows-list">
+					<button class="block-header__arrow arrow_left" type="button">
+						<svg><use xlink:href='#arrow-rounded-left-7x11' /></svg>
+					</button>
+					<button class="block-header__arrow arrow_right" type="button">
+						<svg><use xlink:href='#arrow-rounded-right-7x11' /></svg>
+					</button>
+				</div>
+			</div>
+			<div id="disccarusel" class="tiny_products hoverable owl-carousel">
+				{foreach $discounted_products as $product}
+					<div class="product_wrap" style="display:none;">
+						{include file='products_item.tpl'}
+					</div>
+				{/foreach}
+			</div>
+		{/if}
+		{* discounted end *}
+	{/if}
+{/foreach}
 
 {if !empty($settings->widebannervis)}
 	{$widebanner_img=$config->threebanners_images_dir|cat:$settings->widebanner_file|escape}
 	<div class="box widebanner">
 		<img {if !empty($settings->widebanner)}onClick="window.location='{$settings->widebanner}'" class="pointer"{/if} title="{$settings->site_name|escape}" alt="{$settings->site_name|escape}" src="{$widebanner_img}?{filemtime("{$widebanner_img}")}">
 	</div>
-{/if}
-
-{if $settings->mainsale}
-{* discounted *}
-	{* available sort (or remove): position, name, date, views, rating, rand *}
-	{get_products var=discounted_products discounted=1 sort=rand limit=12}
-	{if !empty($discounted_products)}
-		<div class="mainproduct block-header discounted_carousel">
-			<div class="block-header__title">Снижена цена</div>
-			<div class="block-header__divider"></div>
-			<div class="block-header__arrows-list">
-				<button class="block-header__arrow arrow_left" type="button">
-					<svg><use xlink:href='#arrow-rounded-left-7x11' /></svg>
-				</button>
-				<button class="block-header__arrow arrow_right" type="button">
-					<svg><use xlink:href='#arrow-rounded-right-7x11' /></svg>
-				</button>
-			</div>
-		</div>
-		<div id="disccarusel" class="tiny_products hoverable owl-carousel">
-			{foreach $discounted_products as $product}
-				<div class="product_wrap" style="display:none;">
-					{include file='products_item.tpl'}
-				</div>
-			{/foreach}
-		</div>
-	{/if}
-{* discounted end *}
 {/if}
 
 {if $settings->main_blog == 0}

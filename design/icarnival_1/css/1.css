@@ -416,3 +416,7 @@ ul.super-menu > li > a, .cart, .dropdown-menu li:hover a {
 .tiny_products .amountwrapper {
     display: none;
 }
+
+.slidertop {
+    border-top: 3px solid #FFFFFF;
+}

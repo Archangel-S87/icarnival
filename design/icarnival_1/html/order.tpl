@@ -8,6 +8,7 @@
 {elseif $order->status == 1}выполняется
 {elseif $order->status == 2}выполнен
 {elseif $order->status == 3}отменен
+{elseif $order->status == 5}в пути
 {/if}
 {if $order->paid == 1}, оплата поступила{/if}
 </h1>
@@ -288,4 +289,3 @@
 </div>
 
 
- 

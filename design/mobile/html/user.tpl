@@ -40,7 +40,13 @@
 			<li>
 				{$order->date|date} {if $order->status != 3}<a href='order/{$order->url}'>Заказ №{$order->id}</a>{else}Заказ №{$order->id}{/if}
 				{if $order->paid == 1}оплачен,{/if} 
-				({if $order->status == 0}ждет обработки{elseif $order->status == 4}в обработке{elseif $order->status == 1}выполняется{elseif $order->status == 2}выполнен{elseif $order->status == 3}отменен{/if})
+				({if $order->status == 0}ждет обработки
+				{elseif $order->status == 4}в обработке
+				{elseif $order->status == 1}выполняется
+				{elseif $order->status == 2}выполнен
+				{elseif $order->status == 3}отменен
+				{elseif $order->status == 5}в пути
+				{/if})
 			</li>
 		{/foreach}
 		</ul>

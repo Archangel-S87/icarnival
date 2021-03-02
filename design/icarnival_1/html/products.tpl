@@ -285,8 +285,6 @@
 {if !empty($products)}
 	<div style="margin-bottom:10px;">{include file='product_filter.tpl'}</div>
 
-	{include file='pagination.tpl'}
-
 	{if !empty($smarty.cookies.view) && $smarty.cookies.view == 'table'}
 	<div class="products">
 	{else}
@@ -299,7 +297,50 @@
 		{/foreach}
 	</div>
 
-	{include file='pagination.tpl'}	
+		{if $total_pages_num > 1}
+			<div id="show_more" style="display: flex; align-items: center; justify-content: center; margin: 20px 0">
+				<button data-href="{url page=null}" class="buttonred">Показать ещё</button>
+			</div>
+			<script>
+				$(document).ready(function() {
+					const total_pages_num = parseInt('{$total_pages_num}'),
+						btn = $('#show_more button'),
+						href = btn.attr('data-href'),
+						{if !empty($smarty.cookies.view) && $smarty.cookies.view == 'table'}
+							wrapper = $('.products');
+						{else}
+							wrapper = $('.tiny_products.hoverable');
+						{/if}
+
+					let current_page_num = parseInt('{$current_page_num}');
+
+					btn.on('click', function () {
+						if (loadAjax) return false;
+						let url = href + '?aj_c=true&page=' + (current_page_num + 1);
+						$('.mainloader').show();
+						$.ajaxPrefilter(function( options, originalOptions, jqXHR ) { options.async = true; });
+						$.get(url, function(data){
+							if(data) {
+								wrapper.append(data.content);
+								$('.mainloader').hide();
+								current_page_num = parseInt(data.current_page_num);
+								if (current_page_num >= total_pages_num) {
+									btn.hide();
+								}
+								$(".p0").each(function(n,elem){ chpr(elem,0) });
+							} else {
+								window.location.reload();
+							}
+							loadAjax = false;
+						}, 'json').fail(function() {
+							$('.mainloader').hide();
+							loadAjax = false;
+						});
+					});
+
+				});
+			</script>
+		{/if}
 
 	{include file='product_filter.tpl'}
 {else}

@@ -38,6 +38,7 @@
 					{if $delivery->free_from > 0 && $cart->total_price >= $delivery->free_from}
 						$('#cdek').val('0');
 					{else}
+						wat.price = parseInt(wat.price) + {$additional_cost};
 						$('#not-null-delivery-price-114').html((wat.price*curr_convert).toFixed({$currency->cents}));
 						$('#cdek').val(wat.price);
 					{/if}
@@ -56,6 +57,7 @@
 					{if $delivery->free_from > 0 && $cart->total_price >= $delivery->free_from}
 						$('#cdek').val('0');
 					{else}
+						wat.price = parseInt(wat.price) + {$additional_cost};
 						$('#not-null-delivery-price-114').html((wat.price*curr_convert).toFixed({$currency->cents}));
 						$('#cdek').val(wat.price);
 					{/if}

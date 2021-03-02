@@ -246,7 +246,7 @@
 				</div>
 			</div>
 			<div id="topcall">
-				<div class="topcallbutton" onClick="$.fancybox({literal}{'href':'#element_B','showCloseButton':'true',scrolling:'no'}{/literal});">
+				<div class="topcallbutton zoom" data-fancybox="inline" data-src="#element_B">
 					<svg style="width:24px;height:24px" viewBox="0 0 24 24">
 						<path fill="#000000" d="M17.25,18H6.75V4H17.25M14,21H10V20H14M16,1H8A3,3 0 0,0 5,4V20A3,3 0 0,0 8,23H16A3,3 0 0,0 19,20V4A3,3 0 0,0 16,1Z" />
 					</svg>
@@ -932,7 +932,7 @@
 			});
 		</script>
 	{/if}
-	<script type="text/javascript" src="design/{$settings->theme|escape}/plugins/fancybox3/jquery.fancybox.js"></script>
+
 	{if $settings->popup_cart == 1}
 		<script>var popup_cart = true;</script>
 	{/if}
@@ -964,7 +964,7 @@
 	{/if}
 
 	<script defer src="js/jquery/jquery.service.pack.js"></script>
-	
+	<script type="text/javascript" src="design/{$settings->theme|escape}/plugins/fancybox3/jquery.fancybox.js"></script>
 	<script>
 		{if $settings->b7manage == 0}
 		$(window).scroll(function(){ 

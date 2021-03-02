@@ -4,6 +4,7 @@
 		<li {if (isset($order->status) && $order->status==0) || !isset($order->status)}class="active"{/if}><a href="index.php?module=OrdersAdmin&status=0">{$tr->new_pl|escape}</a></li>
 		<li {if !empty($order->status) && $order->status==4}class="active"{/if}><a href="index.php?module=OrdersAdmin&status=4">{$tr->status_in_processing|escape}</a></li>
 		<li {if !empty($order->status) && $order->status==1}class="active"{/if}><a href="index.php?module=OrdersAdmin&status=1">{$tr->status_accepted_pl|escape}</a></li>
+		<li {if !empty($order->status) && $order->status==5}class="active"{/if}><a href="index.php?module=OrdersAdmin&status=5">{$tr->status_delivery_pl|escape}</a></li>
 		<li {if !empty($order->status) && $order->status==2}class="active"{/if}><a href="index.php?module=OrdersAdmin&status=2">{$tr->status_completed_pl|escape}</a></li>
 		<li {if !empty($order->status) && $order->status==3}class="active"{/if}><a href="index.php?module=OrdersAdmin&status=3">{$tr->status_canceled_pl|escape}</a></li>
 		{if !empty($keyword)}
@@ -38,6 +39,7 @@
 				<option value='0' {if !empty($order->status) && $order->status == 0}selected{/if}>{$tr->new|escape}</option>
 				<option value='4' {if !empty($order->status) && $order->status == 4}selected{/if}>{$tr->status_in_processing|escape}</option>
 				<option value='1' {if !empty($order->status) && $order->status == 1}selected{/if}>{$tr->status_accepted|escape}</option>
+				<option value='5' {if !empty($order->status) && $order->status == 1}selected{/if}>{$tr->status_delivery|escape}</option>
 				<option value='2' {if !empty($order->status) && $order->status == 2}selected{/if}>{$tr->status_completed|escape}</option>
 				<option value='3' {if !empty($order->status) && $order->status == 3}selected{/if}>{$tr->status_canceled|escape}</option>
 			</select>
@@ -162,18 +164,39 @@
 				<li>
 					<label class=property>{$tr->shipment_date|escape}</label>
 					<div class="edit_order_detail" style="display:none;">
-						<input id="datetime" name="shipping_date" class="fivecms_inp datetime" type="text" value="{if !empty($order->shipping_date)}{$order->shipping_date|date} {$order->shipping_date|time}{/if}" autocomplete="off"/>
+						<input id="shipping_date" name="shipping_date" class="fivecms_inp datetime" type="text" value="{if !empty($order->shipping_date)}{$order->shipping_date|date} {$order->shipping_date|time}{/if}" autocomplete="off"/>
 					</div>
 					<div class="view_order_detail">
 						{if !empty($order->shipping_date)}{$order->shipping_date|date} {$order->shipping_date|time}{/if}
 					</div>
 				</li>
+
+				<li>
+					<label class=property>Дата доставки</label>
+					<div class="edit_order_detail" style="display:none;">
+						<input id="delivery_date" name="delivery_date" class="fivecms_inp datetime" type="text" value="{if !empty($order->delivery_date)}{$order->delivery_date|date} {$order->delivery_date|time}{/if}" autocomplete="off"/>
+					</div>
+					<div class="view_order_detail">
+						{if !empty($order->delivery_date)}{$order->delivery_date|date} {$order->delivery_date|time}{/if}
+					</div>
+				</li>
+
 				<link rel="stylesheet" type="text/css" href="../../js/jquery/datetime/jquery.datetimepicker.css"/>
 				<script src="../../js/jquery/datetime/jquery.datetimepicker.full.min.js"></script>
 				<script>
-					$('#datetime').datetimepicker({ lang:'ru', format:'d.m.Y H:i' });
+					$('.datetime').datetimepicker({ lang:'ru', format:'d.m.Y H:i' });
 					$.datetimepicker.setLocale('ru');
 				</script>
+
+				<li>
+					<label class=property>Телефон курьера</label>
+					<div class="edit_order_detail" style='display:none;'>
+						<input name="phone_delivery" class="fivecms_inp " type="text" value="{$order->phone_delivery|escape}" />
+					</div>
+					<div class="view_order_detail">
+						{if $order->phone_delivery}<span class="ip_call" data-phone="{$order->phone_delivery|escape}" target="_blank">{$order->phone_delivery|escape}</span>{else}{$order->phone_delivery|escape}{/if}
+					</div>
+				</li>
 			
 				<li>
 					<label class=property>{$tr->track_code|escape}</label> 
@@ -188,7 +211,6 @@
 					{include file='send_track_message.tpl'}
 					<input id="tbackform" style="margin-bottom: 3px;"  type="button" class="button_green" value="{$tr->send_track_code|escape}" />
 					{/if}
-	
 				</li>
 			</ul>
 			</div>

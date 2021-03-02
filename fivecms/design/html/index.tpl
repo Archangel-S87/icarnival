@@ -34,7 +34,9 @@
 {* Order notify *}
 {if $settings->b8manage == '1'}
 <link href="/js/notify/toastr.min.css" rel="stylesheet" type="text/css" />
-<script src="/js/notify/toastr.min.js"  type="text/javascript"></script>
+	{if !$config->is_localhost}
+		<script src="/js/notify/toastr.min.js"  type="text/javascript"></script>
+	{/if}
 <script src="/js/notify/buzz.min.js"></script>
 <script src="/js/notify/jsplayer.js?v=1"></script>	
 <script type="text/javascript" src="/js/notify/jquery.faviconNotify.js"></script>

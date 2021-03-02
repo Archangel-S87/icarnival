@@ -412,7 +412,20 @@ class ProductsView extends View
 		}
 		
 		// ajax filter
-		if ($this->request->get('aj_f') == 'true') {
+        if ($this->request->get('aj_c') == 'true') {
+            $content = '';
+            foreach ($products as $product) {
+                $this->design->assign('product', $product);
+                $content .= '<div class="product_wrap">';
+                $content .= $this->design->fetch('products_item.tpl');
+                $content .= '</div>';
+            }
+            $return = array(
+                'current_page_num' => $current_page,
+                'content' => $content
+            );
+            die(json_encode($return));
+        } elseif ($this->request->get('aj_f') == 'true') {
             $return = array(
                 'content' => $this->body,
                 'filter_block' => $this->design->fetch('cfeatures.tpl'),

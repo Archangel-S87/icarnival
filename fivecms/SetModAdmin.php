@@ -64,7 +64,21 @@ class SetModAdmin extends Fivecms
 			$this->settings->consultant = $this->request->post('consultant');
 
 			$this->design->assign('message_success', 'saved');
+
+            $temp_position = $this->request->post('position_carousel');
+            $position_carousel = [];
+			$index = 0;
+            asort($temp_position);
+            while (count($temp_position)) {
+                reset($temp_position);
+                $key = key($temp_position);
+                $position_carousel[$key] = ++$index;
+                unset($temp_position[$key]);
+            }
+            $this->settings->position_carousel = $position_carousel;
 		}
+
+		$er = $this->settings->position_carousel;
 
 		$image = $this->request->files('bannerwide_file');
   	    if(!empty($image['name']) && in_array(strtolower(pathinfo($image['name'], PATHINFO_EXTENSION)), $this->allowed_image_extentions))

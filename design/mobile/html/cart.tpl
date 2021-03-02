@@ -160,9 +160,15 @@
 			{$delivcount=0}
 			{foreach $deliveries as $delivery}
 				{if $delivery@first}
-				<div id="selected_delivery" style="display: none;">{$delivery->id}</div>
-				{$delivcount=$delivcount+1}
-			{/if}
+					<div id="selected_delivery" style="display: none;">{$delivery->id}</div>
+					{$delivcount=$delivcount+1}
+				{/if}
+
+				{$additional_cost = 0}
+				{if $delivery->additional_cost > 0}
+					{$additional_cost = ($delivery->additional_cost|convert)}
+				{/if}
+
 			<li id="li_delivery_{$delivery->id}">
 				<div class="checkbox">
 					<input class="{if $delivery@first}first{else}other{/if} {if $delivery->id == 3 ||$delivery->id == 114 || $delivery->id == 121 || $delivery->widget == 1}del_widget{/if}" type="radio" name="delivery_id" value="{$delivery->id}" {if $delivery@first}checked{/if} id="deliveries_{$delivery->id}" onchange="change_payment_method({$delivery->id})" 
@@ -180,10 +186,25 @@
 							
 							{if $delivery->separate_payment}[оплачивается отдельно]{/if} 
 				
-							(<span id="not-null-delivery-price-{$delivery->id}">{if $delivery->free_from > 0 && $cart->total_price >= $delivery->free_from}бесплатно</span>)
-							{elseif in_array($delivery->id, array(3,114,121)) || $delivery->widget == 1}---</span>&nbsp;{$currency->sign})
-							{elseif $delivery->price==0 && $delivery->price2 == 0}бесплатно</span>)
-							{else}{if $delivery->price2 > 0}{($delivery->price + ($delivery->price2 * $cart->total_weight|ceil))|convert}{else}{$delivery->price|convert}{/if}</span>&nbsp;{$currency->sign})
+							(<span id="not-null-delivery-price-{$delivery->id}">
+								{if $delivery->free_from > 0 && $cart->total_price >= $delivery->free_from}
+								бесплатно</span>)
+							{elseif in_array($delivery->id, array(3,114,121)) || $delivery->widget == 1}
+								---</span>&nbsp;{$currency->sign})
+							{elseif $delivery->price==0 && $delivery->price2 == 0 && $additional_cost == 0}
+								бесплатно</span>)
+							{elseif $delivery->price2 > 0 || $additional_cost > 0}
+								{$temp_price = 0}
+								{$temp_price = $temp_price + $delivery->price}
+								{if $delivery->price2 > 0 && $cart->total_weight > 3}
+									{$temp_price = $delivery->price + $delivery->price2 * ($cart->total_weight|ceil - 3)}
+								{/if}
+								{if $additional_cost > 0}
+									{$temp_price = $temp_price + $additional_cost}
+								{/if}
+								{$temp_price|convert}</span>&nbsp;{$currency->sign})
+							{else}
+								{$delivery->price|convert}</span>&nbsp;{$currency->sign})
 							{/if}
 						</div>
 					</label>

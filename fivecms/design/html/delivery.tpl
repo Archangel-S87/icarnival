@@ -97,13 +97,14 @@ $('select[name=module]').change(function(){
 				<h2>{$tr->delivery_price|escape}:</h2>
 				<ul {if $delivery->id == 3 || $delivery->id == 114 || $delivery->id == 121}style="display:none;"{/if}>
 					<li><label class=property>{$tr->fixed|escape}</label><input style="width:100px;" name="price" class="fivecms_small_inp" type="text" value="{if !empty($delivery->price)}{$delivery->price}{/if}" /> {$currency->sign}</li>
-					<li><label class=property>+ {$tr->per_kg|escape}</label><input style="width:100px;" name="price2" class="fivecms_small_inp" type="text" value="{if !empty($delivery->price2)}{$delivery->price2}{/if}" /> {$currency->sign}</li>
+					<li><label class=property>+ {$tr->per_kg|escape} более 3-х</label><input style="width:100px;" name="price2" class="fivecms_small_inp" type="text" value="{if !empty($delivery->price2)}{$delivery->price2}{/if}" /> {$currency->sign}</li>
 				</ul>
 			</div>	
 			<div class="block layer">
 				<ul>
 					<li><label class=property>{$tr->free_from|escape}</label><input style="width:100px;" name="free_from" class="fivecms_small_inp" type="text" value="{if !empty($delivery->free_from)}{$delivery->free_from}{/if}" /> {$currency->sign}</li>
 					<li {if $delivery->id == 3 || $delivery->id == 114 || $delivery->id == 121}style="display:none;"{/if}><label class=property for="separate_payment">{$tr->separate_payment|escape} <br /><span style="font-weight:400;font-size:12px;">({$tr->about_separate|escape})</span></label><input id="separate_payment" name="separate_payment" type="checkbox" value="1" {if !empty($delivery->separate_payment)}checked{/if} /></li>
+					<li><label class=property>Доплнительная стоимость</label><input style="width:100px;" name="additional_cost" class="fivecms_small_inp" type="text" value="{if !empty($delivery->additional_cost)}{$delivery->additional_cost}{/if}" /> {$currency->sign}</li>
 				</ul>
 			</div>
 			<!-- Параметры страницы (The End)-->

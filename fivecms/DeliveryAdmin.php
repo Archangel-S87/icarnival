@@ -14,6 +14,7 @@ class DeliveryAdmin extends Fivecms
 	 		$delivery->description      = $this->request->post('description');
 	 		$delivery->price            = $this->request->post('price');
 	 		$delivery->price2           = $this->request->post('price2');
+	 		$delivery->additional_cost  = $this->request->post('additional_cost');
 	 		$delivery->free_from        = $this->request->post('free_from');
 	 		$delivery->separate_payment	= $this->request->post('separate_payment');
 	 		

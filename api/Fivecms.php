@@ -1,4 +1,51 @@
-<?php  
+<?php
+
+/**
+ * Class Fivecms
+ *
+ * @property ArticlesCategories $articles_categories
+ * @property Articles $articles
+ * @property Config $config
+ * @property Request $request
+ * @property Database $db
+ * @property Settings $settings
+ * @property Design $design
+ * @property Products $products
+ * @property Variants $variants
+ * @property Categories $categories
+ * @property Brands $brands
+ * @property Features $features
+ * @property Money $money
+ * @property Pages $pages
+ * @property BlogCategories $blog_categories
+ * @property Blog $blog
+ * @property Cart $cart
+ * @property Image $image
+ * @property Delivery $delivery
+ * @property Payment $payment
+ * @property Orders $orders
+ * @property Users $users
+ * @property Coupons $coupons
+ * @property Comments $comments
+ * @property Feedbacks $feedbacks
+ * @property Notify $notify
+ * @property ReportStat $reportstat
+ * @property Managers $managers
+ * @property Slides $slides
+ * @property Slidesm $slidesm
+ * @property DiscountGroup $discountgroup
+ * @property Compare $compare
+ * @property SurveysCategories $surveys_categories
+ * @property Surveys $surveys
+ * @property Mobtheme $mobtheme
+ * @property MetadataPages $metadatapages
+ * @property Files $files
+ * @property Links $links
+ * @property ServicesCategories $services_categories
+ * @property Cache $cache
+ * @property Forms $forms
+ * @property Banners $banners
+ */
 class Fivecms
 {
 	// Свойства - Классы API

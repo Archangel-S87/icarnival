@@ -38,11 +38,21 @@
 								<option value='0' {if $settings->mainhits == '0'}selected{/if}>{$tr->hide|lower}</option>
 								<option value='1' {if $settings->mainhits == '1'}selected{/if}>{$tr->show|lower}</option>
 							</select>
+							<select name="position_carousel[mainhits]" class="fivecms_inp" style="width: 100px;">
+								<option value='1' {if $settings->position_carousel['mainhits'] == 1}selected{/if}>1</option>
+								<option value='2' {if $settings->position_carousel['mainhits'] == 2}selected{/if}>2</option>
+								<option value='3' {if $settings->position_carousel['mainhits'] == 3}selected{/if}>3</option>
+							</select>
 						</li>
 						<li><label style="width:300px;" class="property">{$tr->carousel|escape} "{$tr->novelties|escape}"</label>
 							<select name="mainnew" class="fivecms_inp" style="width: 100px;">
 								<option value='0' {if $settings->mainnew == '0'}selected{/if}>{$tr->hide|lower}</option>
 								<option value='1' {if $settings->mainnew == '1'}selected{/if}>{$tr->show|lower}</option>
+							</select>
+							<select name="position_carousel[mainnew]" class="fivecms_inp" style="width: 100px;">
+								<option value='1' {if $settings->position_carousel['mainnew'] == 1}selected{/if}>1</option>
+								<option value='2' {if $settings->position_carousel['mainnew'] == 2}selected{/if}>2</option>
+								<option value='3' {if $settings->position_carousel['mainnew'] == 3}selected{/if}>3</option>
 							</select>
 						</li>
 						<li><label style="width:300px;" class="property">{$tr->carousel|escape} "{$tr->with_old_price|escape}"</label>
@@ -50,7 +60,12 @@
 								<option value='0' {if $settings->mainsale == '0'}selected{/if}>{$tr->hide|lower}</option>
 								<option value='1' {if $settings->mainsale == '1'}selected{/if}>{$tr->show|lower}</option>
 							</select>
-						</li>						
+							<select name="position_carousel[mainsale]" class="fivecms_inp" style="width: 100px;">
+								<option value='1' {if $settings->position_carousel['mainsale'] == 1}selected{/if}>1</option>
+								<option value='2' {if $settings->position_carousel['mainsale'] == 2}selected{/if}>2</option>
+								<option value='3' {if $settings->position_carousel['mainsale'] == 3}selected{/if}>3</option>
+							</select>
+						</li>
 					</ul>
 					
 					<a class="bigbutton" style="margin-bottom:20px;" href="index.php?module=ThreeBannersAdmin">{$tr->banners|escape} {$tr->close_slider|escape}</a>

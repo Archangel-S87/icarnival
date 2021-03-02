@@ -165,28 +165,30 @@ class CartView extends View
 			$delivery = $this->delivery->get_delivery($order->delivery_id);
 			
 			// Delivery calc
-			if ($cart->total_weight > 0) {
-				$weight = ceil($cart->total_weight);
-			} else {
-				$weight = 0.5;
-			}
-			if($delivery->price2 > 0 ){
-				$delivery->price = $delivery->price + ($weight * $delivery->price2);
-			}
+            if ($cart->total_weight > 3) {
+                $weight = ceil($cart->total_weight);
+            } else {
+                $weight = 0;
+            }
+            if ($delivery->price2 > 0) {
+                $delivery->price = $delivery->price + ($weight * $delivery->price2);
+            }
 			// Delivery calc end
-			
-			if($order->delivery_id == 3){
+
+            if ($order->delivery_id == 3) {
                 $delivery->price = $shiptor;
-            }elseif($order->delivery_id == 114){
+            } elseif ($order->delivery_id == 114) {
                 $delivery->price = $cdek;
-            }elseif($order->delivery_id == 121){
+            } elseif ($order->delivery_id == 121) {
                 $delivery->price = $boxberry;
-            }elseif($delivery->widget == 1) {
-            	$delivery->price = $this->request->post('widget_'.$delivery->id, 'float');
+            } elseif ($delivery->widget == 1) {
+                $delivery->price = $this->request->post('widget_' . $delivery->id, 'float');
+            } elseif ($delivery->additional_cost > 0) {
+                // Дополнительная стоимость доставки взымается всегда, кроме бесплатно от
+                $delivery->price += $delivery->additional_cost;
             }
 
-	    	if(!empty($delivery) && ($delivery->free_from > $order->total_price || $delivery->free_from == 0))
-	    	{
+	    	if(!empty($delivery) && ($delivery->free_from > $order->total_price || $delivery->free_from == 0)) {
 	    		$this->orders->update_order($order->id, array('delivery_price'=>$delivery->price, 'separate_delivery'=>$delivery->separate_payment));
 	    	}
 			

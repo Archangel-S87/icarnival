@@ -412,6 +412,8 @@ class ProductAdmin extends Fivecms
 				
 				// Связанные товары
 				$related_products = $this->products->get_related_products(array('product_id'=>$product->id));
+
+                $this->design->assign('message_success', ' ');
 			}
 			else
 			{

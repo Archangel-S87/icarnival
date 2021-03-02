@@ -17,7 +17,7 @@
 			<div class="big_middle">
 				{if $product->image}
 					{if $product->images|count==1}
-					<a href="{$product->image->filename|resize:2000:3000:w}" class="zoom cloud-zoom" id="zoom1" title="{$product->name|escape}" data-fancybox="group" data-rel="{if !empty($product->image->color)}{$product->image->color}{else}gallery{/if}">
+					<a href="{$product->image->filename|resize:2000:3000:w}" class="zoom cloud-zoom" id="zoom" title="{$product->name|escape}" data-fancybox="group" data-rel="{if !empty($product->image->color)}{$product->image->color}{else}gallery{/if}">
 					{/if}
 						<div onClick="$('.imagesmall a:visible:first').click();" class="image"><img src="{$product->image->filename|resize:800:600:w}" alt="{$product->name|escape}" title="{$product->name|escape}" class="imglenss" /></div>
 					{if $product->images|count==1}</a>{/if}	
@@ -55,7 +55,8 @@
 						$(window).load(function(){
 							// Смена цвета изображения
 							try{
-								chpr(elem);
+								if (!$(".p0").length) return;
+								$(".p0").each(function(){chpr(this)});
 							} catch(e) {window.location.replace(window.location);}
 							$(".p0").change(function(){chpr(this)});
 							$(".p1").change(function(){chpr(this)});
@@ -495,31 +496,109 @@
 
 {* related products *}
 {if !empty($related_products)}
-	<div class="mainproduct blue">Похожие товары </div>
-	<ul class="tiny_products hoverable">
+
+	<div class="mainproduct block-header related-products">
+		<div class="block-header__title">Похожие товары</div>
+		<div class="block-header__divider"></div>
+		{if $related_products|count > 4}
+			<div class="block-header__arrows-list">
+				<button class="block-header__arrow arrow_left" type="button">
+					<svg><use xlink:href='#arrow-rounded-left-7x11'/></svg>
+				</button>
+				<button class="block-header__arrow arrow_right" type="button">
+					<svg><use xlink:href='#arrow-rounded-right-7x11'/></svg>
+				</button>
+			</div>
+		{/if}
+	</div>
+
+	<div id="hitcarusel" class="tiny_products hoverable owl-carousel">
 		{foreach $related_products as $product}
-			<div class="product_wrap">
+			<div class="product_wrap" style="display:none; margin-bottom: 20px;">
 				{include file='products_item.tpl'}
 			</div>
 		{/foreach}
-	</ul>
+	</div>
+
+	<script>
+		$(window).load(function(){
+			$('#hitcarusel').slick(carousel_options);
+			$('.related-products .arrow_left').on('click',function(){ $('#hitcarusel').slick('slickPrev') });
+			$('.related-products .arrow_right').on('click',function(){ $('#hitcarusel').slick('slickNext') });
+		});
+	</script>
 {/if}
 {* related products @ *}
 
 {* featured products *}
 {* available sort (or remove): position, name, date, views, rating, rand *}
-{get_products var=featured_products featured=1 category_id=$category->id sort=rand limit=4}
+{get_products var=featured_products featured=1 category_id=$category->id sort=rand limit=10}
 {if !empty($featured_products)}
-	<div class="mainproduct blue">Вас также могут заинтересовать</div>
-	<div id="hitcontent" class="tiny_products hoverable">
+
+	<div class="mainproduct block-header featured-products">
+		<div class="block-header__title">Вас также могут заинтересовать</div>
+		<div class="block-header__divider"></div>
+		{if $featured_products|count > 4}
+			<div class="block-header__arrows-list">
+				<button class="block-header__arrow arrow_left" type="button">
+					<svg><use xlink:href='#arrow-rounded-left-7x11'/></svg>
+				</button>
+				<button class="block-header__arrow arrow_right" type="button">
+					<svg><use xlink:href='#arrow-rounded-right-7x11'/></svg>
+				</button>
+			</div>
+		{/if}
+	</div>
+
+	<div id="hitcontent" class="tiny_products hoverable owl-carousel">
 		{foreach $featured_products as $product}
-			<div class="product_wrap">
+			<div class="product_wrap" style="display:none; margin-bottom: 20px;">
 				{include file='products_item.tpl'}
 			</div>
 		{/foreach}
 	</div>
+
+	<script>
+		$(window).load(function(){
+			$('#hitcontent').slick(carousel_options);
+			$('.featured-products .arrow_left').on('click',function(){ $('#hitcontent').slick('slickPrev') });
+			$('.featured-products .arrow_right').on('click',function(){ $('#hitcontent').slick('slickNext') });
+		});
+	</script>
 {/if}
 {* featured @ *}
+
+{if !empty($related_products) || !empty($featured_products)}
+	<script async src="design/{$settings->theme|escape}/js/slick191.min.js"></script>
+	<script>
+		const carousel_options = {
+			infinite: true,
+			speed: 900,
+			slidesToShow: 4,
+			slidesToScroll: 1,
+			autoplay: true,
+			autoplaySpeed: 4000,
+			draggable: false,
+			arrows: false,
+			responsive: [
+				{
+					breakpoint: 1590,
+					settings: {
+						slidesToShow: 5,
+						slidesToScroll: 1
+					}
+				},
+				{
+					breakpoint: 1226,
+					settings: {
+						slidesToShow: 4,
+						slidesToScroll: 1
+					}
+				}
+			]
+		};
+	</script>
+{/if}
 
 <script>
 	$(document).ready(function() { 

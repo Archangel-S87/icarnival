@@ -1,0 +1,4 @@
+### Обновление базы данных
+POST http://icarnival.loc/fivecms/update-db.php
+Authorization: Basic YWRtaW46YWRtaW4=
+###

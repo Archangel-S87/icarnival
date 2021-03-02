@@ -1,4 +1,11 @@
-{if $order->status == 0}{$order_status = "ждет обработки"}{elseif $order->status == 4}{$order_status = "в обработке"}{elseif $order->status == 1}{$order_status = "выполняется"}{elseif $order->status == 2}{$order_status = "выполнен"}{elseif $order->status == 3}{$order_status = "отменен"}{/if}{if $order->paid == 1}{$order_paid = ", оплачен"}{else}{$order_paid = ""}{/if}
+{if $order->status == 0}{$order_status = "ждет обработки"}
+{elseif $order->status == 4}{$order_status = "в обработке"}
+{elseif $order->status == 1}{$order_status = "выполняется"}
+{elseif $order->status == 2}{$order_status = "выполнен"}
+{elseif $order->status == 3}{$order_status = "отменен"}
+{elseif $order->status == 5}{$order_status = "в пути"}
+{/if}
+{if $order->paid == 1}{$order_paid = ", оплачен"}{else}{$order_paid = ""}{/if}
 {$meta_title = "Ваш заказ №`$order->id` `$order_status``$order_paid`" scope=root}
 {$page_name = "Заказ №`$order->id` `$order_status``$order_paid`" scope=root}
 
@@ -201,4 +208,3 @@
 	</div>
 
 
- 
