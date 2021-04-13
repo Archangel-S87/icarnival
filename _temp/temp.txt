@@ -1,0 +1,16 @@
+cp -a -r -u /home/admin/web/icarnival.ru/public_html/simpla/json/files /home/admin/web/test.icarnival.ru/public_html/fivecms/json/files
+
+/home/admin/web/test.icarnival.ru/public_html/fivecms/json/files
+
+Изменить права на файл/каталог
+chown -R admin:admin имя_файла
+chown -R admin:admin  /home/admin/web/test.icarnival.ru/public_html/*
+
+Копирую файлы картинок
+cp -a -r -u /home/admin/web/test.icarnival.ru/public_html/fivecms/json/files/images/brands/. /home/admin/web/test.icarnival.ru/public_html/files/brands
+
+cp -a -r -u /home/admin/web/test.icarnival.ru/public_html/fivecms/json/files/images/categories/. /home/admin/web/test.icarnival.ru/public_html/files/categories
+
+cp -a -r -u /home/admin/web/icarnival.ru/public_html/files/originals/. /home/admin/web/test.icarnival.ru/public_html/files/originals
+
+cp -a -r -u /home/admin/web/icarnival.ru/public_html/files/categories/. /home/admin/web/test.icarnival.ru/public_html/files/categories

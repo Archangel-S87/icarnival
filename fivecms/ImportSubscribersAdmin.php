@@ -15,16 +15,13 @@ class ImportSubscribersAdmin extends Fivecms
 			$this->design->assign('message_error', 'no_permission');
 		
 		// Проверяем локаль
-		$old_locale = setlocale(LC_ALL, 0);
-		setlocale(LC_ALL, $this->locale);
-		if(setlocale(LC_ALL, 0) != $this->locale)
+		if(setlocale(LC_ALL, 0) != $this->config->locale)
 		{
 			$this->design->assign('message_error', 'locale_error');
-			$this->design->assign('locale', $this->locale);			
+			$this->design->assign('locale', $this->config->locale);			
+			$this->design->assign('current_locale', setlocale(LC_ALL, 0));			
 		}
-		setlocale(LC_ALL, $old_locale);
 			
-		
 		if($this->request->method('post') && ($this->request->files("file")))
 		{
 			$uploaded_name = $this->request->files("file", "tmp_name");
@@ -45,9 +42,10 @@ class ImportSubscribersAdmin extends Fivecms
 	private function convert_file($source, $dest)
 	{
 		// Узнаем какая кодировка у файла
-		$teststring = file_get_contents($source, null, null, null, 1000000);
+		$teststring = file_get_contents($source, null, null, null, 200);
+		$teststring = explode(';', $teststring);
 		
-		if (preg_match('//u', $teststring)) // Кодировка - UTF8
+		if (preg_match('//u', $teststring[0])) // Кодировка - UTF8
 		{
 			// Просто копируем файл
 			return copy($source, $dest);

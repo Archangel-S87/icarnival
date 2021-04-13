@@ -17,13 +17,15 @@
 	</svg>
 	<div>Выбрать на карте</div>
 </a>
-<script defer type="text/javascript" src="//points.boxberry.de/js/boxberry.js"></script>
-
+<script defer type="text/javascript" src="https://points.boxberry.ru/js/boxberry.js"></script>
+{if !empty($cart->total_weight)}
+	{$total_weight = $cart->total_weight}
+{/if}
 <script type="text/javascript">
 	$(window).load(function(){
 		try{
 			$(document).on('click', '#li_delivery_121 .show_map', function () {
-			boxberry.open(callback_function,'{$delivery->option1}','{$delivery->option2}','{$delivery->option3}', {$cart->total_price|noformat}, {$cart->total_weight*1000}, {if $delivery->option4 == 1}{$cart->total_price|noformat}{else}0{/if}, {$side|round}, {$side|round}, {$side|round});
+			boxberry.open(callback_function,'{$delivery->option1}','{$delivery->option2}','{$delivery->option3}', {$cart->total_price|noformat}, {$total_weight*1000}, {if $delivery->option4 == 1}{$cart->total_price|noformat}{else}0{/if}, {$side|round}, {$side|round}, {$side|round});
 			});
 			$(document).on('click', '.boxberry_container_close, .boxberry_overlay', function () {
 	$('.boxberry_container, .boxberry_overlay').hide();
@@ -37,12 +39,12 @@
 					document.getElementById('boxberry').value = result.price;
 				{/if}
 				// calc (1) end
-				document.getElementById('city').innerHTML = '<br />Город ПВЗ: ' + result.name;
+				document.getElementById('city').innerHTML = ' | Город ПВЗ: ' + result.name;
 				document.getElementById('code_pvz').innerHTML = 'Код ПВЗ: ' + result.id;
-				document.getElementById('address').innerHTML = '<br />Адрес ПВЗ: ' + result.address;
-				document.getElementById('workschedule').innerHTML = '<br />Время работы: ' + result.workschedule;
-				document.getElementById('phone').innerHTML = '<br />Телефон ПВЗ: ' + result.phone;
-				document.getElementById('period').innerHTML = '<br />Срок доставки: ' + result.period;
+				document.getElementById('address').innerHTML = ' | Адрес ПВЗ: ' + result.address;
+				document.getElementById('workschedule').innerHTML = ' | Время работы: ' + result.workschedule;
+				document.getElementById('phone').innerHTML = ' | Телефон ПВЗ: ' + result.phone;
+				document.getElementById('period').innerHTML = ' | Срок доставки: ' + result.period;
 				if (result.prepaid=='Yes') { 
 					alert('Отделение работает только по предоплате!'); 
 				} 

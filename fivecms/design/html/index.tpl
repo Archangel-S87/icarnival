@@ -34,9 +34,7 @@
 {* Order notify *}
 {if $settings->b8manage == '1'}
 <link href="/js/notify/toastr.min.css" rel="stylesheet" type="text/css" />
-	{if !$config->is_localhost}
-		<script src="/js/notify/toastr.min.js"  type="text/javascript"></script>
-	{/if}
+<script src="/js/notify/toastr.min.js"  type="text/javascript"></script>
 <script src="/js/notify/buzz.min.js"></script>
 <script src="/js/notify/jsplayer.js?v=1"></script>	
 <script type="text/javascript" src="/js/notify/jquery.faviconNotify.js"></script>
@@ -68,10 +66,10 @@
 			 
 			<!-- Footer / Подвал сайта -->
 			<div id="footer">
-			<a href='http://5cms.ru/' target="_blank">5CMS</a> v21-4-1.280120
+			<a href='http://5cms.ru/' target="_blank">5CMS</a> v{$config->version}
 			&nbsp; &nbsp; &nbsp; {$tr->entered_as|escape} {$manager->login}.
 			{if !empty($license->valid)}
-				{$tr->license_valid|escape} {if $license->expiration != '*'}<span class="expirable">{$tr->to|escape} {$license->expiration|date_format:"%d.%m.%Y"}</span>{/if} {if $license->domain}{$tr->for_domain|escape} {$license->domain}{/if}.
+				{$tr->license|escape} {if $license->expiration != '*'}<span class="expirable">{$tr->to|escape} {$license->expiration|date_format:"%d.%m.%Y"}</span>{/if} {if $license->domain}{$tr->for_domain|escape} {$license->domain}{/if}.
 				<a href='index.php?module=LicenseAdmin'>{$tr->license_management|escape}</a>.
 			{else}
 				{$tr->license_invalid|escape}. <a href='index.php?module=LicenseAdmin'>{$tr->license_management|escape}</a>.

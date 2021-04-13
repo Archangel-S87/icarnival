@@ -10,15 +10,27 @@
 {$meta_title=$tr->subscribers_list|escape scope=root}
 		
 {* Заголовок *}
-<div id="header">
-	{if $mails_count}
-		<h1 style="text-transform: capitalize">{$tr->found_posts|escape}: {$mails_count}</h1>
-	{else}
-		<h1>{$tr->no_content|escape}</h1>
+<div class="headerseparator" style="margin-bottom:10px;">
+	<div id="header">
+		{if $mails_count}
+			<h1 style="text-transform: capitalize">{$tr->found_posts|escape}: {$mails_count}</h1>
+		{else}
+			<h1>{$tr->no_content|escape}</h1>
+		{/if}
+		<a class="add" href="index.php?module=MailuserAdmin">{$tr->add_subscriber|escape}</a>
+		<a class="add" href="index.php?module=ImportSubscribersAdmin">{$tr->subscribers_import|escape}</a>
+		<a class="add" style="background: #ffffff url(design/images/excel_small.png) no-repeat 10px 6px;" href="index.php?module=ExportSubscribersAdmin">{$tr->subscribers_export|escape}</a>
+	</div>
+	{* Поиск *}
+	{if $maillist || !empty($keyword)}
+	<form method="get">
+	<div id="search">
+		<input type="hidden" name="module" value='MailListAdmin'>
+		<input class="search" type="text" name="keyword" value="{$keyword|escape}" />
+		<input class="search_button" type="submit" value=""/>
+	</div>
+	</form>
 	{/if}
-	<a class="add" href="index.php?module=MailuserAdmin">{$tr->add_subscriber|escape}</a>
-	<a class="add" href="index.php?module=ImportSubscribersAdmin">{$tr->subscribers_import|escape}</a>
-	<a class="add" style="background: #ffffff url(design/images/excel_small.png) no-repeat 10px 6px;" href="index.php?module=ExportSubscribersAdmin">{$tr->subscribers_export|escape}</a>
 </div>	
 
 {if $maillist}
@@ -27,6 +39,14 @@
 	<!-- Листалка страниц -->
 	{include file='pagination.tpl'}	
 	<!-- Листалка страниц (The End) -->
+	
+	<div id="sort_links" style='display:block;'>
+	<!-- Ссылки для сортировки -->
+	Упорядочить по 
+	{if $sort!='name'}<a href="{url sort=name}">имени</a>{else}имени{/if} | 
+	{if $sort!='date'}<a href="{url sort=date}">дате</a>{else}дате{/if}
+	<!-- Ссылки для сортировки (The End) -->
+	</div>
 
 	<form id="form_list" method="post">
 	<input type="hidden" name="session_id" value="{$smarty.session.id}">

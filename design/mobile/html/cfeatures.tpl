@@ -113,8 +113,8 @@
 						</div>
 					</div>
 				{/if}
-
-			    {foreach $features as $f}
+				{if !empty($features)}
+			    	{foreach $features as $f}
 					<div class="feature_column">
 						<div class="feat-block">
 							<div class="hidetitle" href="javascript://" onclick="hideShow1(this);return false;">
@@ -162,7 +162,8 @@
 				            </div>
 						</div>
 					</div>
-			    {/foreach}
+			    	{/foreach}
+			    {/if}
 			</div>
 
 			<div class="product-filter">
@@ -175,7 +176,6 @@
 						<option value="{url sort=name page=null}" {if $sort=='name'}selected{/if}>названию</option>
 						<option value="{url sort=date page=null}" {if $sort=='date'}selected{/if}>дате</option>
 						<option value="{url sort=stock page=null}" {if $sort=='stock'}selected{/if}>остатку</option>
-						<option value="{url sort=views page=null}" {if $sort=='views'}selected{/if}>популярности</option>
 						<option value="{url sort=rating page=null}" {if $sort=='rating'}selected{/if}>рейтингу</option>
 					</select>	
 			    </div>
@@ -201,7 +201,7 @@
 				</div>
 	
 				<script type="text/javascript">
-					var currentPos={$minCurr};
+					var currentPos={if isset($minCurr)}{$minCurr}{else}0{/if};
 					var minCount={$minCost};
 					var currentPostwo={$maxCurr};
 					var maxCount={$maxCost};

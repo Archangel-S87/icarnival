@@ -143,10 +143,10 @@
 				<li>
 					<label class=property>{$tr->delivery_additional_info|escape}</label>
 					<div class="edit_order_detail" style='display:none;'>
-						<textarea style="min-height:140px;" name="calc">{$order->calc}</textarea>
+						<textarea style="min-height:140px;" name="calc">{$order->calc|escape}</textarea>
 					</div>
 					<div class="view_order_detail">
-						{$order->calc}
+						{$order->calc|escape}
 					</div>
 				</li>
 				{/if}
@@ -164,39 +164,18 @@
 				<li>
 					<label class=property>{$tr->shipment_date|escape}</label>
 					<div class="edit_order_detail" style="display:none;">
-						<input id="shipping_date" name="shipping_date" class="fivecms_inp datetime" type="text" value="{if !empty($order->shipping_date)}{$order->shipping_date|date} {$order->shipping_date|time}{/if}" autocomplete="off"/>
+						<input id="datetime" name="shipping_date" class="fivecms_inp datetime" type="text" value="{if !empty($order->shipping_date)}{$order->shipping_date|date} {$order->shipping_date|time}{/if}" autocomplete="off"/>
 					</div>
 					<div class="view_order_detail">
 						{if !empty($order->shipping_date)}{$order->shipping_date|date} {$order->shipping_date|time}{/if}
 					</div>
 				</li>
-
-				<li>
-					<label class=property>Дата доставки</label>
-					<div class="edit_order_detail" style="display:none;">
-						<input id="delivery_date" name="delivery_date" class="fivecms_inp datetime" type="text" value="{if !empty($order->delivery_date)}{$order->delivery_date|date} {$order->delivery_date|time}{/if}" autocomplete="off"/>
-					</div>
-					<div class="view_order_detail">
-						{if !empty($order->delivery_date)}{$order->delivery_date|date} {$order->delivery_date|time}{/if}
-					</div>
-				</li>
-
 				<link rel="stylesheet" type="text/css" href="../../js/jquery/datetime/jquery.datetimepicker.css"/>
 				<script src="../../js/jquery/datetime/jquery.datetimepicker.full.min.js"></script>
 				<script>
-					$('.datetime').datetimepicker({ lang:'ru', format:'d.m.Y H:i' });
+					$('#datetime').datetimepicker({ lang:'ru', format:'d.m.Y H:i', dayOfWeekStart:'1' });
 					$.datetimepicker.setLocale('ru');
 				</script>
-
-				<li>
-					<label class=property>Телефон курьера</label>
-					<div class="edit_order_detail" style='display:none;'>
-						<input name="phone_delivery" class="fivecms_inp " type="text" value="{$order->phone_delivery|escape}" />
-					</div>
-					<div class="view_order_detail">
-						{if $order->phone_delivery}<span class="ip_call" data-phone="{$order->phone_delivery|escape}" target="_blank">{$order->phone_delivery|escape}</span>{else}{$order->phone_delivery|escape}{/if}
-					</div>
-				</li>
 			
 				<li>
 					<label class=property>{$tr->track_code|escape}</label> 
@@ -211,6 +190,7 @@
 					{include file='send_track_message.tpl'}
 					<input id="tbackform" style="margin-bottom: 3px;"  type="button" class="button_green" value="{$tr->send_track_code|escape}" />
 					{/if}
+	
 				</li>
 			</ul>
 			</div>
@@ -235,7 +215,7 @@
 			{/if}
 	
 			<div class='layer'>
-			<h2>{$tr->customer|escape} <a href='#' class="edit_user"><img src='design/images/pencil.png' alt='{$tr->edit|escape}' title='{$tr->edit|escape}'></a> {if !empty($user)}<a href="#" class='delete_user'><img src='design/images/delete.png' alt='{$tr->delete|escape}' title='{$tr->delete|escape}'></a>{/if}</h2>
+			<h2>{$tr->customer|escape} <a href='#' class="edit_user"><img src='design/images/pencil.png' alt='{$tr->edit|escape}' title='{$tr->edit|escape}'></a> <a href="#" class='delete_user'><img src='design/images/delete.png' alt='{$tr->delete|escape}' title='{$tr->delete|escape}'></a></h2>
 				<div class='view_user'>
 				{if empty($user)}
 					{$tr->not_registered|escape}
@@ -311,7 +291,7 @@
 								{literal}
 									$.ajax({ 
 										type: "GET",
-										url: "../ajax/sms.php",
+										url: "ajax/sms.php",
 										data: {phone: phone, 
 											message: message, 
 										}, 
@@ -440,7 +420,7 @@
 						{if !empty($purchase->product->images)}
 							{$image = $purchase->product->images|first}
 							{if !empty($image)}
-								<a href="{$image->filename|resize:800:600:w}" class="zoom"><img class=product_icon src='{$image->filename|resize:100:100}'></a>
+								<a href="{$image->filename|resize:1024:768:w}" class="zoom"><img class=product_icon src='{$image->filename|resize:100:100}'></a>
 							{/if}
 						{/if}
 					</div>
@@ -499,9 +479,18 @@
 							<img src='design/images/error.png' alt='{$tr->product_variant} {$tr->was_deleted}' title='{$tr->product_variant} {$tr->was_deleted}' > {*Вариант товара был удалён*}
 							{elseif $purchase->variant->stock < $purchase->amount}
 							<img src='design/images/error.png' alt='{$tr->stock_available|escape} {$purchase->variant->stock}' title='{$tr->stock_available|escape} {$purchase->variant->stock}'  > {*{$tr->stock_available|escape} {$purchase->variant->stock}*}
+							{else}
+							[ {$purchase->variant->stock|escape} ]&nbsp;&nbsp;
+							{/if}
+						{else}
+							{if !$purchase->product}
+							<img src='design/images/error.png' alt='{$tr->product} {$tr->was_deleted}' title='{$tr->product} {$tr->was_deleted}' > {*Товар был удалён*}
+							{elseif !$purchase->variant}
+							<img src='design/images/error.png' alt='{$tr->product_variant} {$tr->was_deleted}' title='{$tr->product_variant} {$tr->was_deleted}' > {*Вариант товара был удалён*}
+							{else}
+							[ {$purchase->variant->stock|escape} ]&nbsp;&nbsp;
 							{/if}
 						{/if}
-						[ {$purchase->variant->stock|escape} ] &nbsp;&nbsp; 
 						<a href='#' class="delete" title="{$tr->delete|escape}"></a>	
 					</div>
 					<div class="clear"></div>
@@ -538,7 +527,7 @@
 			{if $purchases}
 				<a href='#' class="dash_link edit_purchases">{$tr->edit_purchases|escape}</a>
 				<div class="subtotal">
-					{$tr->purchases|escape}: {$purchases_count} {$settings->units} | {$tr->total|escape}: <strong>{$subtotal} {$currency->sign}</strong>
+					{$tr->purchases|escape}: {$purchases_count} | {$tr->total|escape}: <strong>{$subtotal} {$currency->sign}</strong>
 				</div>
 			{/if}
 	
@@ -603,13 +592,16 @@
 							<input type=checkbox id="separate_delivery" name=separate_delivery value='1' {if !empty($order->separate_delivery)}checked{/if}> <label  for="separate_delivery">{$tr->separate_payment|lower|escape}</label>
 				</div>
 			</div>
-			<div class="totalweight" {if $total_weight > 0}{else}style="display: none;"{/if}>
+			{if !empty($total_weight)}
+			<div class="totalweight">
 				{$tr->weight|escape}: <strong>{$total_weight} кг</strong>
 			</div>
-			<div class="totalweight" {if $total_volume > 0}{else}style="display: none;"{/if}>
+			{/if}
+			{if !empty($total_volume)}
+			<div class="totalweight">
 				{$tr->volume|escape}: <strong>{$total_volume} куб.м.</strong>
 			</div>
-		
+			{/if}
 			<div class="total layer" style="border-style:solid;">
 				{$tr->total_amount|escape}: <strong>{if isset($order->total_price)}{$order->total_price} {$currency->sign}{/if}</strong>
 			</div>
@@ -623,7 +615,11 @@
 					{/foreach}
 				</select>
 			
-				<input type=checkbox name="paid" id="paid" value="1" {if !empty($order->paid)}checked{/if}> <label for="paid" {if !empty($order->paid)}class="green"{/if}>{$tr->order} {$tr->paid}</label> {if !empty($order->paid) && isset($order->payment_date)}({$order->payment_date|date} {$order->payment_date|time}){/if}		
+				<div style="{if empty($order->id)}display:none;{else}display:inline-block;{/if}">
+					<input type=checkbox name="paid" id="paid" value="1" {if !empty($order->paid)}checked{/if}> <label for="paid" {if !empty($order->paid)}class="green"{/if}>{$tr->order} {$tr->paid}</label> {if isset($order->payment_date)}({$order->payment_date|date} {$order->payment_date|time}){/if}
+				</div>
+
+				{if !empty($order->payment_details)}<p style="margin-top:10px;">Платежная информация: {$order->payment_details|escape}</p>{/if}
 			</div>
 	
 			{if !empty($payment_method)}
@@ -764,7 +760,7 @@ $(function() {
 		serviceUrl:'ajax/search_users.php',
 		minChars:0,
 		noCache: false, 
-		width: 224, 
+		//width: 224, 
 		onSelect:
 			function(suggestion){
 				$('input[name="user_id"]').val(suggestion.data.id);
@@ -776,6 +772,7 @@ $(function() {
 		$('input[name="user_id"]').val(0);
 		$('div.view_user').hide();
 		$('div.edit_user').hide();
+		$('input#user').val('');
 		return false;
 	});
 

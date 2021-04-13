@@ -33,12 +33,6 @@
  			 	data: {from:from},
  			 	dataType: 'json',
   				success: function(data){
-  					/*for(var key in data.items)
-  					{
-    					$('ul#import_result').prepend('<li><span class=count>'+count+'</span> <span title='+data.items[key].status+' class="status '+data.items[key].status+'"></span> '+data.items[key].product.name+' '+data.items[key].variant.name+'</li>');
-    					count++;
-    				}*/
-
     				Piecon.setProgress(Math.round(100*data.from/data.totalsize));
    					$("#progressbar").progressbar({ value: 100*data.from/data.totalsize });
   				
@@ -106,7 +100,6 @@
 				({$tr->max_file_size|escape} &mdash; {if $config->max_upload_filesize>1024*1024}{$config->max_upload_filesize/1024/1024|round:'2'} Mb{else}{$config->max_upload_filesize/1024|round:'2'} Kb{/if})
 			</p>
 
-			
 		</form>
 		</div>		
 	

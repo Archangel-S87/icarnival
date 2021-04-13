@@ -3,16 +3,11 @@ require_once('api/Fivecms.php');
 
 class SettingsAdmin extends Fivecms
 {	
-	private $allowed_image_extentions = array('png', 'gif', 'jpg', 'jpeg', 'ico');
+	private $allowed_image_extentions = array('png');
+	private $allowed_ico_extentions = array('png', 'gif', 'ico');
 	
 	public function fetch()
 	{	
-		$this->passwd_file = $this->config->root_dir.'/fivecms/.passwd';
-		$this->htaccess_file = $this->config->root_dir.'/fivecms/.htaccess';
-		
-		$managers = $this->managers->get_managers();
-		$this->design->assign('managers', $managers);
-
 		if($this->request->method('POST'))
 		{
 			if($this->request->post('lang_save')) {
@@ -48,14 +43,9 @@ class SettingsAdmin extends Fivecms
 				$this->settings->allowsms = $this->request->post('allowsms');
 				$this->settings->statussms = $this->request->post('statussms');
 				$this->settings->smsadmin = $this->request->post('smsadmin');
-				$this->settings->rekvizites = $this->request->post('rekvizites');
 				$this->settings->site_disabled = $this->request->post('site_disabled', 'integer');
 
 				$this->settings->images_quality = $this->request->post('images_quality');
-				
-				$this->settings->consignor = $this->request->post('consignor');	
-				$this->settings->supplier = $this->request->post('supplier');				
-				$this->settings->torg12_delivery = $this->request->post('torg12_delivery','boolean');				
 			
 				// Водяной знак
 				$clear_image_cache = false;
@@ -97,7 +87,7 @@ class SettingsAdmin extends Fivecms
 				}
 
 				$faviconimg = $this->request->files('faviconimg_file', 'tmp_name');
-				if(!empty($faviconimg) && in_array(pathinfo($this->request->files('faviconimg_file', 'name'), PATHINFO_EXTENSION), $this->allowed_image_extentions))
+				if(!empty($faviconimg) && in_array(pathinfo($this->request->files('faviconimg_file', 'name'), PATHINFO_EXTENSION), $this->allowed_ico_extentions))
 				{
 					if(!@move_uploaded_file($faviconimg, $this->config->root_dir.$this->config->faviconimg_file))
 						$this->design->assign('message_error', 'faviconimg_is_not_writable');

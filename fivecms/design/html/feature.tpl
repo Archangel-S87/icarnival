@@ -65,26 +65,42 @@
 					<script src="design/js/jquery.treeview.pack.js"></script>
 					
 					<!-- Свернуть/развернуть -->
-					<a href="#" class="dash_link" id="expand_all">Развернуть все</a>
-					<a href="#" class="dash_link" id="roll_up_all" style="display:none;">Свернуть все</a>
+					<div id="sidetreecontrol"><a class="dash_link" href="?#">{$tr->roll_up_all}</a> | <a class="dash_link" href="?#">{$tr->expand_all}</a></div>
 					<!-- Свернуть/развернуть @ -->
 					
-					<label id="check_all" class="dash_link" style="margin-left:20px;">Выбрать все</label>
+					<label id="check_all" class="dash_link" style="margin-left:20px;">{$tr->choose_all}</label>
 					
 					{function name=category_select_check level=0}
 						{foreach from=$categories item=category}
-							<li class="cat_item {if in_array($category->id, $feature_categories)}selected{else}droppable category{/if}"><input type="checkbox" name="feature_categories[]" value="{$category->id}" id="{$category->id}" {if in_array($category->id, $feature_categories)}checked{/if} >
+							<li class="cat_item {if in_array($category->id, $feature_categories)}selected{else}droppable category{/if} cat_{$category->id}"><input type="checkbox" name="feature_categories[]" value="{$category->id}" id="{$category->id}" {if in_array($category->id, $feature_categories)}checked{/if} >
 							<label for="{$category->id}">{$category->name}</label>
-							{if isset($category->subcategories)}<ul class="sub_cat_features">{category_select_check categories=$category->subcategories  level=$level+1}</ul>{/if}
+							{if isset($category->subcategories)}
+								{* Отметить вложенные *}
+								<div data-parent="{$category->id}" class="check_sub">{$tr->choose_sub}</div>
+								{* Отметить вложенные @ *}
+								<ul class="sub_cat_features parent_{$category->id}">{category_select_check categories=$category->subcategories  level=$level+1}</ul>{/if}
 							</li>
-							{*{if isset($category->subcategories)}
-								{category_select_check categories=$category->subcategories level=$level+1}
-							{/if}*}
 						{/foreach}
 					{/function}
 					<ul id="navigation" style="margin-top:10px;">
 					{category_select_check categories=$categories}
 					</ul>
+
+					{* Отметить вложенные *}
+					<script>
+					$(".check_sub").click(function() {
+						var parent_cat = $(this).attr('data-parent');
+						// раскрыть список при выделении
+						/*$('.parent_'+parent_cat).show();
+						$('.parent_'+parent_cat+' ul').show();
+						$('.cat_'+parent_cat+' .hitarea').removeClass('expandable-hitarea').addClass('collapsable-hitarea');
+						$('.parent_'+parent_cat+' .cat_item').removeClass('expandable').addClass('collapsable').removeClass('lastExpandable').addClass('lastCollapsable');*/
+						// отметить
+						$('input[type="checkbox"]#'+parent_cat).prop('checked', $('input[type="checkbox"]#'+parent_cat+':not(:checked)').length>0);
+						$('.parent_'+parent_cat+' input[type="checkbox"]').prop('checked',$('.parent_'+parent_cat+' input[type="checkbox"]:not(:checked)').length>0);
+					});	
+					</script>
+					{* Отметить вложенные @ *}
 
 					<script>
 					// Выделить все
@@ -93,23 +109,10 @@
 					});	
 					// Инициализация дерева категорий
 					$("#navigation").treeview({
-						persist: "location",
 						collapsed: true,
-						unique: true
-					});
-					// Показать все
-					$("#expand_all").click(function() {
-						$("a#expand_all").hide();
-						$("a#roll_up_all").show();
-						$(".sub_cat_features").fadeIn('fast');
-						return false;
-					});
-					// Свернуть все
-					$("#roll_up_all").click(function() {
-						$("a#roll_up_all").hide();
-						$("a#expand_all").show();
-						$(".sub_cat_features").fadeOut('fast');
-						return false;
+						animated: "medium",
+						control:"#sidetreecontrol",
+						persist: "location"
 					});
 					</script>
 				{* checkbox @ *}

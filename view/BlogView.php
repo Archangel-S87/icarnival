@@ -47,10 +47,10 @@ class BlogView extends View
 		// Разделы блога @
 		
 		// Автозаполнение имени для формы комментария
-		if(!empty($this->user))
+		if(!empty($this->user)){
 			$this->design->assign('comment_name', $this->user->name);
 			$this->design->assign('comment_email', $this->user->email); 
-		
+		}
 		// Изменим кол-во просмотров	
 		if($post->visible && empty($_SESSION['admin']))
 			$this->blog->update_views($post->id); 
@@ -85,11 +85,13 @@ class BlogView extends View
 				$this->design->assign('error', 'wrong_name');
 			elseif(!empty($this->settings->spam_symbols) && mb_strlen($comment->name,'UTF-8') > $this->settings->spam_symbols)
 				$this->design->assign('error', 'captcha');	
-			elseif (empty($comment->text))
+			elseif(!empty($comment->email) && filter_var($comment->email, FILTER_VALIDATE_EMAIL) === false)	
+				$this->design->assign('error', 'wrong_email');		
+			elseif(empty($comment->text))
 				$this->design->assign('error', 'empty_comment');
-			elseif(!$bttrue)
+			elseif(empty($bttrue))
 				$this->design->assign('error', 'captcha');
-			elseif($btfalse)
+			elseif(!empty($btfalse))
 				$this->design->assign('error', 'captcha');
 			else
 			{
@@ -105,6 +107,10 @@ class BlogView extends View
 				
 				// Добавляем комментарий в базу
 				$comment_id = $this->comments->add_comment($comment);
+				
+				if($this->settings->auto_subscribe == 1)
+					$this->mailer->add_mail($comment->name, $comment->email);
+				
 				// Отправляем email
 				$this->notify->email_comment_admin($comment_id);				
 				header('location: '.$_SERVER['REQUEST_URI'].'#comment_'.$comment_id);

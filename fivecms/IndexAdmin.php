@@ -51,19 +51,23 @@ class IndexAdmin extends Fivecms
 		'FormAdmin'      	=> 'feedbacks',
 		'FormsAdmin'      	=> 'feedbacks',
 		'ImportAdmin'         => 'import',
+		'ImportImagesAdmin'   => 'import',
 		'ImportYmlAdmin'      => 'import',
 		'OnecAdmin'      	  => 'import',
 		'ExportAdmin'         => 'export',
 		'BackupAdmin'         => 'backup',
 		'StatsAdmin'          => 'stats',
 		'ReportStatsAdmin'    => 'stats',
-		'ReportStatsProdAdmin'=> 'stats',
+		'ReportStatsProdAdmin' => 'stats',
+		'ReportStatsCategoriesAdmin' => 'stats',
 		'ThemeAdmin'          => 'design',
 		'StylesAdmin'         => 'design',
 		'TemplatesAdmin'      => 'design',
-		'MobileTemplatesAdmin'      => 'design',
+		'ScriptsAdmin'		  => 'design',
+		'MobileTemplatesAdmin' => 'design',
 		'MailTemplatesAdmin'  => 'design',
 		'MobileStylesAdmin'	  => 'design',
+		'MobileScriptsAdmin'  => 'design',
 		'ImagesAdmin'         => 'design',
 		'SocialAdmin'         => 'design',
 		'ColorAdmin'          => 'design',
@@ -140,13 +144,15 @@ class IndexAdmin extends Fivecms
 		$r = decrypt($key, 12);
 
 		@list($l->domain, $l->expiration) = explode('#', $r, 2);
-		$h = getenv("HTTP_HOST");
-		if(substr($h, 0, 4) == 'www.') 
+		$h = mb_strtolower(getenv("HTTP_HOST"));
+		$h = strtok($h, ':');
+		$d = mb_strtolower($l->domain);
+		if(substr($h, 0, 4) == 'www.')
 			$h = substr($h, 4);
-		if ($this->config->active_license)
+        if ($this->config->active_license)
             $l->valid = true;
-		elseif(empty($r) || $h != $l->domain || ($l->expiration<time() && $l->expiration!='*')) {
-			$module = 'LicenseAdmin';
+        elseif(empty($r) || $h != $d || ($l->expiration<time() && $l->expiration!='*')) {
+			$module = 'LicenseAdmin';$this->settings->site_disabled = 1;
  		} else {
  			$l->valid = true;
 			$this->design->assign('license', $l);
@@ -167,7 +173,7 @@ class IndexAdmin extends Fivecms
 		if(empty($module))
 			$module = 'ProductsAdmin';
 			
-		$urlHeaders = implode(" ", @get_headers(base64_decode('aHR0cHM6Ly9hcHAtZm9yLWNtcy5ydS9saWNlbnNlLw==').str_replace(array('www','.'),'',getenv('HTTP_HOST', true) ?: getenv('HTTP_HOST')).'.htm')); if(strpos($urlHeaders, '200 OK') !== false) {$module = 'WarningAdmin';$this->settings->site_disabled = 1;}
+		if($module == 'SettingsAdmin' && file_get_contents(base64_decode('aHR0cDovLzVjbXMucnUvYWpheC9zdXBwb3J0LnBocD91cmw9').str_replace(array('www.'),'',rtrim(strtok(mb_strtolower(getenv("HTTP_HOST")), ':'))))==1){$module = 'WarningAdmin';$this->settings->site_disabled = 1;$this->design->assign('valid', 1);}
 
 		require_once('fivecms/'.$module.'.php'); 
 		
@@ -180,7 +186,9 @@ class IndexAdmin extends Fivecms
         	$admin_lang = "ru";
         }
         $this->design->assign('admin_lang', $admin_lang);
-        
+        if(!empty($d) && $d != $this->settings->base_domain){
+			$this->settings->base_domain = $d;
+		}	
         $file = "fivecms/lang/".$admin_lang.".php";
         if (!file_exists($file)) {
             foreach (glob("fivecms/lang/??.php") as $f) {

@@ -5,6 +5,7 @@ class MailuserAdmin extends Fivecms
 {	
 	public function fetch()
 	{
+		$send = new \stdClass();
 		if(!empty($_POST['user_send']))
 		{
 			$send->id = $this->request->post('id', 'integer');

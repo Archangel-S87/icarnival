@@ -35,7 +35,7 @@ class Users extends Fivecms
 		if(isset($filter['partner_id']))
 			$partner_filter = $this->db->placehold('AND u.partner_id = ?', intval($filter['partner_id']));
 		
-		$order = 'u.name';
+		$order = 'u.name, u.id';
 		if(!empty($filter['sort']))
 			switch ($filter['sort'])
 			{
@@ -52,7 +52,7 @@ class Users extends Fivecms
 				$order = 'group_name DESC';
 				break;
 				case 'name':
-				$order = 'u.name';
+				$order = 'u.name, u.id';
 				break;
 			}
 		
@@ -104,7 +104,7 @@ class Users extends Fivecms
 			$where = $this->db->placehold(' WHERE u.id=? ', intval($id));
 	
 		// Выбираем пользователя
-		$query = $this->db->placehold("SELECT u.id, u.email, u.password, u.name, u.balance, u.group_id, u.enabled, u.last_ip, u.created, u.order_payd, u.phone, u.partner_id, u.comment, u.withdrawal, u.ref_views, g.discount, g.name as group_name, u.consignee, u.payer FROM __users u LEFT JOIN __groups g ON u.group_id=g.id $where LIMIT 1", $id);
+		$query = $this->db->placehold("SELECT u.id, u.email, u.password, u.name, u.balance, u.group_id, u.enabled, u.last_ip, u.created, u.order_payd, u.phone, u.partner_id, u.comment, u.withdrawal, u.ref_views, g.discount, g.name as group_name FROM __users u LEFT JOIN __groups g ON u.group_id=g.id $where LIMIT 1", $id);
 		$this->db->query($query);
 		$user = $this->db->result();
 		if(empty($user))

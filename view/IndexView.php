@@ -16,12 +16,14 @@ class IndexView extends View
 		// Содержимое корзины
 		$this->design->assign('cart', $this->cart->get_cart());
 
+		// Содержимое информера Избранное
 		if(isset($_COOKIE['wished_products'])){
         	$wished = (array)explode(',', $_COOKIE['wished_products']);
 		}
-        $this->design->assign('wished_products', ($wished[0] > 0) ? $wished : array());
-
-		if($this->request->get('module', 'string')!=='CompareView')
+		if(!empty($wished))
+        	$this->design->assign('wished_products', ($wished[0] > 0) ? $wished : array());
+        	
+		// Содержимое информера Сравнение
 		$this->design->assign('compare_informer', $this->compare->get_compare_informer());
 
 		// Категории товаров
@@ -38,13 +40,21 @@ class IndexView extends View
 		$this->design->assign('pages', $pages);
 		
 		// Пишем реферера в сессию
-		if(empty($_SESSION['referer']) && !empty($ref = $_SERVER['HTTP_REFERER'])){
+		if(empty($_SESSION['referer']) && !empty($_SERVER['HTTP_REFERER'])){
+			$ref = $_SERVER['HTTP_REFERER'];
 			$ref_host = parse_url($ref, PHP_URL_HOST);
+			$ref_host = strtok($ref_host, ':');
 			$ref_host = str_ireplace('www.', '', $ref_host);
-			$host = str_ireplace('www.', '', $_SERVER['HTTP_HOST']);
+			$h = mb_strtolower(getenv("HTTP_HOST"));
+			$h = strtok($h, ':');
+			$host = str_ireplace('www.', '', $h);
 			$ref_uri = explode('?', $ref, 2);
-			if(!empty($ref_host) && !empty($host) && $ref_host != $host)
-				$_SESSION['referer'] = $ref_host.$ref_uri[0];
+			if(!empty($ref_host) && !empty($host) && $ref_host != $host){
+				if(substr($ref_uri[0], 0, 7) == 'http://' || substr($ref_uri[0], 0, 8) == 'https://')
+					$_SESSION['referer'] = $ref_uri[0];					
+				else
+					$_SESSION['referer'] = $ref_host.$ref_uri[0];
+			}	
 		} 
 		// пишем UTM-метки
 		if(empty($_SESSION['utm'])){
@@ -57,7 +67,8 @@ class IndexView extends View
 			}
 		}
 		// yclid пишем в куки т.к. короткий
-		if(empty($_COOKIE['yclid']) && !empty($yclid = $_GET['yclid'])){
+		if(empty($_COOKIE['yclid']) && !empty($_GET['yclid'])){
+			$yclid = $_GET['yclid'];
 			setcookie("yclid", $yclid, time()+(90*24*60*60), "/");
 		}
 		

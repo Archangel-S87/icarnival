@@ -6,17 +6,16 @@ require_once('api/Fivecms.php');
 class MenuAdmin extends Fivecms
 {
 
-
   public function fetch()
   {
-  
 	   	// Обработка действий
 	  	if($this->request->method('post'))
 	  	{
-	  	
-			foreach($this->request->post('menu') as $n=>$va)
-				foreach($va as $i=>$v)
-					$menus[$i]->$n = $v;	
+			foreach($this->request->post('menu') as $n=>$va){
+				foreach($va as $i=>$v){
+					$menus[$i]->$n = $v;
+				}	
+			}
   		    
 			$menus_ids = array();
 			foreach($menus as $menu)
@@ -70,8 +69,10 @@ class MenuAdmin extends Fivecms
 
 		// Отображение
 	  	$menus = $this->pages->get_menus();
-	  	$menu = $this->pages->get_menu($menu_id);
-	 	$this->design->assign('menu', $menu);
+	  	if(isset($menu_id)){
+	  		$menu = $this->pages->get_menu($menu_id);
+	 		$this->design->assign('menu', $menu);
+	 	}
 	 	$this->design->assign('menus', $menus);
 		return $this->design->fetch('menu.tpl');
 	}

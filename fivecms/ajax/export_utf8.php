@@ -8,6 +8,8 @@ class ExportAjax extends Fivecms
 			'category'=>         'Категория',
 			'name'=>             'Товар',
 			'price'=>            'Цена',
+			'discount'=>     	 'Скидка',
+			'discount_date'=>    'До даты',
 			'url'=>              'Адрес',
 			'visible'=>          'Видим',
 			'featured'=>         'Рекомендуемый',
@@ -19,7 +21,6 @@ class ExportAjax extends Fivecms
 			'variant2'=>         'Цвет',
 			'rating'=>           'Рейтинг',
 			'votes'=>            'Голосов',
-			'views'=>            'Просмотров',
 			'compare_price'=>    'Старая цена',
 			'sku'=>              'Артикул',
 			'stock'=>            'Склад',
@@ -30,7 +31,8 @@ class ExportAjax extends Fivecms
 			'meta_description'=> 'Описание страницы',
 			'annotation'=>       'Аннотация',
 			'body'=>             'Описание',
-			'images'=>           'Изображения'
+			'images'=>           'Изображения',
+			'files'=>         	 'Files'
 			);
 			
 	private $column_delimiter = ';';
@@ -136,7 +138,7 @@ class ExportAjax extends Fivecms
 						foreach($cat->path as $p)
 							$path[] = str_replace($this->subcategory_delimiter, '\\'.$this->subcategory_delimiter, $p->name);
 						// Добавляем категорию к товару 
-						$categories[] = implode('/', $path);
+						$categories[] = implode($this->subcategory_delimiter, $path);
 					}
 				}
 				$product['category'] = implode($this->category_delimiter.' ', $categories);
@@ -146,14 +148,25 @@ class ExportAjax extends Fivecms
 			$images = $this->products->get_images(array('product_id'=>array_keys($products)));
 			foreach($images as $image)
 			{
-				// Добавляем изображения к товару чезер запятую
+				// Добавляем изображения к товару через запятую
 				if(empty($products[$image->product_id]['images']))
 					$products[$image->product_id]['images'] = $image->filename;
 				else
 					$products[$image->product_id]['images'] .= ', '.$image->filename;
 			}
+			
+			// Прикрепленные файлы товаров
+			$files = $this->files->get_files(array('object_id'=>array_keys($products),'type'=>'product'));
+			foreach($files as $file)
+			{
+				// Добавляем файлы к товару через запятую
+				if(empty($products[$file->object_id]['files']))
+					$products[$file->object_id]['files'] = $file->filename;
+				else
+					$products[$file->object_id]['files'] .= ', '.$file->filename;
+			}
  
-			$variants = $this->variants->get_variants(array('product_id'=>array_keys($products)));
+			$variants = $this->variants->get_variants(array('product_id'=>array_keys($products)), 1);
 
 			foreach($variants as $variant)
 			{
@@ -164,6 +177,8 @@ class ExportAjax extends Fivecms
 					$v['variant1']       = $variant->name1;
 					$v['variant2']       = $variant->name2;
 					$v['price']          = $variant->oprice;
+					$v['discount']   	 = $variant->discount;
+					$v['discount_date']  = $variant->discount_date;
 					$v['compare_price']  = $variant->compare_oprice;
 					$v['sku']            = $variant->sku;
 					$v['stock']          = $variant->stock;

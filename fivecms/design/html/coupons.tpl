@@ -6,7 +6,8 @@
 
 {* Title *}
 {$meta_title = $tr->coupons scope=root}
-		
+
+<div class="headerseparator" style="margin-bottom:10px;">		
 {* Заголовок *}
 <div id="header">
 	{if $coupons_count}
@@ -15,7 +16,18 @@
 	<h1>{$tr->no_content|escape}</h1>
 	{/if}
 	<a class="add" href="{url module=CouponAdmin return=$smarty.server.REQUEST_URI}">{$tr->add|escape}</a>
-</div>	
+</div>
+{* Поиск *}
+{if !empty($coupons) || !empty($keyword)}
+<form method="get">
+	<div id="search">
+		<input type="hidden" name="module" value='CouponsAdmin'>
+		<input class="search" type="text" name="keyword" value="{if !empty($keyword)}{$keyword|escape}{/if}" />
+		<input class="search_button" type="submit" value=""/>
+	</div>
+</form>
+{/if}
+</div>
 
 {if $coupons}
 <div id="main_list" style="max-width: 780px;">

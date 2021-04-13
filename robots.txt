@@ -7,13 +7,13 @@ Disallow: /compare/
 Disallow: /compiled/
 Disallow: /fivecms/
 Disallow: /order/
-Disallow: /policy
+Disallow: /policy$
 Disallow: /present$
 Disallow: /price$
 Disallow: /resize/
 Disallow: /Smarty/
 Disallow: /user$
-Disallow: /wishlist
+Disallow: /wishlist$
 Disallow: /*sort=
 Disallow: /*keyword=
 Disallow: /*minCurr=
@@ -24,4 +24,5 @@ Disallow: /*variant=
 Disallow: /404$
 Disallow: /*yclid=
 Disallow: /*utm_
+Disallow: /*appid=
 #Sitemap: http://site.ru/sitemap.xml

@@ -10,23 +10,15 @@ class ThreeBannersAdmin extends Fivecms
 		if($this->request->method('POST'))
 		{
         	$this->settings->addfield2 = $this->request->post('addfield2');
-        	$this->settings->bannerfirstvis = $this->request->post('bannerfirstvis', 'boolean');
 			$this->settings->bannerfirst = $this->request->post('bannerfirst');
-			$this->settings->bannersecondvis = $this->request->post('bannersecondvis', 'boolean');
 			$this->settings->bannersecond = $this->request->post('bannersecond');
-			$this->settings->bannerthirdvis = $this->request->post('bannerthirdvis', 'boolean');
 			$this->settings->bannerthird = $this->request->post('bannerthird');
-			$this->settings->bannerfourvis = $this->request->post('bannerfourvis', 'boolean');
 			$this->settings->bannerfour = $this->request->post('bannerfour');
 			
 			$this->settings->bbanners = $this->request->post('bbanners');
-        	$this->settings->bbannerfirstvis = $this->request->post('bbannerfirstvis', 'boolean');
 			$this->settings->bbannerfirst = $this->request->post('bbannerfirst');
-			$this->settings->bbannersecondvis = $this->request->post('bbannersecondvis', 'boolean');
 			$this->settings->bbannersecond = $this->request->post('bbannersecond');
-			$this->settings->bbannerthirdvis = $this->request->post('bbannerthirdvis', 'boolean');
 			$this->settings->bbannerthird = $this->request->post('bbannerthird');
-			$this->settings->bbannerfourvis = $this->request->post('bbannerfourvis', 'boolean');
 			$this->settings->bbannerfour = $this->request->post('bbannerfour');
 			
 			$this->design->assign('message_success', 'saved');

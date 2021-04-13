@@ -196,18 +196,7 @@ foreach($fivecms->surveys->get_surveys(array('visible'=>1)) as $sr)
 foreach($fivecms->categories->get_categories() as $c) {
     if($c->visible) {
         $url = $main_url.'catalog/'.esc($c->url);
-        $last_modify = array();
-        $fivecms->db2->query("SELECT p.last_modify
-            FROM __products p
-            INNER JOIN __products_categories pc ON pc.product_id = p.id AND pc.category_id in(?@)
-            WHERE 1
-            GROUP BY p.id", $c->children);
-        $res = $fivecms->db2->results('last_modify');
-        if (!empty($res)) {
-            $last_modify = $res;
-        }
-        $last_modify[] = $c->last_modify;
-        $last_modify = substr(max($last_modify), 0, 10);
+        $last_modify = substr($c->last_modify, 0, 10);
         $s = "\t<url>\n";
         $s .= "\t\t<loc>$url</loc>\n";
         $s .= "\t\t<lastmod>$last_modify</lastmod>\n";
@@ -221,16 +210,7 @@ foreach($fivecms->categories->get_categories() as $c) {
 // Бренды
 foreach($fivecms->brands->get_brands(array('active'=>1)) as $b) {
     $url = $main_url.'brands/'.esc($b->url);
-    $last_modify = array();
-    $fivecms->db2->query("SELECT p.last_modify
-        FROM __products p
-        WHERE p.brand_id=?", $b->id);
-    $res = $fivecms->db2->results('last_modify');
-    if (!empty($res)) {
-        $last_modify = $res;
-    }
-    $last_modify[] = $b->last_modify;
-    $last_modify = substr(max($last_modify), 0, 10);
+    $last_modify = substr($b->last_modify, 0, 10);
     $s = "\t<url>\n";
     $s .= "\t\t<loc>$url</loc>\n";
     $s .= "\t\t<lastmod>$last_modify</lastmod>\n";

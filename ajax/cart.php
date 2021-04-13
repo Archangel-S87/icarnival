@@ -4,7 +4,8 @@
 	$fivecms = new Fivecms();
 	
 	$variant = $fivecms->request->get('variant', 'integer');
-    if($fivecms->request->get('amount', 'integer')) $amount = $fivecms->request->get('amount', 'integer');
+    $amount = $fivecms->request->get('amount', 'integer');
+	$amount = empty($amount)?1:$amount;
     
     // user, currency, settings
 	$fivecms->currencies = $fivecms->money->get_currencies(array('enabled'=>1));

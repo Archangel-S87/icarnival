@@ -46,12 +46,15 @@ class CouponsAdmin extends Fivecms
 		
 	  	$coupons_count = $this->coupons->count_coupons($filter);
 	  	
+	  	// Показать все страницы сразу
+		if($this->request->get('page') == 'all')
+			$filter['limit'] = $coupons_count;
+	  	
 	  	$pages_count = ceil($coupons_count/$filter['limit']);
 	  	$filter['page'] = min($filter['page'], $pages_count);
 	 	$this->design->assign('coupons_count', $coupons_count);
 	 	$this->design->assign('pages_count', $pages_count);
 	 	$this->design->assign('current_page', $filter['page']);
-
 
 		$coupons = $this->coupons->get_coupons($filter);
 				

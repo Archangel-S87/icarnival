@@ -58,11 +58,11 @@ $(function() {
 				<ul>
 					<li><label style="margin-right:10px;" class=property>{$tr->date|escape}</label>{$comment->date|date} в {$comment->date|time}</li>
 					{if $comment->type == 'product'}
-						<li><label style="margin-right:10px;" class=property>{$tr->comment_product|escape}</label><a target="_blank" href="{$config->root_url}/products/{$comment->product->url}#comment_{$comment->id}">{$comment->product->name}</a></li>
+						<li><label style="margin-right:10px;" class=property>{$tr->comment_product|escape}</label><a target="_blank" href="{$config->root_url}/products/{$comment->product->url}#comment_{$comment->id}">{$comment->product->name|escape}</a></li>
 					{elseif $comment->type == 'blog' && !empty($comment->post->name)}
-						<li><label style="margin-right:10px;" class=property>{$tr->comment_blog|escape}</label><a target="_blank" href="{$config->root_url}/blog/{$comment->post->url}#comment_{$comment->id}">{$comment->post->name}</a></li>
+						<li><label style="margin-right:10px;" class=property>{$tr->comment_blog|escape}</label><a target="_blank" href="{$config->root_url}/blog/{$comment->post->url}#comment_{$comment->id}">{$comment->post->name|escape}</a></li>
 					{elseif $comment->type == 'response' && !empty($comment->response->name)}
-						<li><label style="margin-right:10px;" class=property>Комментарий к странице</label><a target="_blank" href="{$config->root_url}/{$comment->response->url}">{$comment->response->name}</a></li>	
+						<li><label style="margin-right:10px;" class=property>Комментарий к странице</label><a target="_blank" href="{$config->root_url}/{$comment->response->url}">{$comment->response->name|escape}</a></li>	
 					{/if}
 	
 				</ul>
@@ -74,7 +74,7 @@ $(function() {
 		<div id="column_right">
 			<div class="block">
 				<ul>
-					<li><label class=property>E-mail</label>{$comment->email}</li>
+					<li><label class=property>E-mail</label>{$comment->email|escape}</li>
 					<li><label class=property>IP</label>{$comment->ip}</li>
 				</ul>
 			</div>

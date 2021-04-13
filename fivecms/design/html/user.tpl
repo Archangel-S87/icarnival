@@ -80,7 +80,7 @@
 							<div style="margin-top:2px;">{$user->balance|convert} {$currency->sign}</div>
 						</li>
 						<li style="height:28px;">
-							<label style="width: 170px;" class="property">{$tr->withdrawal_amount} </label>
+							<label style="width: 175px;" class="property">{$tr->withdrawal_amount} </label>
 							- <input style="width:70px;" name="change_balance" class="fivecms_inp" type="number" min="0" max="{$user->balance|round}" />
 						</li>
 						{/if}
@@ -88,8 +88,6 @@
 						<li><label style="width: 140px;" class=property>{$tr->register_date}</label><input style="width: 100px;" name="email" class="fivecms_inp" type="text" disabled value="{$user->created|date}" /></li>
 						<li><label style="width: 140px;" class=property>IP</label><input style="width: 100px;" name="email" class="fivecms_inp" type="text" disabled value="{$user->last_ip|escape}" /></li>
 						<li><label style="width: 140px;" class=property>{if !empty($user->partner_id)}<a class="bluelink" href="index.php?module=UserAdmin&id={$user->partner_id}" target="_blank">{$tr->referer}</a>{else}{$tr->referer}{/if}</label><input style="width: 100px;" disabled name="partner_id" class="fivecms_inp" type="text" value="{$user->partner_id}" /></li>
-						<li><label style="width: 140px;" class=property>Грузополучатель</label><textarea style="width: 400px;" name="consignee">{$user->consignee|escape}</textarea></li>
-						<li><label style="width: 140px;" class=property>Плательщик</label><textarea style="width: 400px;" name="payer">{$user->payer|escape}</textarea></li>
 						<li style="overflow:visible;width:610px;">
 							<p style="font-weight:700;margin:15px 0;">{$tr->user_info}:</p>
 							<textarea name="comment" class="editor_small">{$user->comment|escape}</textarea>

@@ -4,6 +4,7 @@
 	<li class="active"><a href="index.php?module=MobsetAdmin">{$tr->settings_mob|escape}</a></li>
 	{if in_array('design', $manager->permissions)}<li><a href="index.php?module=MobileTemplatesAdmin">{$tr->templates|escape} ({$tr->mob|escape})</a></li>{/if}
 	{if in_array('design', $manager->permissions)}<li><a href="index.php?module=MobileStylesAdmin">{$tr->styles_mob|escape}</a></li>{/if}
+	{if in_array('design', $manager->permissions)}<li><a href="index.php?module=MobileScriptsAdmin">JS</a></li>{/if}
 {/capture}
  
 {$meta_title = $tr->settings_mob scope=root}
@@ -70,7 +71,14 @@
 				
 				<li><label class="property" style="margin-right:20px;font-weight:700;">{$tr->mob_discount|escape}</label><input style="max-width: 40px;" name="mob_discount" class="fivecms_inp" min="0" step="1" type="number" value="{$settings->mob_discount|escape}" /> %</li>
 				
+				<li><label class="property" style="margin-right: 20px;">{$tr->mob_phone|escape}</label><input placeholder="{$tr->example|escape}: tel:+79111234567" style="width:240px;max-width:240px;" name="mob_phone" class="fivecms_inp" min="0" step="1" type="text" value="{$settings->mob_phone|escape}" />
+				</li>
 			</ul>
+			<ul style="margin-top:-10px;" class="stars">
+				<li>{$tr->phone} - tel:+79111234567</li>
+				<li>Whatsapp - https://wa.me/79111234567</li>
+				<li>Viber - viber://chat?number=79111234567</li>
+			</ul>	
 						
 			<input style="margin: 20px 0 20px 0; float:left;" class="button_green button_save" type="submit" name="save" value="{$tr->save|escape}" />
 		</form>

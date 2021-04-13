@@ -58,7 +58,8 @@ class ThemeAdmin extends Fivecms
 					$this->dir_delete($this->themes_dir.$action_theme);
 					if($action_theme == $this->settings->theme)
 					{
-						$t = reset($this->get_themes());
+						$get_themes = $this->get_themes();
+						$t = reset($get_themes);
 						$this->settings->theme = $t->name;
 					}
 			        break;

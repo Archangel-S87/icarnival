@@ -30,7 +30,7 @@
 		</div>
 	{/if}
 	<!-- Системное сообщение (The End)-->
-	{$rand=rand(10,10000)}
+	{$rand=rand(10,1000000)}
 	
 	<!-- Основная форма -->
 	<form method=post id=product enctype="multipart/form-data">
@@ -308,3 +308,25 @@
 	<!-- Основная форма (The End) -->
 	
 </div>
+<script>
+{literal}
+	// Показать
+	$(".switch-input").click(function() {
+		var icon        = $(this);
+		var line        = icon.closest(".switch-input");
+		var name        = line.attr('name');
+		var state       = line.is(':checked')?1:0;
+		icon.addClass('loading_icon');
+		$.ajax({
+			type: 'post',
+			url: 'ajax/update_object.php',
+			data: {'object': 'settings', 'name': name, 'values': state, 'session_id': '{/literal}{$smarty.session.id}{literal}'},
+			success: function(data){
+				icon.removeClass('loading_icon');
+			},
+			dataType: 'json'
+		});	
+		return true;	
+	});
+{/literal}
+</script>	

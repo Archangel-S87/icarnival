@@ -19,9 +19,7 @@ class UserAdmin extends Fivecms
 			$user->group_id = $this->request->post('group_id');
 			$user->phone = $this->request->post('phone');
 			$user->comment = $this->request->post('comment');
-			$user->consignee = $this->request->post('consignee');
-			$user->payer = $this->request->post('payer');
-
+	
 			## Не допустить одинаковые email пользователей.
 			if(empty($user->name))
 			{			
@@ -40,19 +38,21 @@ class UserAdmin extends Fivecms
 				$user->id = $this->users->update_user($user->id, $user);
   				
    	    		$user = $this->users->get_user(intval($user->id));
-   	    		if($change_balance > 0 && $user->balance > 0) {
-   	    			if($change_balance > $user->balance) {
-   	    				$this->design->assign('message_error', 'wrong_change_balance');
-   	    			} else {
-						$new_balance = max(0,floatval($user->balance - $change_balance));
-						$currency = $this->money->get_currency();
-						$withdrawal = $user->withdrawal.'<li><span>'.$change_balance.' '.$currency->sign.'</span><span>'.date("d.m.y").' '.date("H:i:s").'</span></li>';
-						$this->users->update_user($user->id, array('balance' => $new_balance, 'withdrawal' => $withdrawal));
-						$user = $this->users->get_user(intval($user->id));
+   	    		if(!empty($change_balance)){
+					if($change_balance > 0 && $user->balance > 0) {
+						if($change_balance > $user->balance) {
+							$this->design->assign('message_error', 'wrong_change_balance');
+						} else {
+							$new_balance = max(0,floatval($user->balance - $change_balance));
+							$currency = $this->money->get_currency();
+							$withdrawal = $user->withdrawal.'<li><span>'.$change_balance.' '.$currency->sign.'</span><span>'.date("d.m.y").' '.date("H:i:s").'</span></li>';
+							$this->users->update_user($user->id, array('balance' => $new_balance, 'withdrawal' => $withdrawal));
+							$user = $this->users->get_user(intval($user->id));
+						}
+					} elseif($change_balance < 0) {
+						$this->design->assign('message_error', 'wrong_change_balance');
 					}
-				} elseif($change_balance < 0) {
-					$this->design->assign('message_error', 'wrong_change_balance');
-				}
+				}	
 				$this->design->assign('message_success', 'updated');
 			}
 		}

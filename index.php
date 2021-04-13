@@ -17,7 +17,9 @@ require_once('view/IndexView.php');
 
 $view = new IndexView();
 
-header("X-Powered-CMS: 5CMS");
+header("X-Powered-CMS: 5CMS v".$view->config->version);
+if(!empty($view->settings->base_domain))
+	header("X-Base-Domain:".$view->settings->base_domain);
 
 if(isset($_GET['logout']))
 {
@@ -41,7 +43,8 @@ if($view->settings->redirect == 1) {
 if(($res = $view->fetch()) !== false)
 {
 	// Выводим результат
-	header("Content-type: text/html; charset=UTF-8");	
+	header("Content-type: text/html; charset=UTF-8");
+	//header('ETag: "'.md5($res).'"');
 	print $res;
 
 	// Сохраняем последнюю просмотренную страницу в переменной $_SESSION['last_visited_page']

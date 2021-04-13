@@ -8,7 +8,7 @@ class ArticlesView extends View
 	{
 		$url = $this->request->get('article_url', 'string');
 		
-		// Articles categories
+		// Категории статей
 		$filter_cat = array();
 		$filter_cat['visible'] = 1;
 		$this->design->assign('articles_categories', $this->articles_categories->get_articles_categories_tree($filter_cat));	
@@ -52,6 +52,23 @@ class ArticlesView extends View
 		// Соседние записи
 		$this->design->assign('next_post', $this->articles->get_next_article($post->id));
 		$this->design->assign('prev_post', $this->articles->get_prev_article($post->id));
+		
+		// Связанные объекты
+        $related_objects = $this->articles->get_related_objects(array('id'=>$post->id));
+        if(!empty($related_objects))
+        {
+            $r_products = array();
+            $r_articles = array();
+            
+            foreach($related_objects as &$r_p)
+                if($r_p->type == 'product') $r_products[$r_p->object_id] = &$r_p;
+                elseif($r_p->type == 'article') $r_articles[$r_p->object_id] = &$r_p;
+
+            if(!empty($r_articles))
+				$this->design->assign('rel_art_ids', array_keys($r_articles));
+			if(!empty($r_products))	
+				$this->design->assign('rel_prod_ids', array_keys($r_products));
+        }
 		
 		// Мета-теги
 		$this->design->assign('meta_title', $post->meta_title);
@@ -134,7 +151,7 @@ class ArticlesView extends View
 		$this->design->assign('posts', $posts);
 		
 		// Устанавливаем мета-теги и LastModify в зависимости от запроса
-		if($this->page->url == 'articles')
+		if(isset($this->page->url) && $this->page->url == 'articles')
 		{
 			$this->design->assign('meta_title', $this->page->meta_title);
 			$this->design->assign('meta_keywords', $this->page->meta_keywords);

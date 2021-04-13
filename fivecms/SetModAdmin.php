@@ -3,24 +3,20 @@ require_once('api/Fivecms.php');
 
 class SetModAdmin extends Fivecms
 {	
-	private $allowed_image_extentions = array('png', 'gif', 'jpg', 'jpeg', 'ico');
+	private $allowed_image_extentions = array('png', 'gif', 'jpg', 'jpeg', 'ico', 'webp', 'jp2', 'jxr');
 
 	public function fetch()
-	{	
-		$this->passwd_file = $this->config->root_dir.'/fivecms/.passwd';
-		$this->htaccess_file = $this->config->root_dir.'/fivecms/.htaccess';
-		
-		$managers = $this->managers->get_managers();
-		$this->design->assign('managers', $managers);
-
+	{			
 		if($this->request->method('POST'))
 		{
+			$this->settings->main_cat_num = $this->request->post('main_cat_num');
+			$this->settings->main_cat_columns = $this->request->post('main_cat_columns');
+			
 			$this->settings->mainhits = $this->request->post('mainhits');
 			$this->settings->mainnew = $this->request->post('mainnew');
 			$this->settings->mainsale = $this->request->post('mainsale');
 			
 			$this->settings->widebanner = $this->request->post('widebanner');
-			$this->settings->widebannervis = $this->request->post('widebannervis', 'boolean');
 			
 			$this->settings->main_blog = $this->request->post('main_blog');
 			$this->settings->main_articles = $this->request->post('main_articles');
@@ -45,6 +41,7 @@ class SetModAdmin extends Fivecms
 			$this->settings->attachment = $this->request->post('attachment');
 			$this->settings->maxattachment = $this->request->post('maxattachment');
 			$this->settings->ulogin = $this->request->post('ulogin');
+			$this->settings->cart_tabs = $this->request->post('cart_tabs');
 			
 			$this->settings->spam_ip = $this->request->post('spam_ip');
 			$this->settings->spam_cyr = $this->request->post('spam_cyr');
@@ -64,21 +61,7 @@ class SetModAdmin extends Fivecms
 			$this->settings->consultant = $this->request->post('consultant');
 
 			$this->design->assign('message_success', 'saved');
-
-            $temp_position = $this->request->post('position_carousel');
-            $position_carousel = [];
-			$index = 0;
-            asort($temp_position);
-            while (count($temp_position)) {
-                reset($temp_position);
-                $key = key($temp_position);
-                $position_carousel[$key] = ++$index;
-                unset($temp_position[$key]);
-            }
-            $this->settings->position_carousel = $position_carousel;
 		}
-
-		$er = $this->settings->position_carousel;
 
 		$image = $this->request->files('bannerwide_file');
   	    if(!empty($image['name']) && in_array(strtolower(pathinfo($image['name'], PATHINFO_EXTENSION)), $this->allowed_image_extentions))

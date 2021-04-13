@@ -13,16 +13,31 @@
 {$meta_title=$tr->local_mailer|escape scope=root}
 		
 <div id="onecolumn">
-
-	{if $error == 1}
-	<div class="message message_success">
-		<span>{$tr->added_to_send|escape} {$tr->found_posts|escape}: {$count_added}</span>
+	{if isset($message_success)}
+	<!-- Системное сообщение -->
+		<div class="message message_success">
+			<span class="text">
+			{if $message_success == 1}
+				{$tr->added_to_send|escape} {$tr->found_posts|escape}: {$count_added}
+			{elseif $message_success == 2}
+				{if $count_added == 0}{$tr->mailing_list_cleared|escape}{else}{$tr->try_later|escape}{/if}
+			{elseif $message_success == 'updated'}
+				{$tr->updated}
+			{else}
+				{$message_success}
+			{/if}
+			</span>
+		</div>
+	<!-- Системное сообщение (The End)-->	
+	{/if}
+	
+	{if isset($message_error)}
+	<!-- Системное сообщение -->
+	<div class="message message_error">
+		<span class="text">{if $message_error == 'clear_error'}{$tr->error}: {$message_error}{/if}</span>
 	</div>
-	{elseif $error == 2}
-	<div class="message message_success">
-		<span>{if $count_added == 0}{$tr->mailing_list_cleared|escape}{else}{$tr->try_later|escape}{/if}</span>
-	</div>
-	{/if}    
+	<!-- Системное сообщение (The End)-->
+	{/if}
 
 	<form id="product" method="post">
 	    <div class="block">

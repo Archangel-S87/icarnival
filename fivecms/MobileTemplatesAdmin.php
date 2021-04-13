@@ -35,7 +35,7 @@ class MobileTemplatesAdmin extends Fivecms
 			exit();
 		
 		// Если не указан - вспоминаем его из сессии
-		if(empty($template_file) && isset($_SESSION['last_edited_mobtemplate']))
+		if(empty($template_file) && !empty($_SESSION['last_edited_mobtemplate']))
 			$template_file = $_SESSION['last_edited_mobtemplate'];
 		// Иначе берем первый файл из списка
 		elseif(empty($template_file))

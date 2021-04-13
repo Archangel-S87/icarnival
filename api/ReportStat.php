@@ -178,7 +178,8 @@ class ReportStat extends Fivecms
                 p.variant_name, 
                 SUM(p.price * p.amount) as sum_price, 
                 SUM(p.amount) as amount, 
-                p.sku FROM __purchases AS p 
+                p.sku,
+                p.unit FROM __purchases AS p 
             LEFT JOIN __orders AS o ON o.id = p.order_id 
             WHERE 1 $all_filters 
             GROUP BY p.variant_id 
@@ -188,7 +189,53 @@ class ReportStat extends Fivecms
         return $this->db->results();
     }
     
-    function get_report_purchase($filter = array()) { //Связанный товар
+    function get_report_purchases_categories($filter = array()) { //Выборка товара
+        // По умолчанию
+        $sort_prod = 'sum_price DESC';
+
+        if(isset($filter['sort_prod'])){
+            switch($filter['sort_prod']){
+                case 'price':
+                    $sort_prod = $this->db->placehold('sum_price DESC');
+                break;
+                case 'price_in':
+                    $sort_prod = $this->db->placehold('sum_price ASC');
+                break;
+                case 'amount':
+                    $sort_prod = $this->db->placehold('amount DESC');
+                break;
+                case 'amount_in':
+                    $sort_prod = $this->db->placehold('amount ASC');
+                break;    
+            }
+        }
+        
+        $all_filters = $this->make_filter($filter);
+        
+        // Выбираем заказы
+        $query = $this->db->placehold("SELECT 
+                o.id, 
+                r.category_id, 
+                c.name AS category_name, 
+                p.product_id, 
+                p.variant_id, 
+                p.product_name, 
+                p.variant_name, 
+                SUM(p.price * p.amount) as sum_price, 
+                SUM(p.amount) as amount, 
+                p.sku,
+                p.unit FROM __purchases AS p 
+            LEFT JOIN __orders AS o ON o.id = p.order_id 
+            LEFT JOIN __products_categories AS r ON r.product_id = p.product_id 
+            LEFT JOIN __categories AS c ON c.id = r.category_id 
+            WHERE 1 $all_filters 
+            GROUP BY p.variant_id 
+            ORDER BY $sort_prod");
+        $this->db->query($query);
+        return $this->db->results();
+    }
+    
+    function get_report_purchase($filter = array()) { 
 
         $all_filters = $this->make_filter($filter);
         
@@ -200,7 +247,8 @@ class ReportStat extends Fivecms
                 p.variant_name, 
                 p.price, 
                 p.amount, 
-                p.sku 
+                p.sku,
+                p.unit 
             FROM __orders AS o 
             LEFT JOIN __purchases AS p ON o.id = p.order_id 
             WHERE 1 $all_filters");
@@ -228,7 +276,8 @@ class ReportStat extends Fivecms
                 p.variant_name, 
                 SUM(p.price * p.amount) as price, 
                 SUM(p.amount) as amount, 
-                p.sku 
+                p.sku,
+                p.unit 
             FROM __orders AS o 
             LEFT JOIN __purchases AS p ON o.id = p.order_id 
             WHERE 1 AND p.product_id=? $variant_id $all_filters 
@@ -250,6 +299,8 @@ class ReportStat extends Fivecms
         $source_filter = '';
         $delivery_id_filter = '';
         $label_id_filter = '';
+        $label_id_in_filter = '';
+        $user_id_filter = '';
         
         if(isset($filter['status']))
             $status_filter = $this->db->placehold('AND o.status = ?', intval($filter['status']));
@@ -267,10 +318,16 @@ class ReportStat extends Fivecms
 			$source_filter = $this->db->placehold('AND o.source = ?', intval($filter['source']));
 			
 		if(isset($filter['delivery_id']))
-			$delivery_id_filter = $this->db->placehold('AND o.delivery_id = ?', intval($filter['delivery_id']));	
-			
-		if(isset($filter['label_id']))
-            $label_id_filter = $this->db->placehold('AND ol.label_id = ?', intval($filter['label_id']));	
+			$delivery_id_filter = $this->db->placehold('AND o.delivery_id = ?', intval($filter['delivery_id']));		
+            
+        if(!empty($filter['label_id']))
+			$label_id_filter = $this->db->placehold('AND ol.label_id in(?@)', (array)$filter['label_id']);    
+		
+		if(isset($filter['label_id_in']))
+            $label_id_in_filter = $this->db->placehold('AND (o.id IN(SELECT ol.order_id FROM f_orders_labels AS ol WHERE ol.label_id = ?))', intval($filter['label_id_in']));
+            
+        if(isset($filter['user_id']))
+			$user_id_filter = $this->db->placehold('AND o.user_id = ?', intval($filter['user_id']));    
 			
         if(isset($filter['date_from']) && !isset($filter['date_to'])){
             $period_filter = $this->db->placehold('AND o.date > ?', $filter['date_from']);
@@ -321,7 +378,7 @@ class ReportStat extends Fivecms
             }
         }
         
-        return "$status_filter $yclid_filter $utm_filter $referer_filter $source_filter $delivery_id_filter $label_id_filter $date_filter $period_filter";
+        return "$status_filter $yclid_filter $utm_filter $referer_filter $source_filter $delivery_id_filter $label_id_filter $label_id_in_filter $user_id_filter $date_filter $period_filter";
     }
         
 }

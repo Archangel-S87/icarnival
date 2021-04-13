@@ -84,8 +84,9 @@ class Articles extends Fivecms
 			foreach($keywords as $keyword)
 			{
 				$kw = $this->db->escape(trim($keyword));
-				if($kw!=='')
-					$keyword_filter .= $this->db->placehold("AND (b.name LIKE '%$kw%' OR b.text LIKE '%$kw%')");
+				if($kw!==''){
+					$keyword_filter .= $this->db->placehold("AND (b.name LIKE '%$kw%' OR b.meta_keywords LIKE '%$kw%' OR b.text LIKE '%$kw%')");
+				}	
 			}
 		}
 
@@ -138,8 +139,9 @@ class Articles extends Fivecms
 			foreach($keywords as $keyword)
 			{
 				$kw = $this->db->escape(trim($keyword));
-				if($kw!=='')
-					$keyword_filter .= $this->db->placehold("AND (b.name LIKE '%$kw%' OR b.text LIKE '%$kw%')");
+				if($kw!==''){
+					$keyword_filter .= $this->db->placehold("AND (b.name LIKE '%$kw%' OR b.meta_keywords LIKE '%$kw%' OR b.text LIKE '%$kw%')");
+				}
 			}
 		}
 		
@@ -214,6 +216,14 @@ class Articles extends Fivecms
 	{
 		if(!empty($id))
 		{
+			// Удаляем статью из связанных
+            $related = $this->get_related_objects($id);
+            foreach($related as $r)
+                $this->delete_related_object($id, $r->related_id);  
+                
+            // Удаляем связь со статьями если есть
+			$this->delete_related_object_type($id, 'article');  
+			
 			$images = $this->get_images(array('post_id'=>$id));
 			foreach($images as $i)
 				$this->delete_image($i->id);
@@ -354,4 +364,64 @@ class Articles extends Fivecms
 		}
 		return true;
 	}
+	
+	// Работа со связанными объектами
+	function get_related_objects($article_id = array())
+    {
+        if(empty($article_id))
+            return array();
+                
+        $query = $this->db->placehold("SELECT article_id, object_id, type
+                    FROM __article_objects
+                    WHERE article_id in(?@)", (array)$article_id);        
+        $this->db->query($query);
+        return $this->db->results();
+    }
+    
+    function get_related_articles($filter = array())
+    {    
+        // По умолчанию
+        $limit = 1000;
+        $type_filter = '';
+        $object_id_filter = '';
+        
+        if(isset($filter['limit']))
+            $limit = max(1, intval($filter['limit']));
+
+        if(!empty($filter['type']))
+            $type_filter = $this->db->placehold('AND type=?', $filter['type']);  
+
+        if(!empty($filter['id']))
+            $object_id_filter = $this->db->placehold('AND object_id=?', (int)$filter['id']);  
+            
+        $sql_limit = $this->db->placehold(' LIMIT ?', $limit);
+                
+        $query = $this->db->placehold("SELECT article_id, object_id, type
+                    FROM __article_objects
+                    WHERE 1 $object_id_filter $type_filter $sql_limit");        
+        $this->db->query($query);
+        return $this->db->results();
+    }
+    
+    // Добавление связанного объекта
+    public function add_related_object($article_id, $related_id, $type)
+    {
+        $query = $this->db->placehold("INSERT IGNORE INTO __article_objects SET article_id=?, object_id=?, type=?", $article_id, $related_id, $type);
+        $this->db->query($query);
+        return $related_id;
+    }
+    
+    // Удаление связанного объекта по article_id и его ID
+    public function delete_related_object($article_id, $related_id)
+    {
+        $query = $this->db->placehold("DELETE FROM __article_objects WHERE article_id=? AND object_id=? LIMIT 1", intval($article_id), intval($related_id));
+        $this->db->query($query);
+    }
+    
+    // Удаление связанного объекта по его ID и типу
+    public function delete_related_object_type($object_id,$object_type)
+    {
+        $query = $this->db->placehold("DELETE FROM __article_objects WHERE object_id=? AND type=?", intval($object_id), $object_type);
+        $this->db->query($query);
+    }
 }

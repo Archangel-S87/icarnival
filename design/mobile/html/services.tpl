@@ -100,7 +100,7 @@
 		<ul id="gallerypic" class="tiny_products">	
 			{foreach $service->images as $i=>$image}
 				<li class="product"><div class="image">
-				<a rel="gallery" href="{$image->filename|resize:800:600:w:$config->resized_services_images_dir}" class="swipebox" title="{$category->name|escape}">
+				<a rel="gallery" href="{$image->filename|resize:1024:768:w:$config->resized_services_images_dir}" class="swipebox" title="{$category->name|escape}">
 				<img alt="{$category->name|escape}" title="{$category->name|escape}" src="{$image->filename|resize:400:400:false:$config->resized_services_images_dir}" /></a></div>
 				</li>
 			{/foreach}

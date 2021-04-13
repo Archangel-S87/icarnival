@@ -7,7 +7,7 @@
 				<path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
 			</svg>
 		</div>
-		<div id="menutoptitle">
+		<div id="menutoptitle" onclick="window.location='{$config->root_url}/'">
 			{$settings->site_name|escape}
 		</div>
 		{if $settings->purpose == 0 || in_array($module, array('CartView', 'OrderView', 'ProductView', 'ProductsView'))}
@@ -61,7 +61,7 @@
 
 <div id="catalogtop">
 	<div id="logo">
-		<img onclick="window.location='/'" src="files/logo/logo.png?v={filemtime('files/logo/logo.png')}" title="{$settings->site_name|escape}" alt="{$settings->site_name|escape}" />
+		<img onclick="window.location='{$config->root_url}/'" src="files/logo/logo.png?v={filemtime('files/logo/logo.png')}" title="{$settings->site_name|escape}" alt="{$settings->site_name|escape}" />
 	</div>
 	<div id="catalogtopbody">
 		{if $module == 'ArticlesView'}

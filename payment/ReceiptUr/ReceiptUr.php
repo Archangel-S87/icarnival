@@ -11,6 +11,10 @@ class ReceiptUr extends Fivecms
 		$payment_method = $this->payment->get_payment_method($order->payment_method_id);
 		$payment_settings = $this->payment->get_payment_settings($payment_method->id);				
 		$amount = $this->money->convert($order->total_price, $payment_method->currency_id, false);		
+		if(!$order->separate_delivery)
+			$delivery_price = $this->money->convert($order->delivery_price, $payment_method->currency_id, false);
+		else
+			$delivery_price = 0;
 		
 		//	подготовить данные
 		$recipient = $payment_settings['recipient'];
@@ -27,9 +31,9 @@ class ReceiptUr extends Fivecms
 		$rukov = $payment_settings['rukov'];
 		$sef = $payment_settings['sef'];
 		
-		
 		$purchases = $this->orders->get_purchases(array('order_id'=>intval($order->id)));		
 		$purchases_s = serialize($purchases);
+		$purchases_s = htmlspecialchars($purchases_s,ENT_QUOTES);
 			
 		$button =	"<FORM class='form' ACTION='payment/ReceiptUr/callback.php' METHOD='POST'>
 					<INPUT TYPE='HIDDEN' NAME='recipient' VALUE='".$payment_settings['recipient']."'>
@@ -49,6 +53,7 @@ class ReceiptUr extends Fivecms
 					<INPUT TYPE='HIDDEN' NAME='vat' VALUE='".$payment_settings['vat']."'>		
 					<INPUT TYPE='HIDDEN' NAME='order_id' VALUE='$order->id'>
 					<INPUT TYPE='HIDDEN' NAME='amount' VALUE='".$amount."'>
+					<INPUT TYPE='HIDDEN' NAME='delivery_price' VALUE='".$delivery_price."'>
 					<INPUT TYPE='HIDDEN' NAME='purchases_s' VALUE='".$purchases_s."'>					
 					<label>Название организации: </label><INPUT TYPE='text' NAME='name' VALUE=''>
 					<label>ИНН плательщика: </label><INPUT TYPE='text' NAME='inn_plat' VALUE=''>

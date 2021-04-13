@@ -1,5 +1,8 @@
 <?php
-$file = 'http://'.$_SERVER['HTTP_HOST'].'/turbo_blog.php';
+
+$host = mb_strtolower(getenv("HTTP_HOST"));
+$host = strtok($host, ':');
+$file = 'http://'.$host.'/turbo_blog.php';
 $newfile = 'files/turbo_blog.xml';
 
 if (!copy($file, $newfile)) {

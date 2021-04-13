@@ -8,8 +8,8 @@ class OrdersAdmin extends Fivecms
 	{
 	 	$filter = array();
 	  	$filter['page'] = max(1, $this->request->get('page', 'integer'));
-	  		
-	  	$filter['limit'] = 40;
+	  	// Заказов на странице	
+	  	$filter['limit'] = 20;
 	  	
 	    // Поиск
 	  	$keyword = $this->request->get('keyword');
@@ -19,27 +19,37 @@ class OrdersAdmin extends Fivecms
 	 		$this->design->assign('keyword', $keyword);
 		}
 
-		// Filter order date
+		// Фильтр по дате заказа
 		$get_filter = $this->request->get('filter');
-		if($get_filter['date_from'])
-			$filter['date_from'] = date("Y-m-d 00:00:01",strtotime($get_filter['date_from']));
-		if($get_filter['date_to'])
-			$filter['date_to'] = date("Y-m-d 23:59:00",strtotime($get_filter['date_to']));
-		
-		// Filter shipment date
-		$get_filter_two = $this->request->get('filter_two');
-		if($get_filter_two['date_from'])
-			$filter['date_from_ship'] = date("Y-m-d 00:00:01",strtotime($get_filter_two['date_from']));
-		if($get_filter_two['date_to'])
-			$filter['date_to_ship'] = date("Y-m-d 23:59:00",strtotime($get_filter_two['date_to']));
 
-		// Фильтр по метке
-	  	$label = $this->orders->get_label($this->request->get('label'));	  	
-	  	if(!empty($label))
-	  	{
-		  	$filter['label'] = $label->id;
-		 	$this->design->assign('label', $label);
+		if(!empty($get_filter['date_from'])){
+			$date_from = $get_filter['date_from'];
+			$filter['date_from'] = date("Y-m-d 00:00:01",strtotime($get_filter['date_from']));
+			$this->design->assign('date_from', $date_from);
+		}	
+		if(!empty($get_filter['date_to'])){
+			$date_to = $get_filter['date_to'];
+			$filter['date_to'] = date("Y-m-d 23:59:00",strtotime($get_filter['date_to']));
+			$this->design->assign('date_to', $date_to);	
+		}	
+		
+		// Фильтр по дате доставки
+		$get_filter_two = $this->request->get('filter_two');
+		if(!empty($get_filter_two['date_from'])){
+			$date_from_two = $get_filter_two['date_from'];
+			$filter['date_from_ship'] = date("Y-m-d 00:00:01",strtotime($get_filter_two['date_from']));
+			$this->design->assign('date_from_two', $date_from_two);
+		}	
+		if(!empty($get_filter_two['date_to'])){
+			$date_from_two = $get_filter_two['date_to'];
+			$filter['date_to_ship'] = date("Y-m-d 23:59:00",strtotime($get_filter_two['date_to']));
+			$this->design->assign('date_to_two', $date_to_two);	
 		}
+		// Фильтр по метке
+		if(!empty($label_id = $this->request->get('label_id'))){
+        	$filter['label'] = $label_id;
+        	$this->design->assign('label_id', $label_id);
+        }
 
 		// Обработка действий
 		if($this->request->method('post'))
@@ -50,111 +60,6 @@ class OrdersAdmin extends Fivecms
 			if(is_array($ids))
 			switch($this->request->post('action'))
 			{
-				/* GLOOBUS 03.12.2014 - действие по формированию журнала доставок */
-				case 'journal':
-				{
-					/*
-					$test_dates = $this->orders->count_orders_other_date($ids);					
-					if ($test_dates != 1) {
-						$this->design->assign('action_error', 'Выбранные заказы не имеют дату доставки или она не одинаковая');
-						break;
-					}
-					*/
-				
-					/** Include PHPExcel */
-					require_once 'classes/PHPExcel.php';
-					$objReader = PHPExcel_IOFactory::createReader('Excel5');
-					$objPHPExcel = $objReader->load("fivecms/design/xls/journal.xls");		
-										
-					$style_border = array(
-						'borders' => array(
-							'allborders' => array(
-								'style' => PHPExcel_Style_Border::BORDER_THIN
-							)
-						),
-						'font' => array(
-							'size' => 10
-						),
-						'alignment' => array(
-							'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
-							'vertical' => PHPExcel_Style_Alignment::VERTICAL_TOP,
-							'wrap' => true
-						)
-					);
-					$style_FG = array(
-						'font' => array(
-							'bold' => true
-						),	
-						'alignment' => array(
-							'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER
-						)						
-					);
-			
-					// Получаем перечень заказов	
-					$exl_orders = $this->orders->get_orders(array('id' => $ids, 'limit' => count($ids)+1));
-					
-					//Номер строки в шаблоне, от которой будем плясать
-					$baseRow = 5; $k = 0;
-					
-					$objPHPExcel->getActiveSheet()->getStyle('A'.($baseRow-1).':E'.($baseRow+count($ids)))->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-					
-					// Перебираем наши заказы
-					foreach ($exl_orders as $o){
-						$row = $baseRow + $k;
-						//$objPHPExcel->getActiveSheet()->insertNewRowBefore($row,1); 
-						$objPHPExcel->getActiveSheet()->setCellValue('A'.$row, $o->id)
-													  ->setCellValue('B'.$row, $o->address)
-													  ->setCellValue('C'.$row, $o->name."\n".$o->phone)
-													  ->setCellValue('E'.$row, $o->comment)
-													  ->setCellValue('F'.$row, ($o->paid ? 'Оплачено' : $o->total_price))
-													  ->setCellValue('G'.$row, $o->delivery_price);
-						$objPHPExcel->getActiveSheet()->getRowDimension($row)->setRowHeight(-1);
-						
-						$order_sostav = $this->orders->get_purchases(array('order_id'=>$o->id));
-						$zakaz = array();
-						foreach ($order_sostav as $sostav) {
-							$zakaz[] = $sostav->product_name.' '.$sostav->variant_name.($sostav->sku?' ('.$sostav->sku.') ':' ').$sostav->amount.' '.$this->settings->units;
-						}
-						$objPHPExcel->getActiveSheet()->setCellValue('D'.$row, implode(",\n",$zakaz));
-						$k++;
-					}
-					$objPHPExcel->getActiveSheet()->removeRow($baseRow-1,1);
-					
-					$objPHPExcel->getActiveSheet()->getStyle('A'.($baseRow-1).':G'.($row-1))->applyFromArray($style_border);
-					$objPHPExcel->getActiveSheet()->getStyle('F'.($baseRow-1).':G'.($row-1))->applyFromArray($style_FG);					
-
-					// Получаем дату из текстового значения
-					$delivery_date = date('d-m-Y'); 
-					// Получаем полную дату для вставки в Ecxel 
-					$excel_full_date = PHPExcel_Shared_Date::PHPToExcel( gmmktime(0,0,0,date('m'),date('d'),date('Y')) );					
-					$objPHPExcel->getActiveSheet()->setCellValue('B1', $excel_full_date); 
-					
-					$objPHPExcel->getActiveSheet()->setTitle('Журнал на '.$delivery_date);
-					
-					// Redirect output to a client’s web browser (Excel5)
-					header('Content-Type: application/vnd.ms-excel');
-					header('Content-Disposition: attachment;filename="Journal_'.$delivery_date.'.xls"');
-					header('Cache-Control: max-age=0');
-					// If you're serving to IE 9, then the following may be needed
-					header('Cache-Control: max-age=1');
-
-					// If you're serving to IE over SSL, then the following may be needed
-					header ('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-					header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
-					header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
-					header ('Pragma: public'); // HTTP/1.0
-
-					
-					$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
-					$objWriter->save('php://output');
-					break;							
-				}	
-				/* GLOOBUS 03.12.2014 - добавляем в примечание пометку Быстроноги */
-				case 'bistronogi':
-				{
-					$this->orders->add_note_order($ids,'Быстроноги');
-					break;
-				}			
 				case 'delete':
 				{
 					foreach($ids as $id)
@@ -237,22 +142,7 @@ class OrdersAdmin extends Fivecms
 					}
 					break;
 				}
-				case 'set_paid':
-				{
-					foreach($ids as $id)
-					{
-						$this->orders->update_order($id, array('paid'=>1));	
-					}
-					break;
-				}
-				case 'unset_paid':
-				{
-					foreach($ids as $id)
-					{
-						$this->orders->update_order($id, array('paid'=>0));	
-					}
-					break;
-				}
+
 				case 'merge':
 				{
 					sort($ids); //сортируем массив отчекбошеных заказов по возрастанию, что бы первым был "первый" (более ранний) заказ

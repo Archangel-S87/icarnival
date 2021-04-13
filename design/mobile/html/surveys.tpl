@@ -111,7 +111,7 @@
 
 		<ul id="blogposts" class="comment_list polls infinite_load" style="margin-top:0;">
 			{foreach $posts as $post}
-				<li id="poll_{$post->id}" class="polls_item color_{if $post->is_actual}{$post->poll_type}{else}grey{/if}" onclick="window.location='survey/{$post->url}'">
+				<li id="poll_{$post->id}" class="polls_item color_{if !empty($post->is_actual)}{$post->poll_type}{else}grey{/if}" onclick="window.location='survey/{$post->url}'">
 					<div class="poll_icon">
 						{if $post->vote_type == 1}
 						<svg fill="#FFFFFF" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">

@@ -31,7 +31,7 @@
 	{/if}
 </div>
 
-<div id="main_list" class="feedbackpage">
+<div id="main_list" class="feedbackpage" style="max-width:800px;">
 	
 	<!-- Листалка страниц -->
 	{include file='pagination.tpl'}	
@@ -54,7 +54,7 @@
 
 						</div>
 						<div class='comment_text'>
-							{$feedback->message|nl2br}
+							{$feedback->message|strip_tags|escape|nl2br}
 						</div>
 						<div class='comment_info'>
 							{$feedback->date|date} {$feedback->date|time}{if !empty($feedback->ip)} | IP: {$feedback->ip|escape}{/if}

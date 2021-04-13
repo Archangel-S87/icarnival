@@ -252,9 +252,10 @@ class ImportYmlAdmin extends Fivecms
 	 
 	private function convert_file($source, $dest) {
 		// Узнаем какая кодировка у файла
-		$teststring = file_get_contents($source, null, null, null, 1000000);
+		$teststring = file_get_contents($source, null, null, null, 500);
+		$teststring = explode(' ', $teststring);
 		
-		if (preg_match('//u', $teststring)){ // Кодировка - UTF8
+		if(preg_match('//u', $teststring[1]) || (function_exists('mb_detect_encoding') && mb_detect_encoding($teststring[1], 'UTF-8'))){ // Кодировка - UTF8
 			return copy($source, $dest);
 		} else {
 			// Конвертируем в UFT8

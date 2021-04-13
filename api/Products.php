@@ -12,7 +12,7 @@ class Products extends Fivecms
      */
 	public function get_products($filter = array())
 	{		
-		$limit = 200;
+		$limit = 400;
 		$page = 1;
 		$category_id_filter = '';
 		$without_category_filter = '';
@@ -86,7 +86,11 @@ class Products extends Fivecms
 			switch ($filter['sort'])
 			{
 				case 'position':
-				$order = 'p.position DESC';
+					if(empty($this->settings->showinstock) || $this->settings->showinstock == 1){
+					$order = 'p.position DESC';
+					} elseif($this->settings->showinstock == 2){
+					$order = 'IF((SELECT COUNT(*) FROM __variants WHERE (stock>0 OR stock IS NULL) AND product_id=p.id LIMIT 1), 1, 0) DESC, p.position DESC';
+					}
 				break;
 				case 'name':
 					if(empty($this->settings->showinstock) || $this->settings->showinstock == 1){
@@ -143,13 +147,6 @@ class Products extends Fivecms
 					$group_by = 'GROUP BY p.id';
 					$products_stock_null_sort = 'INNER JOIN __variants v ON p.id = v.product_id';
 				break;
-				case 'views':
-					if(empty($this->settings->showinstock) || $this->settings->showinstock == 1){
-					$order = 'p.views DESC, p.position DESC';
-					} elseif($this->settings->showinstock == 2){
-					$order = 'IF((SELECT COUNT(*) FROM __variants WHERE (stock>0 OR stock IS NULL) AND product_id=p.id LIMIT 1), 1, 0) DESC, p.views DESC, p.position DESC';
-					}
-				break;
 				case 'rating':
 					if(empty($this->settings->showinstock) || $this->settings->showinstock == 1){
 					$order = 'p.rating DESC, p.position DESC';
@@ -162,21 +159,21 @@ class Products extends Fivecms
 				break;
 			}
 
-		if(isset($filter['variants']))
+		if(!empty($filter['variants']))
         {
 			$namevar='name';
             $variant_filter = $this->db->placehold(' AND pv.'.$namevar.' in(?@) AND (pv.stock IS NULL OR pv.stock>0)', (array)$filter['variants']);
             $variant_join = 'LEFT JOIN __variants pv ON pv.product_id = p.id';
         }
         
-        if(isset($filter['variants1']))
+        if(!empty($filter['variants1']))
         {
 			$namevar1='name1';
             $variant_filter1 = $this->db->placehold(' AND pv.'.$namevar1.' in(?@) AND (pv.stock IS NULL OR pv.stock>0)', (array)$filter['variants1']);
             $variant_join = 'LEFT JOIN __variants pv ON pv.product_id = p.id';
         }
 
-		if(isset($filter['variants2']))
+		if(!empty($filter['variants2']))
         {
 			$namevar2='name2';
             $variant_filter2 = $this->db->placehold(' AND pv.'.$namevar2.' in(?@) AND (pv.stock IS NULL OR pv.stock>0)', (array)$filter['variants2']);
@@ -193,7 +190,7 @@ class Products extends Fivecms
 			}
  		}
 
-		if(!empty($filter['features']) && !empty($filter['features']))
+		if(!empty($filter['features']))
 			foreach($filter['features'] as $feature=>$value)
 				  $features_filter .= $this->db->placehold('AND p.id in (SELECT product_id FROM __options WHERE feature_id=? AND value in (?@) ) ', $feature, $value);
 
@@ -218,17 +215,17 @@ class Products extends Fivecms
 					p.body,
 					p.rating,
 					p.votes,
-					p.position,
-					p.created as created,
 					p.visible, 
-					p.featured, 
-					p.is_new,
-					p.to_yandex,
+					p.position,
 					p.meta_title, 
 					p.meta_keywords, 
 					p.meta_description, 
-					p.views,
-					p.video,
+					p.created as created,
+					p.featured, 
+					p.is_new,
+					p.to_yandex,
+					p.ref_url,
+                    p.video,
 					b.name as brand,
 					b.url as brand_url
 				FROM __products p	
@@ -321,21 +318,21 @@ class Products extends Fivecms
 			}
 		}
 
-		if(isset($filter['variants']))
+		if(!empty($filter['variants']))
         {
 			$namevar='name';
             $variant_filter = $this->db->placehold(' AND pv.'.$namevar.' in(?@) AND (pv.stock IS NULL OR pv.stock>0)', (array)$filter['variants']);
             $variant_join = 'LEFT JOIN __variants pv ON pv.product_id = p.id';
         }
 
-        if(isset($filter['variants1']))
+        if(!empty($filter['variants1']))
         {
 			$namevar1='name1';
             $variant_filter1 = $this->db->placehold(' AND pv.'.$namevar1.' in(?@) AND (pv.stock IS NULL OR pv.stock>0)', (array)$filter['variants1']);
             $variant_join = 'LEFT JOIN __variants pv ON pv.product_id = p.id';
         }
 
-		if(isset($filter['variants2']))
+		if(!empty($filter['variants2']))
         {
 			$namevar2='name2';
             $variant_filter2 = $this->db->placehold(' AND pv.'.$namevar2.' in(?@) AND (pv.stock IS NULL OR pv.stock>0)', (array)$filter['variants2']);
@@ -360,7 +357,7 @@ class Products extends Fivecms
 		if(isset($filter['visible']))
 			$visible_filter = $this->db->placehold('AND p.visible=?', intval($filter['visible']));
 		
-		if(!empty($filter['features']) && !empty($filter['features']))
+		if(!empty($filter['features']))
 			foreach($filter['features'] as $feature=>$value)
 				$features_filter .= $this->db->placehold('AND p.id in (SELECT product_id FROM __options WHERE feature_id=? AND value in (?@) ) ', $feature, $value);
 		
@@ -445,17 +442,18 @@ class Products extends Fivecms
 					p.body,
 					p.rating,
 					p.votes,
-					p.position,
-					p.created as created,
 					p.visible, 
-					p.featured, 
-		            		p.is_new, 
-		            		p.to_yandex, 
+					p.position,
 					p.meta_title, 
 					p.meta_keywords, 
 					p.meta_description,
-					p.views,
-					p.video
+					p.created as created,
+					p.featured, 
+            		p.is_new, 
+            		p.to_yandex, 
+					p.external_id,
+					p.ref_url,
+                    p.video
 				FROM __products AS p
                 LEFT JOIN __brands b ON p.brand_id = b.id
                 WHERE $filter
@@ -464,12 +462,6 @@ class Products extends Fivecms
 		$this->db->query($query);
 		$product = $this->db->result();
 		return $product;
-	}
-
-	public function update_views($id)
-	{
-		$this->db->query("UPDATE __products SET views=views+1 WHERE id=?", $id);
-		return true;
 	}
 
 	/**
@@ -543,12 +535,17 @@ class Products extends Fivecms
 			foreach($options as $o)
 				$this->features->delete_option($id, $o->feature_id);
 			
+			// Удаляем связанные товары
 			$related = $this->get_related_products($id);
 			foreach($related as $r)
 				$this->delete_related_product($id, $r->related_id);
 
-			$query = $this->db->placehold("DELETE FROM __related_products WHERE related_id=?", intval($id));
-			$this->db->query($query);
+			// Удаляем товар из связанных с другими
+			$query = $this->db->placehold("DELETE FROM __related_products WHERE (related_id=? OR product_id=?)", intval($id), intval($id));
+            $this->db->query($query);
+			
+			// Удаляем связь со статьями если есть
+			$this->articles->delete_related_object_type($id, 'product');
 
 			$comments = $this->comments->get_comments(array('object_id'=>$id, 'type'=>'product'));
 			foreach($comments as $c)
@@ -585,7 +582,6 @@ class Products extends Fivecms
 
 		$product->rating = 0;
 		$product->votes = 0;
-		$product->views = 0;
 
 		// Сдвигаем товары вперед и вставляем копию на соседнюю позицию
     	$this->db->query('UPDATE __products SET position=position+1 WHERE position>?', $product->position);
@@ -766,24 +762,36 @@ class Products extends Fivecms
 	}
 		
 	// Выборка "соседних" товаров
-	public function get_next_product($category_id, $position)
+	public function get_next_product($category_id, $position, $filter = array())
 	{
+		$in_stock_filter = '';
+		if(isset($filter['in_stock'])){
+			$in_stock_filter = $this->db->placehold('AND (SELECT count(*)>0 FROM __variants pv WHERE pv.product_id=p.id AND pv.price>0 AND (pv.stock IS NULL OR pv.stock>0) LIMIT 1) = ?', intval($filter['in_stock']));
+		}
 		$query = $this->db->placehold("SELECT id FROM __products p, __products_categories pc
 										WHERE pc.product_id=p.id AND p.position>? 
 										AND pc.position=(SELECT MIN(pc2.position) FROM __products_categories pc2 WHERE pc.product_id=pc2.product_id)
 										AND pc.category_id=? 
-										AND p.visible ORDER BY p.position limit 1", $position, $category_id);
+										AND p.visible 
+										$in_stock_filter 
+										ORDER BY p.position limit 1", $position, $category_id);
 		$this->db->query($query);
 		return $this->get_product((integer)$this->db->result('id'));
 	}
 	
-	public function get_prev_product($category_id, $position)
+	public function get_prev_product($category_id, $position, $filter = array())
 	{
+		$in_stock_filter = '';
+		if(isset($filter['in_stock'])){
+			$in_stock_filter = $this->db->placehold('AND (SELECT count(*)>0 FROM __variants pv WHERE pv.product_id=p.id AND pv.price>0 AND (pv.stock IS NULL OR pv.stock>0) LIMIT 1) = ?', intval($filter['in_stock']));
+		}
 		$query = $this->db->placehold("SELECT id FROM __products p, __products_categories pc
 										WHERE pc.product_id=p.id AND p.position<? 
 										AND pc.position=(SELECT MIN(pc2.position) FROM __products_categories pc2 WHERE pc.product_id=pc2.product_id)
 										AND pc.category_id=? 
-										AND p.visible ORDER BY p.position DESC limit 1", $position, $category_id);
+										AND p.visible 
+										$in_stock_filter 
+										ORDER BY p.position DESC limit 1", $position, $category_id);
 		$this->db->query($query);
 		return $this->get_product((integer)$this->db->result('id'));	
 	}

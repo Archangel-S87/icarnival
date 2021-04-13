@@ -8,6 +8,7 @@ class SlidemAdmin extends Fivecms
 
   function fetch()
   {
+  		$slidem = new \stdClass();
 		if($this->request->method('post'))
 		{
 			$slidem->id = $this->request->post('id', 'integer');

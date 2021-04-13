@@ -131,7 +131,7 @@
 			{$purchase->variant_name|escape}
 		</td>
 		<td style="padding:6px; border:1px solid #e0e0e0;font-family:arial;white-space:nowrap;">
-			{$purchase->price|convert:$currency->id}&nbsp;{$currency->sign} &times; {$purchase->amount} {if $purchase->unit}{$purchase->unit|escape}{else}{$settings->units|escape}{/if}
+			{$purchase->price|convert:$main_currency->id}&nbsp;{$main_currency->sign} &times; {$purchase->amount} {if $purchase->unit}{$purchase->unit|escape}{else}{$settings->units|escape}{/if}
 		</td>
 		<td style="padding:6px; border:1px solid #e0e0e0;font-family:arial;">
 			{if !empty($purchase->variant->sku)}{$purchase->variant->sku}{/if}
@@ -161,7 +161,7 @@
 			Купон {$order->coupon_code}
 		</td>
 		<td style="padding:6px; background-color:#ffffff; border:1px solid #e0e0e0;font-family:arial;">
-			&minus;{$order->coupon_discount}&nbsp;{$currency->sign}
+			&minus;{$order->coupon_discount|convert:$main_currency->id}&nbsp;{$main_currency->sign}
 		</td>
 	</tr>
 	{/if}
@@ -188,14 +188,24 @@
 	</tr>
 	{/if}
 	
-	<tr>
+	{*<tr>
 		<td style="padding:6px; background-color:#f4f4f4; border:1px solid #e0e0e0;font-family:arial;font-weight:bold;">
 			Итого
 		</td>
 		<td style="padding:6px; background-color:#ffffff; border:1px solid #e0e0e0;font-family:arial;font-weight:bold;">
 			{$order->total_price|convert:$main_currency->id}&nbsp;{$main_currency->sign}
 		</td>
+	</tr>*}
+	
+	<tr>
+		<td style="padding:6px; background-color:#f4f4f4; border:1px solid #e0e0e0;font-family:arial;font-weight:bold;">
+			{if empty($order->paid)}Итого к оплате{else}Итого{/if}
+		</td>
+		<td style="padding:6px; background-color:#ffffff; border:1px solid #e0e0e0;font-family:arial;font-weight:bold;">
+			{$order->total_price|convert:$payment_method->currency_id}&nbsp;{if isset($all_currencies[$payment_method->currency_id]->sign)}{$all_currencies[$payment_method->currency_id]->sign}{/if}
+		</td>
 	</tr>
+	
 </table>
 
 <br>

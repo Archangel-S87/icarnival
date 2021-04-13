@@ -7,6 +7,7 @@ class FormAdmin extends Fivecms
 
   function fetch()
   {
+  		$form = new \stdClass();
 		if($this->request->method('post'))
 		{
 			$form->id = $this->request->post('id', 'integer');

@@ -148,6 +148,8 @@ $(function() {
 		<div id="name">
 			<input placeholder="{$tr->enter_name|escape}" class="name" name=name type="text" value="{if !empty($brand->name)}{$brand->name|escape}{/if}" required /> 
 			<input name=id type="hidden" value="{if !empty($brand->id)}{$brand->id|escape}{/if}"/> 
+			
+			{if !empty($brand->external_id)}<div class="brand external_id">External_ID (1C): {$brand->external_id|escape}</div>{/if}
 		</div> 
 	
 		<!-- Left column | Левая колонка -->

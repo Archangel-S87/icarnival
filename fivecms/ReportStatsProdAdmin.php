@@ -9,13 +9,18 @@ class ReportStatsProdAdmin extends Fivecms
     	$filter = array();
     	$variants = array();
         
+        // По id варианта
         $variant_id = $this->request->post('variant_id');
         if(!empty($variant_id)){
         	$filter['variant_id'] = $variant_id;
             $this->design->assign('variant_id', $variant_id);
         }
         
-        $date_filter = $this->request->post('date_filter');
+        // Период
+        if(!empty($date_filter = $this->request->post('date_filter')))
+			$_SESSION['stats_date_filter'] = $date_filter;		
+		if(!empty($_SESSION['stats_date_filter']))
+			$date_filter = $_SESSION['stats_date_filter'];	
         
         $date_from = $this->request->post('date_from');
         $date_to = $this->request->post('date_to');
@@ -41,7 +46,13 @@ class ReportStatsProdAdmin extends Fivecms
             $this->design->assign('date_filter', $date_filter);
         }
 
-        $status = $this->request->post('status', 'integer');
+		// Статус заказа
+        $status = $this->request->post('status');
+        if(isset($status))
+			$_SESSION['stats_status'] = $status;
+		if(isset($_SESSION['stats_status']))
+			$status = $_SESSION['stats_status'];
+				
         if(!empty($status)){
             
             switch($status){
@@ -60,30 +71,93 @@ class ReportStatsProdAdmin extends Fivecms
             $this->design->assign('status', $status);
         }
         
-        if(!empty($yclid = $this->request->post('yclid'))){
+        // YCLID
+        $yclid = $this->request->post('yclid');
+		if(isset($yclid))
+			$_SESSION['stats_yclid'] = $yclid;
+		if(isset($_SESSION['stats_yclid']))
+			$yclid = $_SESSION['stats_yclid'];	
+        $this->design->assign('yclid', $yclid);
+        if(!empty($yclid)){
         	$filter['yclid'] = $yclid;
-        	$this->design->assign('yclid', $yclid);
         }
         
-        if(!empty($utm = $this->request->post('utm'))){
+        // UTM
+        $utm = $this->request->post('utm');
+		if(isset($utm))
+			$_SESSION['stats_utm'] = $utm;
+		if(isset($_SESSION['stats_utm']))
+			$utm = $_SESSION['stats_utm'];	
+        $this->design->assign('utm', $utm);
+        if(!empty($utm)){
         	$filter['utm'] = $utm;
-        	$this->design->assign('utm', $utm);
         }
         
-        if(!empty($referer = $this->request->post('referer'))){
+        // Referer
+        $referer = $this->request->post('referer');
+		if(isset($referer))
+			$_SESSION['stats_referer'] = $referer;
+		if(isset($_SESSION['stats_referer']))
+			$referer = $_SESSION['stats_referer'];	
+        $this->design->assign('referer', $referer);
+        if(!empty($referer)){
         	$filter['referer'] = $referer;
-        	$this->design->assign('referer', $referer);
         }
         
-        if(!empty($source = $this->request->post('source'))){
+        // Источник заказа
+        $source = $this->request->post('source');
+        if(isset($source))
+			$_SESSION['stats_source'] = $source;
+		if(isset($_SESSION['stats_source']))
+			$source = $_SESSION['stats_source'];
+			
+		$this->design->assign('source', $source);	
+        if(!empty($source)){
         	$filter['source'] = $source;
-        	$this->design->assign('source', $source);
         }
         
-        if(!empty($delivery_id = $this->request->post('delivery_id'))){
+        // Доставка
+        $delivery_id = $this->request->post('delivery_id');
+        if(isset($delivery_id))
+			$_SESSION['stats_delivery_id'] = $delivery_id;
+		if(isset($_SESSION['stats_delivery_id']))
+			$delivery_id = $_SESSION['stats_delivery_id'];
+			
+		$this->design->assign('delivery_id', $delivery_id);	
+        if(!empty($delivery_id)){
         	$filter['delivery_id'] = $delivery_id;
-        	$this->design->assign('delivery_id', $delivery_id);
         }
+        
+        // Метки
+        $label_id = $this->request->post('label_id');
+        if(isset($label_id))
+			$_SESSION['stats_label_in'] = $label_id;
+		if(isset($_SESSION['stats_label_in']))
+			$label_id = $_SESSION['stats_label_in'];
+			
+		$this->design->assign('label_id', $label_id);	
+        if(!empty($label_id)){
+        	$filter['label_id_in'] = $label_id;
+        }
+        
+        // Фильтр по пользователю
+        $user_id = $this->request->post('user_id');
+        if(isset($user_id))
+			$_SESSION['stats_user_id'] = $user_id;
+		if(isset($_SESSION['stats_user_id']))
+			$user_id = $_SESSION['stats_user_id'];
+			
+        if(!empty($user_id)){
+        	$user = $this->users->get_user(intval($user_id));
+        	if(!empty($user)){
+        		$filter['user_id'] = $user_id;
+        		$this->design->assign('user', $user);
+        	}	
+        }
+        
+        // Все метки заказов
+        $labels = $this->orders->get_labels();
+        $this->design->assign('labels', $labels);
         
         // Все способы доставки
 		$deliveries = $this->delivery->get_deliveries();

@@ -44,11 +44,11 @@ $(window).load(function(){
 	}
 	function onChoose(wat) {
 		serviceMess(
-			'Выбран пункт выдачи заказа ' + wat.id + "\n<br/>" +
-			'адрес ПВЗ ' + wat.PVZ.Address + "\n<br/>" +
-			'срок ' + wat.term + " дн.\n<br/>" +
-			'тариф ' + wat.tarif + "\n<br/>" +
-			'код города ' + wat.city + "\n<br/>" +
+			'Выбран пункт выдачи заказа ' + wat.id + " | " +
+			'адрес ПВЗ ' + wat.PVZ.Address + " | " +
+			'срок ' + wat.term + " дн. | " +
+			'тариф ' + wat.tarif + " | " +
+			'код города ' + wat.city + " | " +
 			'город ' + wat.cityName
 		);
 		// calc (1.1)
@@ -64,9 +64,9 @@ $(window).load(function(){
 	}
 	function onChooseProfile(wat) {
 		serviceMess(
-			'Выбрана доставка курьером в город ' + wat.cityName + "\n<br/>" +
-			'код города ' + wat.city + "\n<br/>" +
-			'тариф ' + wat.tarif + "\n<br/>" +
+			'Выбрана доставка курьером в город ' + wat.cityName + " | " +
+			'код города ' + wat.city + " | " +
+			'тариф ' + wat.tarif + " | " +
 			'срок ' + wat.term + ' дн.'
 		);
 		// calc (1.2) end
@@ -87,14 +87,16 @@ $(window).load(function(){
 		$('#calc_info').html(text);
 		// calc (2) end
 	}
-					  
+	{if !empty($cart->total_weight)}
+		{$total_weight = $cart->total_weight}
+	{/if}				  
 	$(document).on('click', '#li_delivery_114 .show_map', function () {
 		ourWidjet.cargo.reset();
 		ourWidjet.cargo.add({
 			length: {$side|round},
 			width: {$side|round},
 			height: {$side|round},
-			weight: {$cart->total_weight}
+			weight: {$total_weight}
 		});
 		ourWidjet.open();
 	});

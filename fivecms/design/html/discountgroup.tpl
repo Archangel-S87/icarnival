@@ -97,6 +97,9 @@ $(function() {
 					<option value='0' {if $settings->variant_discount == '0'}selected{/if}>{$tr->disabled_a|escape}</option>
 					<option value='1' {if $settings->variant_discount == '1'}selected{/if}>{$tr->enabled_a|escape}</option>
 				</select>
+				
+				<a style="display:inline-block;margin:0 0 6px 15px;" class="bigbutton" href="index.php?module=MultichangesAdmin">{$tr->pack_discount|escape}</a> 
+				
 	        </div>
 	        
 			<div class="block layer" id="header" style="margin-bottom:0px;">

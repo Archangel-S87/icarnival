@@ -196,12 +196,6 @@ class Surveys extends Fivecms
      */
     public function add_survey($post)
     {
-        /*if(isset($post->date))
-        {
-        $date = $post->date;
-        unset($post->date);
-        $date_query = $this->db->placehold(', date=STR_TO_DATE(?, ?)', $date, $this->settings->date_format);
-        }*/
         if (!isset($post->date)) {
             $date_query = ', date=NOW()';
         } else {
@@ -244,12 +238,6 @@ class Surveys extends Fivecms
     public function delete_survey($id)
     {
         if (!empty($id)) {
-
-            $images = $this->get_images(array('post_id' => $id));
-            foreach ($images as $i) {
-                $this->delete_image($i->id);
-            }
-
             $query = $this->db->placehold("DELETE FROM __surveys WHERE id=? LIMIT 1", intval($id));
             if ($this->db->query($query)) {
                 $this->db->query("DELETE FROM __surveys_results WHERE survey_id=?", intval($id));
@@ -259,76 +247,9 @@ class Surveys extends Fivecms
                 if ($this->db->query($query)) {
                     return true;
                 }
-
             }
-
         }
         return false;
-    }
-
-    public function get_images($filter = array())
-    {
-        $post_id_filter = '';
-        $group_by       = '';
-
-        if (!empty($filter['post_id'])) {
-            $post_id_filter = $this->db->placehold('AND i.post_id in(?@)', (array) $filter['post_id']);
-        }
-
-        // images
-        $query = $this->db->placehold("SELECT i.id, i.post_id, i.name, i.filename, i.position
-									FROM __images_survey AS i WHERE 1 $post_id_filter $group_by ORDER BY i.post_id, i.position");
-        $this->db->query($query);
-        return $this->db->results();
-    }
-
-    public function add_image($post_id, $filename, $name = '')
-    {
-        $query = $this->db->placehold("SELECT id FROM __images_survey WHERE post_id=? AND filename=?", $post_id, $filename);
-        $this->db->query($query);
-        $id = $this->db->result('id');
-        if (empty($id)) {
-            $query = $this->db->placehold("INSERT INTO __images_survey SET post_id=?, filename=?", $post_id, $filename);
-            $this->db->query($query);
-            $id    = $this->db->insert_id();
-            $query = $this->db->placehold("UPDATE __images_survey SET position=id WHERE id=?", $id);
-            $this->db->query($query);
-        }
-        return ($id);
-    }
-
-    public function update_image($id, $image)
-    {
-
-        $query = $this->db->placehold("UPDATE __images_survey SET ?% WHERE id=?", $image, $id);
-        $this->db->query($query);
-
-        return ($id);
-    }
-
-    public function delete_image($id)
-    {
-        $query = $this->db->placehold("SELECT filename FROM __images_survey WHERE id=?", $id);
-        $this->db->query($query);
-        $filename = $this->db->result('filename');
-        $query    = $this->db->placehold("DELETE FROM __images_survey WHERE id=? LIMIT 1", $id);
-        $this->db->query($query);
-        $query = $this->db->placehold("SELECT count(*) as count FROM __images_survey WHERE filename=? LIMIT 1", $filename);
-        $this->db->query($query);
-        $count = $this->db->result('count');
-        if ($count == 0) {
-            $file = pathinfo($filename, PATHINFO_FILENAME);
-            $ext  = pathinfo($filename, PATHINFO_EXTENSION);
-
-            $rezised_images = glob($this->config->root_dir . $this->config->resized_images_dir . $file . "*." . $ext);
-            if (is_array($rezised_images)) {
-                foreach (glob($this->config->root_dir . $this->config->resized_images_dir . $file . "*." . $ext) as $f) {
-                    @unlink($f);
-                }
-            }
-
-            @unlink($this->config->root_dir . $this->config->original_images_dir . $filename);
-        }
     }
 
     /*
@@ -354,7 +275,6 @@ class Surveys extends Fivecms
         } else {
             return false;
         }
-
     }
 
     /*
@@ -380,7 +300,6 @@ class Surveys extends Fivecms
         } else {
             return false;
         }
-
     }
 
     public function get_fields($filter = array())
@@ -406,7 +325,6 @@ class Surveys extends Fivecms
                                       ORDER BY $order");
         $this->db->query($query);
         return $this->db->results();
-
     }
     public function get_field($id)
     {
@@ -436,7 +354,6 @@ class Surveys extends Fivecms
         
         return $this->db->insert_id();
     }
-
 
     public function delete_field($id)
     {

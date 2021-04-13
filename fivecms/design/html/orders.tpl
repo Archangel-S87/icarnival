@@ -121,7 +121,7 @@
 						<a href="/../../order/{$order->url}" target="_blank" class="preview" title="{$tr->open_on_page|escape}"></a>
 						<a href='{url module=OrderAdmin id=$order->id view=print}' target="_blank" class="print" title="{$tr->order_print}"></a>
 						<a href='{url module=OrderAdmin id=$order->id view=excel}' target="_blank" class="excel" title="{$tr->order_xls_docs}"></a>
-						<a href='{url module=OrderAdmin id=$order->id view=torg12}'  target="_blank" class="table" title="Сформировать ТОРГ-12 в Excel"></a>
+						<a href='{url module=OrderAdmin id=$order->id view=torg12}' target="_blank" class="table" title="Сформировать ТОРГ-12 в Excel"><img src="./design/images/invoice.png" width="17" title="Счет на оплату"></a>
 					{*<a href='{url module=OrderAdmin id=$order->id view=excel}'  target="_blank" class="excel" title="Расходная, Кассовый ордер, Товарник в Excel"></a>*}
 						<a href='#' class=delete title="{$tr->delete|escape}"></a>
 					</div>
@@ -197,17 +197,12 @@
 	
 			<span id="select">
 				<select name="action">
-					<option value="journal">Сформировать журнал доставок</option>
 					{if isset($status)}
 						{if $status!==0}<option value="set_status_0">{$tr->in} {$tr->new_pl|lower}</option>{/if}
 						{if $status!==4}<option value="set_status_4">{$tr->status_in_processing|escape}</option>{/if}
 						{if $status!==1}<option value="set_status_1">{$tr->in} {$tr->status_accepted_pl_e|lower}</option>{/if}
 						{if $status!==2}<option value="set_status_2">{$tr->in} {$tr->status_completed_pl_e|lower}</option>{/if}
 					{/if}
-					<option value="bistronogi">Добавить в примечание &laquo;Быстроноги&raquo;</option>
-					<option value="set_paid">Отметить как оплаченные</option>
-					<option value="unset_paid">Снять отметку оплаты</option>
-					<option value="bistronogi">Добавить в примечание &laquo;Быстроноги&raquo;</option>
 					{foreach $labels as $l}
 					<option value="set_label_{$l->id}">{$tr->mark|escape} &laquo;{$l->name}&raquo;</option>
 					{/foreach}
@@ -233,27 +228,40 @@
 
 
 <!-- Меню -->
-<div id="right_menu" class="ordersright">
-	
-	{if isset($labels)}
-	<!-- Метки -->
+<form method="get">
+<input type="hidden" name="module" value="OrdersAdmin"/>
+<input type="hidden" name="status" value="{$status|escape}"/>
+{if !empty($keyword)}
+<input type="hidden" name="keyword" value="{$keyword|escape}"/>
+{/if}
+
+<div id="right_menu" class="ordersright right_menu_filter">
+	{if !empty($labels)}		
+	<div class="o_filer_title">{$tr->labels|escape}</div>
 	<ul id="labels">
-		<li {if !isset($label)}class="selected"{/if}><span class="label"></span> <a href="{url label=null}">{$tr->all|escape} {$tr->orders|escape|lower}</a></li>
 		{foreach $labels as $l}
-		<li data-label-id="{$l->id}" {if isset($label->id) && $label->id==$l->id}class="selected"{/if}>
-		<span style="background-color:#{$l->color};" class="order_label"></span>
-		<a href="{url label=$l->id}">{$l->name}</a></li>
+		<li data-label-id="{$l->id}">
+			<label>
+				<span class="chbox">
+					<input type="checkbox" name="label_id[]" value="{$l->id}" {if !empty($label_id) && in_array($l->id, $label_id)}checked{/if} />
+				</span>
+				<span style="background-color:#{$l->color};" class="order_label"></span>
+				<span>{$l->name|escape}</span>
+			</label>
+		</li>
 		{/foreach}
 	</ul>
-	<!-- Метки -->
+	<div>
+		<input id="apply_action" class="button_green" type="submit" value="{$tr->filter|escape}"/>
+		{*<a class="bigbutton" href="{url module=OrdersAdmin status=$status keyword=null filter=null filter_two=null id=null page=null label_id=null}">{$tr->reset|escape}</a>*}
+		<a class="bigbutton" href="{url module=OrdersAdmin status=$status keyword=null id=null page=null label_id=null}">{$tr->reset|escape}</a>
+	</div>
 	{/if}
-	
 </div>
 
 <div class="right_menu ordersright right_menu_filter">
 	{* Фильтр по дате заказа *}
 	<div id="search-date">
-		{* On document load *}
 		{literal}
 		<script src="design/js/jquery/datepicker/jquery.ui.datepicker-ru.js"></script>
 		<script>
@@ -265,32 +273,20 @@
 					regional:'ru'
 				});
 			});
-			function show_fields()
-			{
-			document.getElementById("filter_fields").style.display = document.getElementById("check").checked ? 'block' : 'none';
-			}
 		</script>
 		{/literal}
-	
 		<div class="search-dbody">
-			<form method="get">
-				<div id='filter_check'>
-					<input type="checkbox" name="filter[check]" id="check" value='1' {if isset($smarty.get.filter.check)}checked{/if} onclick="show_fields();"/>
-					<label for="check">{$tr->filter_by_order_date|escape}</label>
+			<div class="o_filer_title">{$tr->filter_by_order_date|escape}</div>
+			<div id='filter_fields'>
+				<div class="filter_date_wrapper">
+					<label>{$tr->from|escape}&nbsp;</label><input type=text name="filter[date_from]" value='{if isset($date_from)}{$date_from}{/if}' autocomplete="off" /><br />
+					<label>{$tr->to|escape}&nbsp;</label><input type=text name="filter[date_to]" value='{if isset($date_to)}{$date_to}{/if}' autocomplete="off" />
 				</div>
-				<div id='filter_fields' {if !isset($smarty.get.filter.check)}style="display: none"{/if}>
-					<input type="hidden" name="module" value="OrdersAdmin"/>
-					<input type="hidden" name="status" value="{$status}"/>
-					<div class="filter_date_wrapper">
-						<label>{$tr->from|escape}&nbsp;</label><input type=text name=filter[date_from] value='{if isset($smarty.get.filter.date_from)}{$smarty.get.filter.date_from}{/if}' autocomplete="off" /><br />
-						<label>{$tr->to|escape}&nbsp;</label><input type=text name=filter[date_to] value='{if isset($smarty.get.filter.date_to)}{$smarty.get.filter.date_to}{/if}' autocomplete="off" />
-					</div>
-					<input id="apply_action" class="button_green" type="submit" value="{$tr->filter|escape}"/>
-					<a class="bigbutton" href="{url module=OrdersAdmin status=$status keyword=null filter=null id=null page=null label=null}">{$tr->reset|escape}</a>
-				</div>
-			</form>
+				<input id="apply_action" class="button_green" type="submit" value="{$tr->filter|escape}"/>
+				{*<a class="bigbutton" href="{url module=OrdersAdmin status=$status keyword=null filter=null filter_two=null id=null page=null label_id=null}">{$tr->reset|escape}</a>*}
+				<a class="bigbutton" href="{url module=OrdersAdmin status=$status keyword=null filter=null id=null page=null}">{$tr->reset|escape}</a>
+			</div>
 		</div>
-	
 	</div>
 	{* Фильтр по дате заказа @ *}
 </div>
@@ -307,41 +303,31 @@
 					regional:'ru'
 				});
 			});
-			function shipment_fields()
-			{
-				document.getElementById("shipment_fields").style.display = document.getElementById("check_two").checked ? 'block' : 'none';
-			}
 		</script>
 		<div class="search-dbody">
-			<form method="get">
-				<div id='filter_check'>
-					<input type="checkbox" name="filter_two[check]" id="check_two" value='1' {if isset($smarty.get.filter_two.check)}checked{/if} onclick="shipment_fields();"/>
-					<label for="check_two">{$tr->filter_by_order_shipment|escape}</label>
+			<div class="o_filer_title">{$tr->filter_by_order_shipment|escape}</div>
+			<div id='shipment_fields'>
+				<div class="filter_date_wrapper">
+					<label>{$tr->from|escape}&nbsp;</label><input type=text name="filter_two[date_from]" value='{if isset($date_from_two)}{$date_from_two}{/if}' autocomplete="off" /><br />
+					<label>{$tr->to|escape}&nbsp;</label><input type=text name="filter_two[date_to]" value='{if isset($date_to_two)}{$date_to_two}{/if}' autocomplete="off" />
 				</div>
-				<div id='shipment_fields' {if !isset($smarty.get.filter_two.check)}style="display: none"{/if}>
-					<input type="hidden" name="module" value="OrdersAdmin"/>
-					<input type="hidden" name="status" value="{$status}"/>
-					<div class="filter_date_wrapper">
-						<label>{$tr->from|escape}&nbsp;</label><input type=text name=filter_two[date_from] value='{if isset($smarty.get.filter_two.date_from)}{$smarty.get.filter_two.date_from}{/if}' autocomplete="off" /><br />
-						<label>{$tr->to|escape}&nbsp;</label><input type=text name=filter_two[date_to] value='{if isset($smarty.get.filter_two.date_to)}{$smarty.get.filter_two.date_to}{/if}' autocomplete="off" />
-					</div>
-					<input id="apply_action" class="button_green" type="submit" value="{$tr->filter|escape}"/>
-					<a class="bigbutton" href="{url module=OrdersAdmin status=$status keyword=null filter=null filter_two=null id=null page=null label=null}">{$tr->reset|escape}</a>
-				</div>
-			</form>
+				<input id="apply_action" class="button_green" type="submit" value="{$tr->filter|escape}"/>
+				{*<a class="bigbutton" href="{url module=OrdersAdmin status=$status keyword=null filter=null filter_two=null id=null page=null label_id=null}">{$tr->reset|escape}</a>*}
+				<a class="bigbutton" href="{url module=OrdersAdmin status=$status keyword=null filter_two=null id=null page=null}">{$tr->reset|escape}</a>
+			</div>
 		</div>
-	
 	</div>
 	{* Фильтр по дате отправки @ *}
 </div>
 
+</form>
 <!-- Меню  (The End) -->
 
 <svg style="display:none;"> <symbol id="b_plus" fill="#1b6f9f" viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve"> <g id="Bounding_Boxes_cf"> <g id="ui_x5F_spec_x5F_header_copy_3_cf" display="none"> </g> <path fill="none" d="M0,0h24v24H0V0z"/> </g> <g id="Outline_cf"> <g id="ui_x5F_spec_x5F_header_cf" display="none"> </g> <path d="M13,7h-2v4H7v2h4v4h2v-4h4v-2h-4V7z M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,20
 			c-4.41,0-8-3.59-8-8s3.59-8,8-8s8,3.59,8,8S16.41,20,12,20z"/> </g> </symbol> 
 </svg>
 
-{* On document load *}
+
 {literal}
 <script>
 $(function() {
@@ -349,8 +335,8 @@ $(function() {
 	$(document).on('click','.hide_feat',function(){
 		$(this).toggleClass('show').parent().siblings('.feature_values').fadeToggle('normal');return false;
 	});
-
-	// Сортировка списка
+	
+	// Перетаскивание меток
 	$("#labels").sortable({
 		items:             "li",
 		tolerance:         "pointer",

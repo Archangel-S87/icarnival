@@ -9,7 +9,7 @@
 {/capture}
 
 {$meta_title = $tr->backup scope=root}
-{* Больше данного кол-ва товаров не даем использовать бэкап *}
+{* Больше данного кол-ва товаров выводим предупреждение *}
 {$limit_prods_backup = 10000}
 
 {* Title | Заголовок *}
@@ -17,21 +17,20 @@
 	<h1>{$tr->backup|escape}</h1>
 	{if isset($message_error) && $message_error == 'no_permission'}
 		{* todo *}
-	{elseif $prod_count < $limit_prods_backup}
-		{*<a class="add" href="">Создать полный бекап</a>*}
+	{else}
 		<span class="fast_add" href="">{$tr->make_db_backup|escape}</span>
+		<span class="products_add backupstyle" href="">{$tr->make_products_backup|escape}</span>
+		<span class="prices_add backupstyle" href="">{$tr->make_prices_backup|escape}</span>
+		<span class="orders_add backupstyle" href="">{$tr->make_orders_backup|escape}</span>
 		<span class="settings_add backupstyle" href="">{$tr->make_settings_backup|escape}</span>
 		<span class="texts_add backupstyle" href="">{$tr->make_texts_backup|escape}</span>
 		<span class="users_add backupstyle" href="">{$tr->make_users_backup|escape}</span>
-		<span class="prices_add backupstyle" href="">{$tr->make_prices_backup|escape}</span>
-		<span class="orders_add backupstyle" href="">{$tr->make_orders_backup|escape}</span>
-		<span class="products_add backupstyle" href="">{$tr->make_products_backup|escape}</span>
-		<form id="hidden" method="post">
-			<input type="hidden" name="session_id" value="{$smarty.session.id}">
-			<input type="hidden" name="action" value="">
-			<input type="hidden" name="name" value="">
-		</form>
 	{/if}
+	<form id="hidden" method="post">
+		<input type="hidden" name="session_id" value="{$smarty.session.id}">
+		<input type="hidden" name="action" value="">
+		<input type="hidden" name="name" value="">
+	</form>
 </div>	
 
 {if isset($message_success)}
@@ -65,7 +64,7 @@
 <!-- System message | Системное сообщение -->
 <div class="message message_error">
 	<span class="text">
-	[{$prod_count}] {$tr->limit_prods_backup}
+	[{$tr->total}: {$prod_count}] {$tr->limit_prods_backup}
 	</span>
 </div>
 <!-- System message | Системное сообщение (The End)-->

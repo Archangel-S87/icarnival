@@ -156,12 +156,9 @@
 						
 						
 				<!--  quick view -->
-				
-						<div class="hit"><img alt="" src="/js/hit.png"></div>		<div class="image qwbox">
-											<img src="./design/images/HTC-Sensation-4G-1.200x200.jpeg">
-									</div>
-					
-				
+				<div class="image qwbox">
+					<img src="./design/images/HTC-Sensation-4G-1.200x200.jpeg">
+				</div>
 				<!--  quick view end -->
 				
 				
@@ -238,9 +235,9 @@
 						
 				<!--  quick view -->
 				
-						<div class="hit"><img alt="" src="/js/hit.png"></div>		<div class="image qwbox">
-											<img src="./design/images/iphone4s-white.200x200.jpeg">
-									</div>
+						<div class="image qwbox">
+							<img src="./design/images/iphone4s-white.200x200.jpeg">
+						</div>
 					
 				
 				<!--  quick view end -->
@@ -332,9 +329,9 @@
 						
 				<!--  quick view -->
 				
-						<div class="hit"><img alt="" src="/js/hit.png"></div>		<div class="image qwbox">
-											<img src="./design/images/Samsung-Diva-S7070.200x200.jpeg">
-									</div>
+						<div class="image qwbox">
+							<img src="./design/images/Samsung-Diva-S7070.200x200.jpeg">
+						</div>
 					
 				
 				<!--  quick view end -->

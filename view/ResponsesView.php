@@ -38,18 +38,28 @@ class ResponsesView extends View
 			$this->design->assign('comment_name', $comment->name);
 			$this->design->assign('comment_email', $comment->email);
 			
-			// Проверяем капчу и заполнение формы
-			if (empty($comment->name))
+			// Проверяем заполнение формы
+			if($this->settings->spam_ip == 1 && (
+					(!empty($ip) && $ip == $this->settings->last_ip_response) || 
+					(!empty(session_id()) && session_id() == $this->settings->session_id_response)
+				)){
+				$this->design->assign('error', 'ip');
+			}		
+			elseif (empty($comment->name))
 				$this->design->assign('error', 'empty_name');
 			elseif($this->settings->spam_cyr == 1 && !preg_match('/^[а-яё \t]+$/iu', $comment->name))
 				$this->design->assign('error', 'wrong_name');
 			elseif(!empty($this->settings->spam_symbols) && mb_strlen($comment->name,'UTF-8') > $this->settings->spam_symbols)
-				$this->design->assign('error', 'captcha');	
-			elseif (empty($comment->text))
-				$this->design->assign('error', 'empty_comment');
-			elseif(!$bttrue)
 				$this->design->assign('error', 'captcha');
-			elseif($btfalse)
+			elseif(empty($comment->email))
+				$this->design->assign('error', 'empty_email');	
+			elseif(!empty($comment->email) && filter_var($comment->email, FILTER_VALIDATE_EMAIL) === false)	
+				$this->design->assign('error', 'wrong_email');	
+			elseif(empty($comment->text))
+				$this->design->assign('error', 'empty_comment');
+			elseif(empty($bttrue))
+				$this->design->assign('error', 'captcha');
+			elseif(!empty($btfalse))
 				$this->design->assign('error', 'captcha');
 			else
 			{
@@ -60,7 +70,17 @@ class ResponsesView extends View
 				
 				// Добавляем комментарий в базу
 				$comment_id = $this->comments->add_comment($comment);
-				// Отправляем email
+				
+				// Записываем сессию и IP для блокировки повторной отправки
+				if(!empty($ip))
+					$this->settings->last_ip_response = $ip;
+				if(!empty(session_id()))
+					$this->settings->session_id_response = session_id();
+				
+				if($this->settings->auto_subscribe == 1)
+					$this->mailer->add_mail($name, $email);
+				
+				// Отправляем email админу
 				$this->notify->email_comment_admin($comment_id);				
 				header('location: '.$_SERVER['REQUEST_URI'].'#comment_'.$comment_id);
 			}			

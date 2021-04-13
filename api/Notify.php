@@ -17,7 +17,7 @@ class Notify extends Fivecms
     {
 		$email_header_template = $this->design->fetch($this->config->root_dir.'design/mail/html/email_header.tpl');
 		$email_footer_template = $this->design->fetch($this->config->root_dir.'design/mail/html/email_footer.tpl');
-		$fullmessage .= $email_header_template;
+		$fullmessage = $email_header_template;
 		$fullmessage .= $message;
 		$fullmessage .= $email_footer_template;
 		$to = explode(',', $to);
@@ -62,142 +62,145 @@ class Notify extends Fivecms
     		$headers .= "From: $from\r\n";
     		if(!empty($reply_to)) $headers .= "reply-to: $reply_to\r\n";
 			$subject = "=?utf-8?B?".base64_encode($subject)."?=";
-			@mail($to, $subject, $fullmessage, $headers);
+			foreach($to as $to_item)
+				@mail($to_item, $subject, $fullmessage, $headers);
 		}
     }
 
 	public function email_order_user($order_id)
 	{
-			if(!($order = $this->orders->get_order(intval($order_id))) || empty($order->email))
-				return false;
-			
-			$purchases = $this->orders->get_purchases(array('order_id'=>$order->id));
-			$this->design->assign('purchases', $purchases);			
-
-			$products_ids = array();
-			$variants_ids = array();
-			foreach($purchases as $purchase)
-			{
-				$products_ids[] = $purchase->product_id;
-				$variants_ids[] = $purchase->variant_id;;
-			}
-			
-			$products = array();
-			//foreach($this->products->get_products(array('id'=>$products_ids)) as $p)
-			foreach($this->products->get_products(array('id'=>$products_ids, 'limit' => count($products_ids))) as $p)
-				$products[$p->id] = $p;
-				
-			$images = $this->products->get_images(array('product_id'=>$products_ids));
-			foreach($images as $image)
-				$products[$image->product_id]->images[] = $image;
-			
-			$variants = array();
-			foreach($this->variants->get_variants(array('id'=>$variants_ids)) as $v)
-			{
-				$variants[$v->id] = $v;
-				$products[$v->product_id]->variants[] = $v;
-			}
-				
-			foreach($purchases as &$purchase)
-			{
-				if(!empty($products[$purchase->product_id]))
-					$purchase->product = $products[$purchase->product_id];
-				if(!empty($variants[$purchase->variant_id]))
-					$purchase->variant = $variants[$purchase->variant_id];
-				if(!empty($purchase->product->brand_id))
-					$purchase->brand = $this->brands->get_brand(intval($purchase->product->brand_id));
-			}
-			
-			// Способ доставки
-			$delivery = $this->delivery->get_delivery($order->delivery_id);
-			$this->design->assign('delivery', $delivery);
-
-	        $payment_method = $this->payment->get_payment_method($order->payment_method_id);
-    	    $this->design->assign('payment_method', $payment_method);
-
-			$this->design->assign('order', $order);
-			$this->design->assign('purchases', $purchases);
-
-			// Отправляем письмо
-			// Если в шаблон не передавалась валюта, передадим
-			if ($this->design->smarty->getTemplateVars('currency') === null) 
-			{
-				//$this->design->assign('currency', reset($this->money->get_currencies(array('enabled'=>1))));
-				$this->design->assign('currency', current($this->money->get_currencies(array('enabled'=>1))));
-			}
-			$email_template = $this->design->fetch($this->config->root_dir.'design/mail/html/email_order.tpl');
-			$subject = $this->design->get_var('subject');
-			$this->email($order->email, $subject, $email_template, $this->settings->notify_from_email, $this->settings->order_email);
-	
-			// Отправка смс уведомления пользователю
-			$textstatus = "";
-			if($order->status==0) $textstatus = "ждет обработки";
-			elseif($order->status==4) $textstatus = "в обработке";
-			elseif($order->status==1) $textstatus = "выполняется";
-			elseif($order->status==2) $textstatus = "выполнен";
-			elseif($order->status==3) $textstatus = "отменен";
+		if(!($order = $this->orders->get_order(intval($order_id))) || empty($order->email))
+			return false;
 		
-			if($this->settings->statussms == 1 && $order->phone)
+		$purchases = $this->orders->get_purchases(array('order_id'=>$order->id));
+		$this->design->assign('purchases', $purchases);			
+
+		$products_ids = array();
+		$variants_ids = array();
+		foreach($purchases as $purchase)
+		{
+			$products_ids[] = $purchase->product_id;
+			$variants_ids[] = $purchase->variant_id;;
+		}
+		
+		$products = array();
+		foreach($this->products->get_products(array('id'=>$products_ids, 'limit' => count($products_ids))) as $p)
+			$products[$p->id] = $p;
+			
+		$images = $this->products->get_images(array('product_id'=>$products_ids));
+		foreach($images as $image)
+			$products[$image->product_id]->images[] = $image;
+			
+		$variants = array();
+		foreach($this->variants->get_variants(array('id'=>$variants_ids)) as $v)
+		{
+			$variants[$v->id] = $v;
+			$products[$v->product_id]->variants[] = $v;
+		}
+			
+		foreach($purchases as &$purchase)
+		{
+			if(!empty($products[$purchase->product_id]))
+				$purchase->product = $products[$purchase->product_id];
+			if(!empty($variants[$purchase->variant_id]))
+				$purchase->variant = $variants[$purchase->variant_id];
+			if(!empty($purchase->product->brand_id))
+				$purchase->brand = $this->brands->get_brand(intval($purchase->product->brand_id));
+		}
+			
+		// Способ доставки
+		$delivery = $this->delivery->get_delivery($order->delivery_id);
+		$this->design->assign('delivery', $delivery);
+
+	    $payment_method = $this->payment->get_payment_method($order->payment_method_id);
+    	$this->design->assign('payment_method', $payment_method);
+
+		$this->design->assign('order', $order);
+		$this->design->assign('purchases', $purchases);
+
+		// Отправляем письмо
+		// Если в шаблон не передавалась валюта, передадим
+		if($this->design->smarty->getTemplateVars('currency') === null) 
+		{
+			$this->design->assign('currency',$this->money->get_current());
+		}
+			
+		// Все валюты
+		$this->design->assign('all_currencies', $this->money->get_currencies());
+		
+		$email_template = $this->design->fetch($this->config->root_dir.'design/mail/html/email_order.tpl');
+		$subject = $this->design->get_var('subject');
+		$this->email($order->email, $subject, $email_template, $this->settings->notify_from_email, $this->settings->order_email);
+	
+		// Отправка смс уведомления пользователю
+		$textstatus = "";
+		if($order->status==0) $textstatus = "ждет обработки";
+		elseif($order->status==4) $textstatus = "в обработке";
+		elseif($order->status==1) $textstatus = "выполняется";
+		elseif($order->status==2) $textstatus = "выполнен";
+		elseif($order->status==3) $textstatus = "отменен";
+		
+		if($this->settings->statussms == 1 && $order->phone)
 				$this->notify->sms($order->phone, 'Заказ на сайте '.$this->settings->site_name.' #'.$order->id.' '.$textstatus);
 	}
 
-
 	public function email_order_admin($order_id)
 	{
-			if(!($order = $this->orders->get_order(intval($order_id))))
-				return false;
+		if(!($order = $this->orders->get_order(intval($order_id))))
+			return false;
 			
-			$purchases = $this->orders->get_purchases(array('order_id'=>$order->id));
-			$this->design->assign('purchases', $purchases);			
+		$purchases = $this->orders->get_purchases(array('order_id'=>$order->id));
+		$this->design->assign('purchases', $purchases);			
 
-			$products_ids = array();
-			$variants_ids = array();
-			foreach($purchases as $purchase)
-			{
-				$products_ids[] = $purchase->product_id;
-				$variants_ids[] = $purchase->variant_id;
-			}
+		$products_ids = array();
+		$variants_ids = array();
+		foreach($purchases as $purchase)
+		{
+			$products_ids[] = $purchase->product_id;
+			$variants_ids[] = $purchase->variant_id;
+		}
 
-			$products = array();
-			//foreach($this->products->get_products(array('id'=>$products_ids)) as $p)
-			foreach($this->products->get_products(array('id'=>$products_ids, 'limit' => count($products_ids))) as $p)
-				$products[$p->id] = $p;
+		$products = array();
+		foreach($this->products->get_products(array('id'=>$products_ids, 'limit' => count($products_ids))) as $p)
+			$products[$p->id] = $p;
 
-			$images = $this->products->get_images(array('product_id'=>$products_ids));
-			foreach($images as $image)
-				$products[$image->product_id]->images[] = $image;
+		$images = $this->products->get_images(array('product_id'=>$products_ids));
+		foreach($images as $image)
+			$products[$image->product_id]->images[] = $image;
 			
-			$variants = array();
-			foreach($this->variants->get_variants(array('id'=>$variants_ids)) as $v)
-			{
-				$variants[$v->id] = $v;
-				$products[$v->product_id]->variants[] = $v;
-			}
+		$variants = array();
+		foreach($this->variants->get_variants(array('id'=>$variants_ids)) as $v)
+		{
+			$variants[$v->id] = $v;
+			$products[$v->product_id]->variants[] = $v;
+		}
 	
-			foreach($purchases as &$purchase)
-			{
-				if(!empty($products[$purchase->product_id]))
-					$purchase->product = $products[$purchase->product_id];
-				if(!empty($variants[$purchase->variant_id]))
-					$purchase->variant = $variants[$purchase->variant_id];
-				if(!empty($purchase->product->brand_id))
-					$purchase->brand = $this->brands->get_brand(intval($purchase->product->brand_id));
-			}
+		foreach($purchases as &$purchase)
+		{
+			if(!empty($products[$purchase->product_id]))
+				$purchase->product = $products[$purchase->product_id];
+			if(!empty($variants[$purchase->variant_id]))
+				$purchase->variant = $variants[$purchase->variant_id];
+			if(!empty($purchase->product->brand_id))					$purchase->brand = $this->brands->get_brand(intval($purchase->product->brand_id));
+		}
 			
-			// Способ доставки
-			$delivery = $this->delivery->get_delivery($order->delivery_id);
-			$this->design->assign('delivery', $delivery);
+		// Способ доставки
+		$delivery = $this->delivery->get_delivery($order->delivery_id);
+		$this->design->assign('delivery', $delivery);
 
-			$this->design->assign('order', $order);
-			$this->design->assign('purchases', $purchases);
+		$this->design->assign('order', $order);
+		$this->design->assign('purchases', $purchases);
 
-			// В основной валюте
-			$this->design->assign('main_currency', $this->money->get_currency());
+		// В основной валюте
+		$this->design->assign('main_currency', $this->money->get_currency());
+			
+		// Все валюты
+		$this->design->assign('all_currencies', $this->money->get_currencies());
 
-			// Отправляем письмо
-			$email_template = $this->design->fetch($this->config->root_dir.'design/mail/html/email_order_admin.tpl');
-			$subject = $this->design->get_var('subject');
-			$this->email($this->settings->order_email, $subject, $email_template, $this->settings->notify_from_email, $order->email);
+		// Отправляем письмо
+		$email_template = $this->design->fetch($this->config->root_dir.'design/mail/html/email_order_admin.tpl');
+		$subject = $this->design->get_var('subject');
+		$this->email($this->settings->order_email, $subject, $email_template, $this->settings->notify_from_email, $order->email);
 			
 		// Отправка смс уведомления администратору о поступившем заказе 
 		if($this->settings->allowsms == 1 && $this->settings->smsadmin)
@@ -205,25 +208,23 @@ class Notify extends Fivecms
 	
 	}
 
-
 	public function email_comment_admin($comment_id)
 	{ 
-			if(!($comment = $this->comments->get_comment(intval($comment_id))))
-				return false;
+		if(!($comment = $this->comments->get_comment(intval($comment_id))))
+			return false;
 
-			if($comment->type == 'product')
-				$comment->product = $this->products->get_product(intval($comment->object_id));
-			if($comment->type == 'blog')
-				$comment->post = $this->blog->get_post(intval($comment->object_id));
+		if($comment->type == 'product')
+			$comment->product = $this->products->get_product(intval($comment->object_id));
+		if($comment->type == 'blog')
+			$comment->post = $this->blog->get_post(intval($comment->object_id));
 
-			$this->design->assign('comment', $comment);
+		$this->design->assign('comment', $comment);
 
-			// Отправляем письмо
-			$email_template = $this->design->fetch($this->config->root_dir.'design/mail/html/email_comment_admin.tpl');
-			$subject = $this->design->get_var('subject');
-			$this->email($this->settings->comment_email, $subject, $email_template, $this->settings->notify_from_email, $comment->email);
+		// Отправляем письмо
+		$email_template = $this->design->fetch($this->config->root_dir.'design/mail/html/email_comment_admin.tpl');
+		$subject = $this->design->get_var('subject');
+		$this->email($this->settings->comment_email, $subject, $email_template, $this->settings->notify_from_email, $comment->email);
 	}
-
 
 	public function email_comment_user($comment_id)
 	{ 
@@ -258,7 +259,6 @@ class Notify extends Fivecms
 			$subject = $this->design->get_var('subject');
 			$this->email($comment->email, $subject, $email_template, $this->settings->notify_from_email);
 	}
-
 
 	public function email_password_remind($user_id, $code)
 	{

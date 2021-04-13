@@ -82,12 +82,12 @@
 {if $posts}
 	<div class="ajax_pagination">
 
-		{*{if $posts|count>1}
+		{if $posts|count>1}
 		<div class="sort blog-pg">
 			Сортировать по: 
 			<a {if $sort=='position'} class="selected"{/if} href="{url articles_sort=position page=null}">порядку</a>&nbsp;|&nbsp;<a {if $sort=='date'}    class="selected"{/if} href="{url articles_sort=date page=null}">дате</a>&nbsp;|&nbsp;<a {if $sort=='name'}     class="selected"{/if} href="{url articles_sort=name page=null}">имени</a>
 		</div>
-		{/if}*}
+		{/if}
 
 		{*{if $total_pages_num>1}
 			<div class="blog-pg">
@@ -103,27 +103,7 @@
 
 		<ul class="comment_list infinite_load" style="margin-top:0;">
 			{foreach $posts as $post}
-			<li>
-				<h3 class="blog_title">{if !empty($post->text)}<a data-article="{$post->id}" href="article/{$post->url}" title="{$post->name|escape}">{$post->name|escape}</a>{else}{$post->name|escape}{/if}</h3>
-				<div class="postdate dateico">
-					<div class="left">
-						<svg><use xlink:href='#calendar' /></svg>
-						<span>{$post->date|date}</span>
-					</div>
-					<div class="right">
-						<svg><use xlink:href='#views' /></svg>
-						<span>Просмотров: {$post->views}</span>
-					</div>
-				</div>
-				{if !empty($post->annotation)}<div class="post-annotation">{$post->annotation}</div>{/if}
-				{*{if !empty($post->text)}<p class="readmore"><a href="article/{$post->url}">Далее ...</a></p>{/if}*}
-				{if !empty($post->section)}
-					<div class="path">
-						<svg><use xlink:href='#folder' /></svg>
-						<a href="articles/{$post->section->url}" title="{$post->section->name|escape}">{$post->section->name|escape}</a>
-					</div>
-				{/if}		
-			</li>
+				{include file='articles_item.tpl'}
 			{/foreach}
 		</ul>
 
@@ -137,7 +117,7 @@
 
 	</div>
 {else}
-	{if isset($keyword) && empty($posts)}<div class="blog-pg">Статьи не найдены</div>{/if}
+	<div class="blog-pg">Статьи не найдены</div>
 {/if}	
 {* Каталог статей end *}
 

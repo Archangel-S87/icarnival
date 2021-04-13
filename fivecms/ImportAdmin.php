@@ -59,7 +59,7 @@ class ImportAdmin extends Fivecms
 			$this->settings->d_annotation = $this->request->post('d_annotation');
 			$this->settings->d_description = $this->request->post('d_description');
 			$this->settings->d_images = $this->request->post('d_images');
-			$this->design->assign('message_success', 'saved');
+			$this->design->assign('message_success', 'updated');
         }
 		
 		return $this->design->fetch('import.tpl');
@@ -68,9 +68,10 @@ class ImportAdmin extends Fivecms
 	private function convert_file($source, $dest)
 	{
 		// Узнаем какая кодировка у файла
-		$teststring = file_get_contents($source, null, null, null, 1000000);
+		$teststring = file_get_contents($source, null, null, null, 250);
+		$teststring = explode(';', $teststring);
 		
-		if (preg_match('//u', $teststring)) // Кодировка - UTF8
+		if (preg_match('//u', $teststring[0])) // Кодировка - UTF8
 		{
 			// Просто копируем файл
 			return copy($source, $dest);

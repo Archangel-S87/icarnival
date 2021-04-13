@@ -109,7 +109,7 @@ class Features extends Fivecms
 		$query = $this->db->placehold("INSERT IGNORE INTO __categories_features SET feature_id=?, category_id=?", $id, $category_id);
 		$this->db->query($query);
 	}
-			
+
 	public function update_feature_categories($id, $categories)
 	{
 		$id = intval($id);
@@ -223,8 +223,10 @@ class Features extends Fivecms
 			$this->db->query($query);
 								   
 			$res = $this->db->results('value');
-			$res = str_replace(',','.',$res);
-			$res = (float)$res[0];
+			if(!empty($res)){
+				$res = str_replace(',','.',$res);
+				$res = (float)$res[0];
+			}
         } 
         
         if(empty($res) && !empty($this->settings->min_weight)){
@@ -232,6 +234,9 @@ class Features extends Fivecms
         	$res = str_replace(',','.',$res);
         	$res = (float)$res;
         }
+
+        if ($res) $res = $res / 1000;
+
 		return round($res,2);
     }
 
@@ -246,8 +251,10 @@ class Features extends Fivecms
 			$this->db->query($query);
 		
 			$res = $this->db->results('value');
-			$res = str_replace(',','.',$res);
-			$res = (float)$res[0];
+			if(!empty($res)){
+				$res = str_replace(',','.',$res);
+				$res = (float)$res[0];
+			}
         } 
         
         if(empty($res) && !empty($this->settings->min_volume)){

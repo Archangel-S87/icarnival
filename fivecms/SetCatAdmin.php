@@ -5,12 +5,6 @@ class SetCatAdmin extends Fivecms
 {	
 	public function fetch()
 	{	
-		$this->passwd_file = $this->config->root_dir.'/fivecms/.passwd';
-		$this->htaccess_file = $this->config->root_dir.'/fivecms/.htaccess';
-		
-		$managers = $this->managers->get_managers();
-		$this->design->assign('managers', $managers);
-
 		if($this->request->method('POST')){
 			
 			if($this->request->post('clear_cache')){
@@ -32,14 +26,17 @@ class SetCatAdmin extends Fivecms
 				$this->settings->colormanage = $this->request->post('colormanage');
 				$this->settings->showinstock = $this->request->post('showinstock');
 				$this->settings->minorder = $this->request->post('minorder');
-				$this->settings->prods_views = $this->request->post('prods_views');
 				$this->settings->prods_rating = $this->request->post('prods_rating');
 				$this->settings->prods_votes = $this->request->post('prods_votes');
 				$this->settings->cutouter = $this->request->post('cutouter');
 				$this->settings->cutseo = $this->request->post('cutseo');
+				$this->settings->check_download = $this->request->post('check_download');
 			
+				$this->settings->to_cart_name = $this->request->post('to_cart_name');
+				$this->settings->show1click = $this->request->post('show1click');
 				$this->settings->showsku = $this->request->post('showsku');
 				$this->settings->showstock = $this->request->post('showstock');
+				$this->settings->del_pay = $this->request->post('del_pay');
 				$this->settings->youtube_product = $this->request->post('youtube_product');
 				$this->settings->youtube_key = $this->request->post('youtube_key');
 			

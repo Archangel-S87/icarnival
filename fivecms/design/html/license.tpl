@@ -7,8 +7,8 @@
 
 	<div id="column_left" style="width:500px;">
 		<div class=block>
-			{if !empty($license->valid)}	
-			<div style="font-size:16px;font-weight:700;margin-bottom:15px;">{$tr->license_valid|escape} {if $license->expiration != '*'}{$tr->to|escape} <span style="color:#0091d3;">{$license->expiration|date_format:"%d.%m.%Y"}</span><br />{/if} {if $license->domain}{$tr->for_domain|escape} <span style="color:#0091d3;">{$license->domain|escape}</span>{/if}</div>
+			{if !empty($license->valid) && empty($valid)}	
+			<div style="font-size:16px;font-weight:700;margin-bottom:15px;">{$tr->license|escape} {if $license->expiration != '*'}{$tr->to|escape} <span style="color:#0091d3;">{$license->expiration|date_format:"%d.%m.%Y"}</span><br />{/if} {if $license->domain}{$tr->for_domain|escape} <span style="color:#0091d3;">{$license->domain|escape}</span>{/if}</div>
 			{else}
 			<h2 style='color:red;'>{$tr->license_invalid|escape}</h2>
 			{/if}

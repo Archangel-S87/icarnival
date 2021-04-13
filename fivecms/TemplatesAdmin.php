@@ -9,9 +9,9 @@ class TemplatesAdmin extends Fivecms
 		$templates = array();
 		
 		// Порядок файлов в меню
-		$sort = array('index.tpl', 'page.tpl', 'products.tpl', 'main.tpl', 'product.tpl', 'blog.tpl', 'post.tpl', 'cart.tpl', 'cart_informer.tpl', 'order.tpl', 'login.tpl', 'register.tpl', 'user.tpl', 'feedback.tpl', 'password_remind.tpl', 'email_order.tpl', 'email_password_remind.tpl', 'pagination.tpl');
+		$sort = array('index.tpl', 'main.tpl', 'page.tpl', 'products.tpl', 'product.tpl', 'blog.tpl', 'post.tpl', 'cart.tpl', 'cart_informer.tpl', 'order.tpl', 'login.tpl', 'register.tpl', 'user.tpl', 'feedback.tpl', 'password_remind.tpl', 'email_order.tpl', 'email_password_remind.tpl', 'pagination.tpl');
 		
-		// Чтаем все tpl-файлы
+		// Читаем все tpl-файлы
 		if($handle = opendir($templates_dir)) {
 			$i = count($sort);
 			while(false !== ($file = readdir($handle)))
@@ -36,7 +36,7 @@ class TemplatesAdmin extends Fivecms
 		
 		
 		// Если не указан - вспоминаем его из сессии
-		if(empty($template_file) && isset($_SESSION['last_edited_template']))
+		if(empty($template_file) && !empty($_SESSION['last_edited_template']))
 			$template_file = $_SESSION['last_edited_template'];
 		// Иначе берем первый файл из списка
 		elseif(empty($template_file))

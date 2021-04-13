@@ -25,8 +25,12 @@ class ProductsAdmin extends Fivecms
         $this->design->assign('category_id', $category_id);	
 		      
 		// Бренды категории
-		$brands = $this->brands->get_brands(array('category_id'=>$filter['category_id']));
+		if(isset($filter['category_id']))
+			$brands = $this->brands->get_brands(array('category_id'=>$filter['category_id']));
+		else
+			$brands = $this->brands->get_brands();
 		$this->design->assign('brands', $brands);
+		
 		
 		// Все бренды
 		$all_brands = $this->brands->get_brands();
@@ -68,11 +72,9 @@ class ProductsAdmin extends Fivecms
 		
 		/* фильтр цены */
 		$pmm = $this->products->count_products($filter, 'all');
-		$pmm->minCost=floor($pmm->minCost);
-		$pmm->maxCost=ceil($pmm->maxCost);
 
-		$pmm->minCost = floor($this->money->noFormat($pmm->minCost,'convert'));
-		$pmm->maxCost = ceil($this->money->noFormat($pmm->maxCost,'convert'));
+		$pmm->minCost = floor($this->money->noFormat($pmm->minCost,'no_precision'));
+		$pmm->maxCost = ceil($this->money->noFormat($pmm->maxCost,'no_precision'));
 
 		$this->design->assign('minCost', (int)$pmm->minCost);
 		$this->design->assign('maxCost', (int)$pmm->maxCost);
@@ -189,110 +191,6 @@ class ProductsAdmin extends Fivecms
 				    	$this->products->duplicate_product(intval($id));
 			        break;
 			    }
-			    case 'set_relateds':
-			    {
-		                    foreach ($ids as $id)
-		                    {
-		                        foreach ($ids as $related_id)
-		                        {
-		                            if ($related_id != $id)
-		                                $this->products->add_related_product($id, $related_id);
-		                        }
-		                    }
-				break;
-			    }
-			    case 'set_out_of':
-			    {
-			    	$this->products->update_product($ids, array('out_of'=>1));
-					break;
-			    }
-			    case 'unset_out_of':
-			    {
-			    	$this->products->update_product($ids, array('out_of'=>0));
-					break;
-			    }
-			    case 'set_podzakaz':
-			    {
-			    	$this->products->update_product($ids, array('podzakaz'=>1));
-					break;
-			    }
-			    case 'unset_podzakaz':
-			    {
-			    	$this->products->update_product($ids, array('podzakaz'=>0));
-					break;
-			    }
-				// GLOOBUS 06.12.2014 - увеличиваем цену товара
-			    case 'up_price':
-			    {
-					$percent = $this->request->post('percent_price', 'integer');
-					$type_recalc = $this->request->post('type_recalc');
-					
-					if ($percent) {
-						// Сначала делаем типа-бэкап, записываем текущую цену в отдельно созданное для этого поле
-						$query = $this->db->placehold("UPDATE __variants SET old_price = price WHERE product_id in (?@)", $ids);	
-						$this->db->query($query);					
-						// Потом обновляем цену (если она есть и больше нуля) на величину нашего процента или рубля
-						if ($type_recalc == 'percent')
-							$query = $this->db->placehold("UPDATE __variants SET price = CEILING( (price+(price*?/100)) / 10 ) * 10 WHERE price>0 AND product_id in (?@)", intval($percent), $ids);	
-						elseif ($type_recalc == 'rub')
-							$query = $this->db->placehold("UPDATE __variants SET price = price+? WHERE price>0 AND product_id in (?@)", intval($percent), $ids);	
-						else break;
-						$this->db->query($query);						
-			    	}
-					
-					// После выполнения действия, если нам известен REQUEST_URI, то делаем перенаправление на эту страницу
-					// Это позволит избежать случайного повторения POST при обновлении страницы! 
-					if (isset($_SERVER['REQUEST_URI'])) {
-						header('Location: '.$_SERVER['REQUEST_URI']);
-						exit;
-					}					
-					
-			        break;
-				}		
-				// GLOOBUS 06.12.2014 - уменьшаем цену товара
-			    case 'down_price':
-			    {
-					$percent = $this->request->post('percent_price', 'integer');
-					$type_recalc = $this->request->post('type_recalc');
-					
-					if ($percent) {
-						// Сначала делаем типа-бэкап, записываем текущую цену в отдельно созданное для этого поле
-						$query = $this->db->placehold("UPDATE __variants SET old_price = price WHERE product_id in (?@)", $ids);	
-						$this->db->query($query);						
-						// Потом обновляем цену (если она есть и больше нуля) на величину нашего процента
-						if ($type_recalc == 'percent')
-							$query = $this->db->placehold("UPDATE __variants SET price = CEILING( (price-(price*?/100)) / 10 ) * 10 WHERE price>0 AND product_id in (?@)", intval($percent), $ids);	
-						elseif ($type_recalc == 'rub')
-							$query = $this->db->placehold("UPDATE __variants SET price = price-? WHERE price>0 AND product_id in (?@)", intval($percent), $ids);	
-						else break;
-						$this->db->query($query);						
-			    	}
-
-					// После выполнения действия, если нам известен REQUEST_URI, то делаем перенаправление на эту страницу
-					// Это позволит избежать случайного повторения POST при обновлении страницы! 
-					if (isset($_SERVER['REQUEST_URI'])) {
-						header('Location: '.$_SERVER['REQUEST_URI']);
-						exit;
-					}
-					
-			        break;
-				}	
-				// GLOOBUS 06.12.2014 - откат цены
-			    case 'retrieve_price':
-			    {					
-					// Сначала делаем типа-бэкап, записываем текущую цену в отдельно созданное для этого поле
-					$query = $this->db->placehold("UPDATE __variants SET price = old_price WHERE old_price is not null AND product_id in (?@)", $ids);	
-					$this->db->query($query);						
-
-					// После выполнения действия, если нам известен REQUEST_URI, то делаем перенаправление на эту страницу
-					// Это позволит избежать случайного повторения POST при обновлении страницы! 
-					if (isset($_SERVER['REQUEST_URI'])) {
-						header('Location: '.$_SERVER['REQUEST_URI']);
-						exit;
-					}
-					
-			        break;
-				}			    
 			    case 'move_to_page':
 			    {
 			    	$target_page = $this->request->post('target_page', 'integer');
@@ -427,11 +325,11 @@ class ProductsAdmin extends Fivecms
 	 	$this->design->assign('products_count', $products_count);
 	 	$this->design->assign('pages_count', $pages_count);
 	 	$this->design->assign('current_page', $filter['page']);
-	 	
+
 		$products = array();
 		foreach($this->products->get_products($filter) as $p)
 			$products[$p->id] = $p;
-	 	
+
 		if(!empty($products))
 		{
 			// Товары 
@@ -445,9 +343,9 @@ class ProductsAdmin extends Fivecms
 		
 			$variants = $this->variants->get_variants(array('product_id'=>$products_ids), 1);
 		
-			foreach($products as &$product)
-			{
-			$product->category = reset($this->categories->get_categories(array('product_id'=>$product->id)));
+			foreach($products as &$product){
+				$get_categories = $this->categories->get_categories(array('product_id'=>$product->id));
+				$product->category = reset($get_categories);
 			}
 		 
 			foreach($variants as &$variant)
@@ -458,6 +356,19 @@ class ProductsAdmin extends Fivecms
 			$images = $this->products->get_images(array('product_id'=>$products_ids));
 			foreach($images as $image)
 				$products[$image->product_id]->images[$image->id] = $image;
+
+			// Проверка загрузки всех изображений из интернета
+			if(!empty($this->settings->check_download)){
+				foreach($images as $url){
+					if(!empty($url->filename) && (substr($url->filename,0,7) == 'http://' || substr($url->filename,0,8) == 'https://')){
+						$new_name=$this->image->download_image($url->filename);
+					}
+				}
+				$images = $this->products->get_images(array('product_id'=>$products_ids));
+				foreach($images as $image)
+					$products[$image->product_id]->images[$image->id] = $image;
+			}	
+			//	Проверка загрузки всех изображений из интернета @			
 		}
 	 
 		$this->design->assign('products', $products);

@@ -65,7 +65,7 @@ class OrderView extends View
 			$variants_ids[] = $purchase->variant_id;
 		}
 		$products = array();
-		//foreach($this->products->get_products(array('id'=>$products_ids)) as $p)
+
 		foreach($this->products->get_products(array('id'=>$products_ids, 'limit' => count($products_ids))) as $p)
 			$products[$p->id] = $p;
 		
@@ -91,6 +91,7 @@ class OrderView extends View
 			
 		$total_weight = 0;
 		$total_volume = 0;
+		$subtotal = 0;
 		foreach($purchases as &$purchase)
 		{
 			if(!empty($products[$purchase->product_id]))
@@ -179,7 +180,6 @@ class OrderView extends View
 		{
 			include_once("payment/$module_name/$module_name.php");
 			$module = new $module_name();
-			//$form = $module->checkout_form($params['order_id'], $params['button_text']);
 			if(isset($params['button_text']))
 				$form = $module->checkout_form($params['order_id'], $params['button_text']);
 			else

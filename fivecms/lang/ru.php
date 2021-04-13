@@ -98,6 +98,8 @@ $tr->save = 'Применить';
 $tr->short_description = 'Краткое описание';
 $tr->full_description = 'Полное описание';
 $tr->standart = 'стандарт оформления';
+$tr->rel_articles = 'Связанные статьи';
+$tr->choose_article_add = 'Выберите статью, чтобы добавить ее';
 /* articles_categories.tpl */
 $tr->add = 'Добавить';
 $tr->choose_all = 'Выбрать все';
@@ -131,7 +133,7 @@ $tr->restore_backup = 'Восстановить этот бекап';
 $tr->confirm_restore = 'Текущие данные будут потеряны. Подтвердите восстановление';
 $tr->file_uploaded = 'Файл загружен';
 $tr->upload_backup_file = 'Загрузить файл бэкапа с сайта на 5CMS (.zip)';
-$tr->limit_prods_backup = 'Для данного кол-ва товаров рекомендуется пользоваться бэкапом на стороне хостинга.';
+$tr->limit_prods_backup = 'Для данного кол-ва товаров рекомендуется пользоваться бэкапом в панели хостинга.';
 /* slidem.tpl */
 $tr->gamma_mob_diz = 'Цветовая гамма для мобильного дизайна';
 $tr->slide = 'Слайд';
@@ -153,6 +155,7 @@ $tr->no = 'нет';
 $tr->show_cart_wishcomp = 'Показывать "В корзину", "Избранное", "Сравнение" в каталоге товаров';
 $tr->mob_products_num = 'Записей на странице каталога товаров, блога, статей, опросов';
 $tr->mob_discount = 'Доп. скидка для заказов в мобильном приложении';
+$tr->mob_phone = 'Номер для звонка в мобильном дизайне';
 /* mobtheme.tpl */
 $tr->mob_theme_intro = 'Основные цвета:</h2><p>* Используются в т.ч. и при сборке мобильного приложения</p><p>** Внешний вид мобильного дизайна может отличаться от представленного справа</p><p>*** Для раскрытия меню нажмите на <strong>иконку</strong>';
 $tr->mob_theme_intro_two = 'Чтобы изменения вступили в силу нажмите кнопку "Сохранить ..."';
@@ -195,6 +198,7 @@ $tr->templates = 'Шаблоны';
 $tr->template = 'Шаблон';
 $tr->choose_gamma = 'Выберите используемую цветовую гамму';
 $tr->customizable = 'настраиваемая';
+$tr->color_help = '* Отдельные элементы на изображении ниже могут отличаться от вашего сайта';
 /* comment.tpl */
 $tr->comment = 'Комментарий';
 $tr->approved = 'Одобрен';
@@ -235,6 +239,8 @@ $tr->currency_name = 'Название валюты';
 $tr->sign = 'Знак';
 $tr->iso = 'Код ISO';
 $tr->cents = 'Выводить копейки';
+$tr->round_up = 'Округлить';
+$tr->round_notice = 'Округлить до целых цены с данной валютой';
 /* delivery.tpl */
 $tr->available_payments = 'Возможные способы оплаты';
 $tr->delivery_price = 'Стоимость доставки';
@@ -290,6 +296,7 @@ $tr->dont_show = 'Не показывать';
 $tr->normal = 'Обычный';
 $tr->range = 'Диапазон';
 $tr->feature_help = '<p style="margin-top: 30px;">Обратите внимание! Свойство нужно привязать ко <strong>всем</strong> категориям и подкатегориям, в которых вы хотите, чтобы это свойство отображалось.</p>';
+$tr->choose_sub = 'выбрать вложенные';
 /* features.tpl */	
 $tr->use_in_filter = 'Использовать в фильтре';
 $tr->dont_use_in_filter = 'Не использовать в фильтре';
@@ -318,25 +325,25 @@ $tr->main_help = '<ul class="stars">
 <li><a style="font-weight:700;" href="http://5cms.ru/blog/how-to-find" target="_blank">Как найти ту или иную страницу в админке?</a></li>
 <li>Мета-теги и текст <strong>главной страницы</strong> редактируются в "Страницы"  > "Верхнее меню" > <a href="index.php?module=PagesAdmin">"Главная"</a></li>
 <li>ВСЕ <strong>модули, баннеры</strong> (в т.ч. и на главной), <strong>рекламные блоки</strong> и <strong>виджеты</strong> управляются из "Настройки"  > <a href="index.php?module=SetModAdmin">"Управление модулями"</a></li>
+<li>Чтобы контент был виден только админу: "Настройки"  > "Основные настройки" : <a style="font-weight:700;" href="index.php?module=SettingsAdmin#maintenance">"Закрыть сайт на обслуживание"</a></li>
+
 <li style="border-top:1px dashed #dadada;margin-top:10px;">Логотип и Favicon:  "Настройки"  > "Основные настройки" : <a href="index.php?module=SettingsAdmin#logo">Логотип</a></li>
-<li>Водный знак для изображений товаров:  "Настройки"  > "Основные настройки" : <a href="index.php?module=SettingsAdmin#watermark">Изображения товара : Водяной знак</a></li>
+<li>Watermark для изображений товаров:  "Настройки"  > "Основные настройки" : <a href="index.php?module=SettingsAdmin#watermark">Изображения товара : Водяной знак</a></li>
 <li>Настройка цветовой гаммы производится в "Дизайн" > <a href="index.php?module=ColorAdmin">"Цветовая гамма"</a></li>
 <li>Настройка цветовой гаммы мобильного дизайна - в "Дизайн" > <a href="index.php?module=MobthemeAdmin">"Цветовая гамма (моб.)"</a></li>
 <li>Настройки мобильного дизайна - в "Дизайн" > <a href="index.php?module=MobsetAdmin">"Мобильные настройки"</a></li>
-<li>Скидки, бонусы (баллы) в "Настройки" > <a href="index.php?module=DiscountGroupAdmin">"Скидки"</a></li>
-<li>Купоны в "Пользователи" > <a href="index.php?module=CouponsAdmin">"Купоны"</a></li>
+<li>Скидки, бонусы (баллы), купоны в "Настройки" > <a href="index.php?module=DiscountGroupAdmin">"Скидки"</a></li>
 <li>Минимальная сумма заказа в "Настройки"  > <a href="index.php?module=SetCatAdmin#managecat">"Настройки каталога товаров"</a></li>
 <li>Дополнительные меню создаются в "Страницы" > <a href="index.php?module=MenuAdmin">"Меню страниц"</a></li>
-<li>Меню под слайдером редактируется в "Страницы" > <a href="index.php?module=PagesAdmin&menu_id=20">"Под слайдером"</a></li>
-<li>Выгрузка в Яндекс Маркет: "Настройки"  > "Настройки каталога товаров" > <a href="index.php?module=SetCatAdmin#manageyandex">"Настройки выгрузки в Яндекс Маркет"</a></li>
+<li>Пункты меню под слайдером редактируются в "Страницы" > <a href="index.php?module=PagesAdmin&menu_id=20">"Под слайдером"</a></li>
+<li>Выгрузка в Яндекс Маркет (YML): "Настройки"  > "Настройки каталога товаров" : <a href="index.php?module=SetCatAdmin#manageyandex">"Настройки выгрузки в Яндекс Маркет"</a></li>
 <li>Ссылки на соцсети редактируются в "Настройки" > <a href="index.php?module=SocialAdmin">"Ссылки на соцсети"</a></li>
-<li>Текст публичной оферты в подвале редактируется в "Настройки"  > "Основные настройки" > <a href="index.php?module=SettingsAdmin#disclaimer">"Текст публичной оферты"</a></li>
-<li>Настройки SMTP и указываемые Email-ы в исходящих письмах редактируются в "Настройки"  > "Основные настройки" > <a href="index.php?module=SmtpAdmin">"Оповещения и настройки SMTP"</a></li>
-<li>Мета-теги страниц фильтров каталога и пользовательский 301 редирект в "SEO" > <a href="index.php?module=MetadataPagesAdmin">"Метаданные страниц"</a><li>
-<li>Подмена длинных URL страниц фильтров каталога на короткие в "SEO" > <a href="index.php?module=LinksAdmin">"Метаданные фильтра"</a><li>
-<li>Редактирование robots.txt в "SEO" > <a href="index.php?module=RobotsAdmin">"robots.txt"</a><li>
-<li>Настройки SMS уведомлений в "Настройки"  > "Основные настройки" > <a href="index.php?module=SettingsAdmin#sms">"SMS"</a></li>
-<li>Прайс: '.$this->config->root_url.'/price</li>
+<li>Текст публичной оферты в подвале редактируется в "Настройки"  > "Основные настройки" : <a href="index.php?module=SettingsAdmin#disclaimer">"Текст публичной оферты"</a></li>
+<li>Настройки SMTP и указываемые Email-ы в исходящих письмах в "Настройки"  > <a href="index.php?module=SmtpAdmin">"Оповещения и настройки SMTP"</a></li>
+<li>Мета-теги страниц фильтров каталога и пользовательский 301 редирект в "SEO" > <a href="index.php?module=MetadataPagesAdmin">"Метаданные страниц"</a></li>
+<li>Подмена длинных URL страниц фильтров каталога на короткие в "SEO" > <a href="index.php?module=LinksAdmin">"Метаданные фильтра"</a></li>
+<li>Редактирование robots.txt в "SEO" > <a href="index.php?module=RobotsAdmin">"robots.txt"</a></li>
+<li>Настройки SMS уведомлений в "Настройки"  > "Основные настройки" : <a href="index.php?module=SettingsAdmin#sms">"SMS"</a></li>
 <li>Карта сайта (HTML): '.$this->config->root_url.'/sitemap</li>
 <li>Динамически формируемая карта сайта (XML): '.$this->config->root_url.'/sitemap.xml</li>
 <li><p>Чтобы сгенерировать статичную карту сайта (XML), нужно в крон добавить задание исполнения файла:</p>
@@ -349,8 +356,7 @@ $tr->main_help = '<ul class="stars">
 <p>Сгенерированный в этом случае статичный индексный файл будет находиться по адресу:</p>
 <p>'.$this->config->root_url.'/sitemap_big.xml</p>
 </li>
-<li>rss: '.$this->config->root_url.'/rss и '.$this->config->root_url.'/articles_rss</li>
-<li><p>Яндекс турбо-страницы (и Яндекс Дзен):</p>
+<li><p>Яндекс турбо-страницы:</p>
 <p>блога: '.$this->config->root_url.'/turbo_blog.xml</p>
 <p>статей: '.$this->config->root_url.'/turbo_articles.xml</p>
 </li>
@@ -364,10 +370,9 @@ $tr->main_help = '<ul class="stars">
 <li>Предупреждение об использовании Cookie: <a href="index.php?module=SetModAdmin#cookwarning">Управление модулями</a></li>
 <li>Онлайн-консультант:  <a href="index.php?module=SetModAdmin#consultant">Управление модулями</a></li>
 <li>Коды счетчиков Яндекс Метрики, Google Analytics и пр. доп. скриптов в "SEO" > <a href="index.php?module=PromoAdmin">"Настройки SEO"</a> </li>
-<li>Для автоматического обновления курса валют (важно коды валют должны соответствовать кодам на сайте ЦБ России) необходимо в Кроне задать запуск скрипта (напр. раз в сутки) по адресу: '.$this->config->root_url.'/update_currency.php</li>
 <li>Виджет "Стадный инстинкт" редактируется в "Настройки"  > "Управление модулями" > <a href="index.php?module=StadAdmin">"Стадный инстинкт"</a></li>
 <li>Таймер обратного отсчета акции в "Настройки"  > "Управление модулями" : <a href="index.php?module=SetModAdmin#actionblock">"Акция"</a></li>
-<li>Всплывающее окно "Вы уже покидаете наш сайт" редактируется в админке: "Настройки" > <a href="index.php?module=SetModAdmin">"Управление модулями"</a> : Виджет "Вы хотите покинуть сайт?"</li>
+<li>Всплывающее окно "Вы уже покидаете наш сайт" отключается в: "Настройки" > <a href="index.php?module=SetModAdmin">"Управление модулями"</a> : Виджет "Вы хотите покинуть сайт?"</li>
 </ul>';
 $tr->features_delimiter = '* <a href="http://5cms.ru/blog/filters" target="_blank">Множественные значения</a> в пределах одного свойства товара разделяются # Напр.: зима#лето#осень  и тогда в фильтре значения этих характеристик будут выводиться как самостоятельные';
 /* images.tpl */
@@ -415,7 +420,7 @@ $tr->load_server = 'Загрузка файла с удаленного серв
 $tr->enter_url = 'Введите URL для загрузки из Интернета';
 $tr->supported_formats = 'Поддерживаемые форматы';
 $tr->import_help = '<p style="margin-bottom:10px;"><a class="bluelink" href="http://5cms.ru/blog/xml" target="_blank">Инструкция по импорту товаров</a></p>';
-$tr->delete_all_products = '<strong>! Удалить все товары</strong> сразу можно <a class="bluelink" href="index.php?module=OnecAdmin">на этой странице</a>';
+$tr->delete_all_products = '<strong>! Удалить все товары</strong> сразу можно <a class="bluelink" href="index.php?module=OnecAdmin#delete_all_products">на этой странице</a>';
 $tr->read_parameters = 'Считать названия полей';
 /* import.tpl */
 $tr->ident_products = 'Объединять товары';
@@ -457,9 +462,7 @@ $tr->for_domain = 'для домена';
 $tr->license_warning = '
 		<p style="margin-top:15px;">5CMS защищена <a target="_blank" style="font-weight:700;" href="http://5cms.ru/license">авторскими правами</a> РФ.</p> 
 		<p style="margin-top:15px;">Использование нелицензионной версии является нарушением действующего законодательства.</p>
-		<p style="margin-top:15px;">Лицензия дает право использовать один установленный экземпляр 5CMS.</p>
-		<p style="margin-top:15px;">С помощью 1 установленного экземпляра 5CMS можно управлять неограниченным количеством витрин, в том числе подключить любое количество доменов без покупки дополнительных лицензий. В этом случае все витрины должны управляться из одной общей панели администрирования с домена, на который приобретена лицензия. </p>
-		<p style="margin-top:15px;">Если нужно управлять несколькими витринами из <strong>разных</strong> панелей администрирования, то потребуется установить несколько экземпляров 5CMS, а значит, приобрести несколько лицензий.</p>
+		<p style="margin-top:15px;">Лицензия дает право использовать один установленный экземпляр 5CMS на домене, для которого была приобретена данная лицензия.</p>
 		<p style="margin-top:15px;text-align: justify;">Обратите внимание, что при покупке <strong>2-й</strong> и последующих <strong>лицензий 5CMS</strong> предоставляется <strong>скидка</strong> <strong><span style="font-size: 18px;">30%</span></strong>&nbsp;(скидки не суммируются).</p>
 		<p style="margin-top:20px;"><a class="bigbutton" target="_blank" href="http://5cms.ru/cms-price">Купить лицензию 5CMS</a></p>';
 $tr->license_agreement_title = 'Пользовательское соглашение';
@@ -540,6 +543,7 @@ $tr->mailing_list_clear = 'Очистить очередь рассылки';
 $tr->email_subject = 'Тема письма';
 $tr->email_body = 'Текст письма';
 $tr->to_mailing_list = 'Поставить в очередь на рассылку';
+$tr->error = 'Ошибка';
 /* maillist.tpl */
 $tr->add_subscriber = 'Добавить подписчика';
 $tr->no_name = 'имя не указано';
@@ -591,13 +595,13 @@ $tr->system_message_2 = 'Обязательные расширения';
 $tr->system_message_3 = 'Установленные на сервере расширения';
 $tr->system_message_4 = 'ОК. Все необходимые расширения подключены.';
 /* mail_templates.tpl */
-$tr->mail_helper = '<p>email_header.tpl - хэдер письма</p>
-<p>email_footer.tpl - футер письма</p>
-<p>email_feedback_admin.tpl - письмо админу по форме обратной связи</p>
+$tr->mail_helper = '<p>email_header.tpl - header письма</p>
+<p>email_footer.tpl - footer письма</p>
+<p>email_feedback_admin.tpl - письмо админу по форме со станицы "Контакты"</p>
 <p>email_order.tpl - письмо пользователю о заказе</p>
 <p>email_order_admin.tpl - письмо админу о заказе</p>
-<p>email_comment_user.tpl - письмо пользователю от ответе на комментарий администратором</p>
-<p>email_comment_admin.tpl - письмо администратору об оставленном комментарии</p>
+<p>email_comment_user.tpl - письмо пользователю от ответе на комментарий админом</p>
+<p>email_comment_admin.tpl - письмо админу об оставленном комментарии</p>
 <p>email_mailer.tpl - шаблон письма встроенной рассылки</p>
 <p>email_password_remind.tpl - восстановление пароля</p>
 <p>email_user_registration.tpl - письмо пользователю о его регистрации в системе</p>';
@@ -746,7 +750,7 @@ $tr->product_variant = 'Вариант товара';
 $tr->enter_name_sku = 'Начните вводить название или артикул товара';
 $tr->edit_purchases = 'Редактировать покупки';
 $tr->purchases = 'Товаров';
-$tr->total_discount = 'Итоговая скидка (исп. в расчетах)';
+$tr->total_discount = 'Итоговая скидка (используется в расчетах)';
 $tr->permanent_discount = 'Групповая и накопительная';
 $tr->including_discount = 'С учетом скидки';
 $tr->return_points = 'Произвести возврат пользователю баллов';
@@ -767,6 +771,9 @@ $tr->in_chat = 'онлайн-консультант';
 $tr->offline = 'оффлайн';
 $tr->another = 'другое';
 $tr->referer = 'Реферер';
+$tr->stock_from = 'Остаток со склада';
+$tr->stock_closed = 'списан';
+$tr->not = 'не';
 /* orders.tpl */
 $tr->orders_ov = 'заказов';
 $tr->filter_by_order_date = 'Фильтр по дате заказа';
@@ -893,11 +900,12 @@ $tr->drop_files_here = 'Перетащите файлы сюда';
 $tr->locally = 'с компьютера';
 $tr->from_internet = 'из интернета';
 $tr->related_prods = 'Связанные товары';
-$tr->choose_prod_add = 'Выберите товар чтобы добавить его';
+$tr->choose_prod_add = 'Выберите товар, чтобы добавить его';
 $tr->attached_files = 'Прикрепленные файлы';
 $tr->allowed_extentions = 'Разрешенные типы файлов';
 $tr->attached_files_help = 'Имя заливаемого файла должно быть не более 100 символов, без кириллицы и спецсимволов, в нижнем регистре';
 $tr->filename_on_website = 'Название файла на сайте';
+$tr->ref_url_help = 'При клике переход по ссылке вместо отправки в корзину';
 /* products.tpl */
 $tr->add_product = 'Добавить товар';
 $tr->product_a = 'товара';
@@ -982,6 +990,8 @@ $tr->hours = 'часа';
 $tr->days = 'дней';
 $tr->period = 'Период';
 $tr->product_variants = 'Варианты товара';
+$tr->sales_cat_report = 'Отчет о продажах по категориям';
+$tr->items = 'ед.';
 /* robots.tpl */
 $tr->write_error = 'Ошибка записи';
 /* services_category.tpl */
@@ -1008,11 +1018,11 @@ $tr->color_filter = 'Цвет (вариант) в фильтре';
 $tr->to_end_list = 'в конец списка';
 $tr->out_of_stock_prods = 'Закончившиеся товары';
 $tr->min_order_amount = 'Минимальная сумма заказа';
-$tr->views_num = 'Кол-во просмотров товара';
 $tr->rating_num = 'Рейтинг товара (от 0 до 5)';
 $tr->votes_num = 'Кол-во голосов в рейтинге товара';
 $tr->cut_description_height = 'Высота текста описания категории, бренда больше которой автоматом убирать под кат';
 $tr->cut_seo_height = 'Высота SEO-текста больше которой автоматом убирать под кат';
+$tr->check_download = 'Проверять загружены ли изображения товаров со сторонних сайтов полностью';
 $tr->in_product_card = 'в карточке товара';
 $tr->youtube = 'Подбор видео с YouTube в карточке товара (для десктопов)';
 $tr->cache_settings = 'Настройки кэширования';
@@ -1033,6 +1043,8 @@ $tr->pickup = 'Самовывоз (<strong>pickup</strong>)';
 $tr->manufacturer_warranty = 'У товаров есть гарантия производителя';
 $tr->seller_warranty = 'У товаров есть гарантия продавца';
 $tr->symbols = 'символов';
+$tr->to_cart_name = 'Название кнопки "В корзину"';
+$tr->show1click = 'Кнопка "Купить в 1 клик"';
 /* setmod.tpl */
 $tr->main_page = 'Главная страница';
 $tr->desktop_design = 'десктопный дизайн';
@@ -1061,13 +1073,14 @@ $tr->in_server_sett = 'в настройках сервера';
 $tr->soc_auth = 'Авторизация через соцсети (Ulogin)';
 $tr->stad = 'Стадный инстинкт';
 $tr->spam_protect = 'Дополнительная защита от ботов';
-$tr->block_session = 'Блокировать последовательную регистрацию пользователей с одинаковым IP или ID сессии';
+$tr->block_session = 'Блокировать последовательную регистрацию, отзывы о сайте и заказ обратного звонка посетителями с одинаковым IP или ID сессии';
 $tr->block_noncyr = 'Блокировать отправку форм посетителями, у которых в имени есть что-то кроме кириллицы';
 $tr->block_long_name = 'Блокировать отправку форм посетителями, у которых в поле "имя" более';
 $tr->ad_unit = 'Рекламный блок';
 $tr->motivate_ads = 'Мотивирующие тексты (или баннеры) внизу всех статей, записей блога, услуг';
 $tr->collect_cookies_warn = 'Окно предупреждения о сборе cookies';
 $tr->chat = 'Онлайн-консультант';
+$tr->cart_tabs = 'Поэтапное оформление заказа';
 $tr->redhelper = 'Введите логин, указанный при <a class="bluelink" href="http://redhelper.ru/?p=2009838" target="_blank">регистрации</a> в RedHelper';
 $tr->help_adv = '<p style="font-weight:700;margin:10px 0 10px 0;text-transform:uppercase;">Предустановленные классы:</p>
 		<ul style="margin-bottom:5px;" class="stars">
@@ -1075,11 +1088,15 @@ $tr->help_adv = '<p style="font-weight:700;margin:10px 0 10px 0;text-transform:u
 			<li>На красном фоне: p class="advertred"</li>
 			<li>На синем фоне: p class="advertblue"</li>
 		</ul>';
+$tr->main_cat_num = 'Кол-во популярных категорий';
+$tr->main_cat_columns = 'Кол-во колонок популярных категорий';
+$tr->if_null_hide = 'если 0, то не показываются на главной';
+$tr->if_empty_hide = 'если не заполнено, то не показывается на сайте';	
 /* settings.tpl */		
 $tr->cart_db_cleared = 'Корзины из базы данных удалены';
 $tr->change_lang = 'Сменить язык';
-$tr->site_name = 'Имя сайта (напр. в футере писем и т.п.)';
-$tr->company_name = 'Имя компании (исп. в микроразметке и печатн. форме заказа)';
+$tr->site_name = 'Имя сайта (в футере писем, микроразметке, SMS, коде турбо-страниц)';
+$tr->company_name = 'Имя компании (в микроразметке и печатн. форме заказа)';
 $tr->date_format = 'Формат даты';
 $tr->admin_pass_remind = 'для восстановления пароля администратора';
 $tr->copyright = 'Копирайт';
@@ -1116,7 +1133,7 @@ $tr->offline_template = 'Закрыть сайт на обслуживание';
 /* slide.tpl */
 $tr->wideslider_helper = '<p>* Ширина слайда должна быть ровно <strong>1905 px</strong>, а высота рекомендуется <strong>470 px</strong></p>';
 $tr->tinyslider_helper = '<p>* Ширина слайда должна быть ровно <strong>1480 px</strong></p>';
-$tr->sideslider_helper = '<p style="margin:10px 0 20px 0;line-height: 22px;">* Размер слайда <strong>1036 x 450 px</strong></p><a class="bigbutton" style="margin-bottom:20px;" href="index.php?module=ThreeBannersAdmin">Баннеры справа от слайдера</a>';
+$tr->sideslider_helper = '<p style="margin:10px 0 20px 0;line-height: 22px;">* Рекомендуемый размер слайда ровно <strong>1036 x 500 px</strong></p><a class="bigbutton" style="margin-bottom:20px;" href="index.php?module=ThreeBannersAdmin">Баннеры справа от слайдера</a>';
 $tr->text = 'Текст';
 /* slides.tpl */
 $tr->choose = 'Выберите';
@@ -1185,3 +1202,11 @@ $tr->apply_checked = 'Применить к отмеченным';
 /* users.tpl */
 $tr->found_buyers = 'Покупателей';
 $tr->groups = 'группы';
+/* import_images.tpl */
+$tr->check_images = 'Проверка загруженности изображений со сторонних сайтов';
+$tr->check_images_sh = 'Проверка изображений';
+$tr->check_images_num = 'Кол-во товаров для каждого цикла проверки';
+$tr->check_images_help = '* Если сервер выдает ошибку, то существенно уменьшите кол-во товаров.';
+$tr->check_images_help2 = 'Не закрывайте и не перезагружайте страницу, дождитесь завершения процесса!';
+$tr->check_ended = 'Проверка завершена!';
+$tr->start = 'Запустить';

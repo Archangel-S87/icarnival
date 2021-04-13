@@ -181,23 +181,30 @@
 			<div class="block layer" style="margin-top:25px;">	
 				<h2>{$tr->load_local|escape}</h2>
 				<input name="file" class="import_file" type="file" value="" />
+				<p style="margin-top:10px;">
+					{$tr->allowed_extentions|escape}: .xml
+					({$tr->max_file_size|escape} - {if $config->max_upload_filesize>1024*1024}{$config->max_upload_filesize/1024/1024|round:'2'} Mb{else}{$config->max_upload_filesize/1024|round:'2'} Kb{/if})
+				</p>
 			</div>
 			<div class="block layer" style="margin-top:25px;">
 				<h2>{$tr->load_server|escape}</h2>	
 				<label>{$tr->enter_url|escape}</label>
 				<input style="width:500px;" name="file_url" type="text" value=""/>
+				<p style="margin-top:10px;">
+						{$tr->allowed_extentions}: .xml, .xml.gz, .php
+						({$tr->max_file_size|escape} - {if $config->max_upload_filesize>1024*1024}{$config->max_upload_filesize/1024/1024|round:'2'} Mb{else}{$config->max_upload_filesize/1024|round:'2'} Kb{/if})
+				</p>
 				<input style="clear:both; display:table; margin-top:20px;" type="submit" class="button_green" name="" value="{$tr->upload|escape}"/>
 				<div style="max-width:800px;">
 					<p style="margin-top:20px;">
-						{$tr->supported_formats|escape}: xml, xml.gz, php
-						({$tr->max_file_size|escape} &mdash; {if $config->max_upload_filesize>1024*1024}{$config->max_upload_filesize/1024/1024|round:'2'} Mb{else}{$config->max_upload_filesize/1024|round:'2'} Kb{/if})
-					</p>
-					<p style="margin-top:20px;">
 						{$tr->import_help}
 					</p>
-					<p style="margin-top:20px;" class="helper">
-						{$tr->delete_all_products}
-					</p>
+					<ul class="stars" style="margin-top:20px;">
+						<li style="border:0;">{$tr->delete_all_products}</li>
+					</ul>
+					
+					<a class="button_green green" href="index.php?module=ImportImagesAdmin" style="text-decoration:none;font-size:14px;display:table;margin-bottom:20px;">{$tr->check_images}</a>
+					
 				</div>
 			</div>
 		</form>

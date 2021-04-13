@@ -254,7 +254,7 @@ function translit(str)
 						<li>
 							{if $i==1}<span class="toolannot" title="{$tr->toolannot|escape}">{$tr->annotation|escape}</span>{/if}
 							<a href='#' class="delete"><img src='design/images/cross-circle-frame.png'></a>
-							<a href="{$image->filename|resize:800:600:w:$config->resized_blog_images_dir}?{$random}" class="zoom" data-rel="group"><img src="{$image->filename|resize:400:400:false:$config->resized_blog_images_dir}?{$random}" alt="" /></a>
+							<a href="{$image->filename|resize:1024:768:w:$config->resized_blog_images_dir}?{$random}" class="zoom" data-rel="group"><img src="{$image->filename|resize:400:400:false:$config->resized_blog_images_dir}?{$random}" alt="" /></a>
 							<input type=hidden name='images[]' value='{$image->id}'>
 						</li>	
 					{/foreach}

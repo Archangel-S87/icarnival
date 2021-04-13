@@ -102,14 +102,11 @@ $(function() {
 				<ul class="stars">
 					{$tr->payment_help}
 					<li>
-						<strong>Яндекс Касса (2.0.0):</strong> введите данные, полученные при регистрации в <a href="https://kassa.yandex.ru/joinups/" target="_blank">Яндекс Кассе</a>
+						<a href="https://5cms.ru/blog/yandex-kassa" target="_blank"><strong>ЮKassa (2.0.1):</strong></a> 
 						<p style="margin:10px 0 5px 0;font-weight:700;">!Обязательно наличие HTTPS</p>
-						<p><a href="https://5cms.ru/blog/yandex-kassa" target="_blank">Инструкция по настройке Яндекс Кассы на стороне CMS</a></p>
-						<p>Вам также может пригодится следующая информация:</p>
-						<p>В "Параметры для платежей" в "Адрес для уведомлений" укажите (или проверьте чтобы было):</p>
-						<p>{$config->root_url}/payment/YandexMoneyApi/callback.php?action=notify</p>
-						<p style="margin:10px 0 5px 0;">Далее сгенерируйте "Секретный ключ для API", подтвердите кодом из СМС и обязательно сохраните в надежном месте!</p>
-						<p style="margin:10px 0 5px 0;">Важно! В тестовом режиме нужно использовать !только тестовую карту и не использовать реальный кошелек ЯД:</p>
+						<p>При необходимости в "Параметры для платежей" в "Адрес для уведомлений" укажите:</p>
+						<p>{$config->root_url}/payment/YooMoneyApi/callback.php?action=notify</p>
+						<p style="margin:10px 0 5px 0;">Важно! В тестовом режиме не использовать реальный кошелек, а нужно использовать !только тестовую карту:</p>
 						<p>1111 1111 1111 1026</p>
 						<p>12/20 000</p>
 					</li>
@@ -129,14 +126,6 @@ $(function() {
 						<p>Result URL - {$config->root_url}/payment/Webmoney/callback.php</p>
 					</li>
 					<li><strong>Paypal:</strong> укажите "Merchant email" и выберите в "mode" - "Real payments"</li>
-					<li>
-						<strong>Яндекс Деньги (для физлиц):</strong> Подключите HTTP уведомления <a href="https://sp-money.yandex.ru/myservices/online.xml" target="_blank">здесь</a>, в поле укажите ссылку  {$config->root_url}/payment/Yandex/callback.php
-						<p>Сохраните секретный ключ</p>
-						<p>Максимальный размер платежа 15 тыс.р.</p>
-						<p>По умолчанию стоит оплата с кошелька ЯД при необходимости оплаты картами смените в /payment/Yandex.php:</p>
-						<p>1) input name="paymentType" type="hidden" value="PC" на input name="paymentType" type="hidden" value="AC"</p>
-						<p>2) а также для оплаты картой private $fee = 0.5; будет = 2</p>
-					</li>
 				</ul>
 			</div>
 		</div>

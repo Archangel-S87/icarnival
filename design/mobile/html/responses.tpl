@@ -40,6 +40,8 @@
 				<div class="separator"><div id="page_navigation" class="pagination"></div></div>
 			{/if}
 			{* Список с комментариями (The End) *}
+		{else}
+			<p class="post-pg">Пока нет отзывов</p>	
 		{/if}
 	
 		{* Форма отправления комментария *}
@@ -48,25 +50,22 @@
 			<h2>Написать отзыв</h2>
 			{if isset($error)}
 			<div class="message_error">
-				{if $error=='captcha'}
-				Не пройдена проверка на бота
-				{elseif $error=='empty_name'}
-				Введите имя
-				{elseif $error=='empty_comment'}
-				Введите комментарий
-				{elseif $error=='empty_email'}
-				Введите E-Mail
-				{elseif $error == 'wrong_name'}
-				В поле 'Имя' может использоваться только кириллица	
+				{if $error=='captcha'}Не пройдена проверка на бота
+				{elseif $error=='empty_name'}Введите имя
+				{elseif $error=='empty_comment'}Введите отзыв
+				{elseif $error=='empty_email'}Введите Email
+				{elseif $error == 'wrong_name'}В поле 'Имя' может использоваться только кириллица
+				{elseif $error == 'wrong_email'}Некорректный Email
+				{elseif $error == 'ip'}Вы уже оставляли отзыв
 				{/if}
 			</div>
 			{/if}
-			<textarea class="comment_textarea" id="comment_text" name="text" data-format=".+" data-notice="Введите комментарий" required>{if !empty($comment_text)}{$comment_text}{/if}</textarea>
+			<textarea class="comment_textarea" id="comment_text" name="text" data-format=".+" data-notice="Введите отзыв" required>{if !empty($comment_text)}{$comment_text}{/if}</textarea>
 			<div>
 
 			<input style="margin-top:7px;" placeholder="* Имя" class="input_name" type="text" id="comment_name" name="name" value="{if !empty($comment_name)}{$comment_name|escape}{/if}" data-format=".+" data-notice="Введите имя" required/>
 
-			<input style="margin-top:10px;" placeholder="* E-mail" class="input_name" type="email" id="comment_email" name="email" value="{if !empty($comment_email)}{$comment_email}{/if}" data-format=".+" data-notice="Введите E-Mail" required/>
+			<input style="margin-top:10px;" placeholder="* Email" class="input_name" type="email" id="comment_email" name="email" value="{if !empty($comment_email)}{$comment_email}{/if}" data-format=".+" data-notice="Введите Email" required/>
 
 			<div class="captcha-block">
 				{include file='antibot.tpl'}

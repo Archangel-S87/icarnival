@@ -43,7 +43,7 @@ class ImportSubscribersAjax extends Fivecms
 			}
 		}
 
-		// Если нет названия товара - не будем импортировать
+		// Если нет имени и email - не будем импортировать
 		if(!in_array('name', $this->columns) && !in_array('email', $this->columns))
 			return false;
 	 	
@@ -51,7 +51,7 @@ class ImportSubscribersAjax extends Fivecms
 		if($from = $this->request->get('from'))
 			fseek($f, $from);
 		
-		// Массив импортированных товаров
+		// Массив импортированных объектов
 		$imported_items = array();	
 		
 		// Проходимся по строкам, пока не конец файла
@@ -77,8 +77,6 @@ class ImportSubscribersAjax extends Fivecms
 				$imported_items[] = $imported_item;
 		}
 
-		
-		
 		// Запоминаем на каком месте закончили импорт
  		$from = ftell($f);
  		
@@ -91,23 +89,21 @@ class ImportSubscribersAjax extends Fivecms
 		// Создаем объект результата
 		$result->from = $from;          // На каком месте остановились
 		$result->totalsize = $size;     // Размер всего файла
-		$result->items = $imported_items;   // Импортированные товары
+		$result->items = $imported_items;   // Импортированные объекты
 	
 		return $result;
 	}
 	
-	// Импорт одного товара $item[column_name] = value;
+	// Импорт одного объекта $item[column_name] = value;
 	private function import_item($item)
 	{
-
 		$imported_item = new stdClass;
 
 		// Проверим не пустое ли название и артинкул (должно быть хоть что-то из них)
 		if(empty($item['name']) && empty($item['email']))
 			return false;
 
-		// Подготовим товар для добавления в базу
-
+		// Подготовим для добавления в базу
 		$product = array();
 
 		if(!empty($item['name'])) {
@@ -119,8 +115,7 @@ class ImportSubscribersAjax extends Fivecms
 		if(!empty($item['email'])) 
 			$product['email'] = trim($item['email']);
 
-	
-		// Если на прошлом шаге товар не нашелся, и задано хотя бы название товара
+		// Если на прошлом шаге подписчик не нашелся, и задано хотя бы email
 		if(!empty($product['email']))
 		{
 			$this->db->query('SELECT id FROM __maillist WHERE email=? LIMIT 1', $product['email']);				
@@ -130,7 +125,7 @@ class ImportSubscribersAjax extends Fivecms
 			{
 				$id = $r->id;
 			}
-			// Если товар не найден - добавляем,
+			// Если подписчик не найден - добавляем,
 			if(empty($id))
 			{
 				$id = $this->mailer->add_mail($product['name'], $product['email']);
@@ -139,17 +134,7 @@ class ImportSubscribersAjax extends Fivecms
 			}
 		}
 
-
-		/*if(!empty($id))
-		{
-			// Нужно вернуть обновленный товар		
-			$imported_item->product = $this->mailer->get_mail(intval($id));	;						
-
-			return $imported_item;
-		}*/
 	}
-	
-	
 	
 	// Фозвращает внутреннее название колонки по названию колонки в файле
 	private function internal_column_name($name)

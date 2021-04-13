@@ -149,9 +149,6 @@ class ImportAjax extends Fivecms
 
 		if(isset($item['votes']))
 			$product['votes'] = trim($item['votes']);
-
-		if(isset($item['views']))
-			$product['views'] = trim($item['views']);
 	
 		if(isset($item['visible']))
 			$product['visible'] = intval($item['visible']);
@@ -201,14 +198,17 @@ class ImportAjax extends Fivecms
 		if(isset($item['variant']))
 			$variant['name'] = trim($item['variant']);
 			
-		if(isset($item['variant1'])){
+		if(!empty($item['variant1'])){
 			$variant['name1'] = trim($item['variant1']);
 			$variant['name'] = $variant['name1'];
 		}	
 
-		if(isset($item['variant2'])){
+		if(!empty($item['variant2'])){
 			$variant['name2'] = trim($item['variant2']);
-			$variant['name'] = ($variant['name1'] ? $variant['name1'].' ' : '').$variant['name2'];
+			if(!empty($variant['name1']))
+				$variant['name'] = $variant['name1'].' '.$variant['name2'];
+			else
+				$variant['name'] = $variant['name2'];
 		}
 		
 		if(!empty($this->settings->import_price))
@@ -217,12 +217,18 @@ class ImportAjax extends Fivecms
 			$import_price = 0;
 			
 		if(isset($item['price'])){
-			$variant['price'] = str_replace(',', '.', str_replace(' ', '', trim($item['price'])));
+			$variant['price'] = floatval(str_replace(',', '.', str_replace(' ', '', trim($item['price']))));
 			$variant['price'] = $variant['price'] + $variant['price']*$import_price/100;
 		}	
 		
-		if(isset($item['compare_price'])){
-			$variant['compare_price'] = trim($item['compare_price']);
+		if(!empty($item['discount']))
+			$variant['discount'] = trim($item['discount']);
+			
+		if(!empty($item['discount_date']))
+			$variant['discount_date'] = trim($item['discount_date']);		
+		
+		if(!empty($item['compare_price'])){
+			$variant['compare_price'] = floatval(str_replace(',', '.', str_replace(' ', '', trim($item['compare_price']))));
 			$variant['compare_price'] = $variant['compare_price'] + $variant['compare_price']*$import_price/100;
 		}
 			
@@ -338,7 +344,7 @@ class ImportAjax extends Fivecms
 		if(!empty($variant_id) && !empty($product_id))
 		{
 			// Нужно вернуть обновленный товар
-			$imported_item->variant = $this->variants->get_variant(intval($variant_id));			
+			$imported_item->variant = $this->variants->get_variant(intval($variant_id), 1);			
 			$imported_item->product = $this->products->get_product(intval($product_id));						
 	
 			// Добавляем категории к товару
@@ -368,6 +374,30 @@ class ImportAjax extends Fivecms
 					}
 				}
 			}
+			
+			// Прикрепленные файлы
+			if(isset($item['files']))
+			{
+				// Изображений может быть несколько, через запятую
+				$files = explode(',', $item['files']);
+				foreach($files as $file)
+				{
+					$file = trim($file);
+					if(!empty($file))
+					{
+						// Имя файла
+						$file_filename = pathinfo($file, PATHINFO_BASENAME);
+					
+						// Добавляем файл только если такого еще нет в этом товаре
+						$this->db->query('SELECT filename FROM __files WHERE object_id=? AND type="product" AND (filename=? OR filename=?) LIMIT 1', $product_id, $file_filename, $file);
+						if(!$this->db->result('filename'))
+						{
+							$this->files->add_file($product_id, 'product', $file);
+						}
+					}
+				}
+			}
+			
 	 		// Характеристики товаров
 			foreach($item as $feature_name=>$feature_value)
 			{
@@ -490,8 +520,9 @@ class ImportAjax extends Fivecms
 			'variant2'=>         array('variant2', $d_variant2),
 			'rating'=>           array('rating', 'рейтинг'),
 			'votes'=>            array('votes', 'голосов'),
-			'views'=>            array('views', 'просмотров'),
 			'price'=>            array('price', $d_price),
+			'discount'=>         array('discount', 'скидка'),
+			'discount_date'=>    array('discount_date', 'до даты'),
 			'compare_price'=>    array('compare price', 'старая цена'),
 			'sku'=>              array('sku', $d_sku),
 			'stock'=>            array('stock', $d_stock),
@@ -503,6 +534,7 @@ class ImportAjax extends Fivecms
 			'annotation'=>       array('annotation', $d_annotation),
 			'description'=>      array('description', $d_description),
 			'images'=>           array('images', $d_images),
+			'files'=>            array('files', 'файлы'),
 			'typePrefix'=>       array('typePrefix')
 		);
 	

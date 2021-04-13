@@ -96,11 +96,40 @@ $(function() {
 		if(base_currency_id != $('input[name*="currency[id]"]:first').val() && confirm('{$tr->recalculate_prices|escape} '+$('input[name*="name"]:first').val()+' {$tr->on_current_rate|escape}', 'msgBox Title'))
 			$('input[name="recalculate"]').val(1);
 	});
-
+	
+	// Округление
+	$(".round").click(function() {
+		var icon        = $(this);
+		var currency_id          = icon.attr('data-currency');
+		var base_currency       = icon.attr('data-base');
+		icon.addClass('glowing');
+			
+		$.ajax({
+				 url: "ajax/round.php",
+					data: {currency_id:currency_id, base_currency:base_currency},
+					dataType: 'json',
+					success: function(data){
+						if(data == 'ok')
+							icon.removeClass('glowing');
+					},
+					error: function(xhr, status, errorThrown) {
+						alert(errorThrown+'\n'+xhr.responseText);
+					}  				
+		});
+	
+		return false;	
+	});
 
 });
 
 </script>
+<style>
+.icons .round{display:inline-block;vertical-align:top;margin-left:10px;font-weight:700;color:#ffffff;width:auto;text-decoration:none;font-size:12px;padding:3px 6px;height:auto;}
+.cents .round{display:none;}
+#currencies_block ul .icons{overflow:visible;}
+.icons_two{width:60px;padding: 5px 0 0 10px;}
+#currencies_block li.icons_end{width:125px;}
+</style>
 {/literal}
 
 
@@ -113,26 +142,22 @@ $(function() {
 	<!-- Заголовок (The End) -->	
 	</div>	
 
-
-	
- 
 	<form method=post>
 	<input type="hidden" name="session_id" value="{$smarty.session.id}">
-	
 	
 	<!-- Валюты -->
 	<div id="currencies_block">
 		<ul id="header">
 			<li class="move"></li>
 			<li class="name">{$tr->currency_name|escape}</li>	
-			<li class="icons"></li>	
+			<li class="icons_two"></li>	
 			<li class="sign">{$tr->sign|escape}</li>	
 			<li class="iso">{$tr->iso|escape}</li>	
 		</ul>
 		<div id="currencies">
 		{foreach from=$currencies item=c}
 		<ul class="sortable {if !$c->enabled}invisible{/if} {if $c->cents == 2}cents{/if}">
-			<li class="move"><div class="move_zone"></div></li>
+			<li class="move"><div class="move_zone" title="{$c->id}"></div></li>
 			<li class="name">
 				<input name="currency[id][{$c->id}]" type="hidden" 	value="{$c->id|escape}" /><input name="currency[name][{$c->id}]" type="" value="{$c->name|escape}" />
 			</li>
@@ -151,10 +176,11 @@ $(function() {
 				<input name="currency[rate_to][{$c->id}]" type="hidden" value="{$c->rate_to|escape}" />
 				{/if}
 			</li>
-			<li class="icons">
-			{if !$c@first}
+			<li class="icons icons_end">
+				{if !$c@first}
 				<a class="delete" href="#" title="{$tr->delete|escape}"></a>				
-			{/if}
+				{/if}
+				<a class="round button_green" data-currency="{$c->id}" data-base="{if $c@first}1{else}0{/if}" href="#" title="{$tr->round_notice}">{$tr->round_up}</a>
 			</li>
 		</ul>
 		{/foreach}		

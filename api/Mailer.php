@@ -23,12 +23,34 @@ class Mailer extends Fivecms
 	public function get_maillist($filter = array())
 	{	
 		// По умолчанию
-		$limit = 1000000;
+		$limit = 1000;
 		$page = 1;
-        $active = "";
+        $active_filter = '';
+        $keyword_filter = '';
         
         if(isset($filter['active']))
-			$active = "WHERE active=1";
+			$active_filter = $this->db->placehold('AND active = ?', intval($filter['active']));
+        
+        if(isset($filter['keyword']))
+		{
+			$keywords = explode(' ', $filter['keyword']);
+			foreach($keywords as $keyword) {
+				$keyword_filter .= $this->db->placehold('AND (name LIKE "%'.$this->db->escape(trim($keyword)).'%" OR email LIKE "%'.$this->db->escape(trim($keyword)).'%")');
+			}
+		}
+		
+		$order = 'created DESC';
+		if(!empty($filter['sort'])){
+			switch ($filter['sort'])
+			{
+				case 'date':
+				$order = 'created DESC';
+				break;
+				case 'name':
+				$order = 'name ASC';
+				break;
+			}
+		}
 
 		if(isset($filter['limit']))
 			$limit = max(1, intval($filter['limit']));
@@ -38,7 +60,7 @@ class Mailer extends Fivecms
 
 		$sql_limit = $this->db->placehold(' LIMIT ?, ? ', ($page-1)*$limit, $limit);
 
-		$query = $this->db->placehold("SELECT * FROM __maillist $active ORDER BY name DESC, id DESC $sql_limit");
+		$query = $this->db->placehold("SELECT * FROM __maillist WHERE 1 $active_filter $keyword_filter ORDER BY $order $sql_limit");
 		
 		$this->db->query($query);
 		return $this->db->results();
@@ -46,18 +68,29 @@ class Mailer extends Fivecms
 	
 	/*
 	*
-	* Функция вычисляет количество постов, удовлетворяющих фильтру
-	*
+	* Функция вычисляет количество подписчиков, удовлетворяющих фильтру
+	* @param $filter
 	*/
-	public function count_mails()
+	public function count_mails($filter = array())
 	{	
-		$query = "SELECT COUNT(distinct c.id) as count
-		          FROM __maillist c WHERE 1";
-
-		if($this->db->query($query))
-			return $this->db->result('count');
-		else
-			return false;
+		$active_filter = '';
+        $keyword_filter = '';
+        
+        if(isset($filter['active']))
+			$active_filter = $this->db->placehold('AND c.active = ?', intval($filter['active']));
+        
+        if(isset($filter['keyword']))
+		{
+			$keywords = explode(' ', $filter['keyword']);
+			foreach($keywords as $keyword) {
+				$keyword_filter .= $this->db->placehold('AND (c.name LIKE "%'.$this->db->escape(trim($keyword)).'%" OR c.email LIKE "%'.$this->db->escape(trim($keyword)).'%")');
+			}
+		}
+			
+		$query = $this->db->placehold("SELECT count(*) as count FROM __maillist c
+										WHERE 1 $active_filter $keyword_filter ORDER BY c.name");
+		$this->db->query($query);
+		return $this->db->result('count');	
 	}
 	
 	/*

@@ -18,11 +18,13 @@
 		{elseif $error=='empty_name'}
 		Введите имя
 		{elseif $error=='empty_email'}
-		Введите email
+		Введите Email
 		{elseif $error=='empty_text'}
 		Введите сообщение
 		{elseif $error == 'wrong_name'}
-		В поле 'Имя' может использоваться только кириллица	
+		В поле 'Имя' может использоваться только кириллица
+		{elseif $error == 'wrong_email'}
+		Некорректный Email
 		{/if}
 	</div>
 	{/if}

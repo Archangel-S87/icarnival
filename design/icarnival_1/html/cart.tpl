@@ -7,13 +7,6 @@
 
 {if $cart->purchases}
 	<form class="main_cart_form" method="post" name="cart" {if $settings->attachment == 1}enctype="multipart/form-data"{/if}>
-		
-		{if isset($error_stock)}
-			<div class="message_error">
-				{if $error_stock == 'out_of_stock_order'}В вашем заказе есть закончившиеся товары{/if}
-			</div>
-		{/if}
-
 		{* Список покупок *}
 		<table id="purchases1">
 
@@ -43,7 +36,7 @@
 				<td class="image">
 					{if !empty($purchase->product->images)}
 						{$image = $purchase->product->images|first}
-						<span class="purimage"><a href="{$image->filename|resize:800:600:w}" class="zoom"><img src="{$image->filename|resize:100:100}" alt="{$purchase->product->name|escape}"></a></span>
+						<span class="purimage"><a href="{$image->filename|resize:1024:768:w}" class="zoom"><img src="{$image->filename|resize:100:100}" alt="{$purchase->product->name|escape}"></a></span>
 					{else}
 						<span class="purimage"><svg class="nophoto"><use xlink:href='#no_photo' /></svg></span>
 					{/if}
@@ -52,12 +45,7 @@
 				{* Название товара *}
 				<td class="name">
 					<a href="products/{$purchase->product->url}">{$purchase->product->name|escape}</a>
-					{*$purchase->variant->name|escape*}	
-				<select name="variant[{$purchase->variant->id}]"  onchange="document.cart.submit();" class="amounts product__select product__select--block" id="v{$purchase->variant->id}">
-                			{foreach $purchase->product->variants as $variant}
-                			{if $variant->name ne ''}<option value="{$variant->id}" {if $purchase->variant->name eq $variant->name}selected{/if}>{$variant->name}</option>{/if}
-                			{/foreach}
-                		</select>  		
+					{$purchase->variant->name|escape}			
 				</td>
 
 				{* Цена за единицу *}
@@ -131,7 +119,7 @@
 
 				{if !empty($coupon_request)}
 					<div class="c_coupon">
-						<p class="c_title">КУПОН:</p>
+						<p class="c_title">КОД КУПОНА:</p>
 						{if !empty($coupon_error)}
 						<div class="message_error">
 							{if $coupon_error == 'invalid'}Купон недействителен{/if}
@@ -140,8 +128,18 @@
 						<div{if $cart->coupon_discount>0} style="display: none"{/if}>
 							<input type="text" name="coupon_code" value="{if !empty($cart->coupon->code)}{$cart->coupon->code|escape}{/if}" class="coupon_code"  autocomplete="off"/><input class="buttonblue" type="button" name="apply_coupon"  value="Применить купон" onclick="document.cart.submit();" />
 						</div>
-						{if !empty($cart->coupon->min_order_price)}<span class="coupondisc">Купон "{$cart->coupon->code|escape}" <span>для заказов от {$cart->coupon->min_order_price|convert} {$currency->sign}</span>{/if}
-						{if $cart->coupon_discount>0}<br /><span class="coupondiscount">Скидка по купону: <strong>{$cart->coupon_discount|convert}&nbsp;{$currency->sign}</strong></span>{/if}
+						
+						{if $cart->coupon_discount>0}
+							<p class="coupondisc">
+								Купон "{$cart->coupon->code|escape}" 
+								{if !empty($cart->coupon->min_order_price|round)}
+									<span>для заказов от {$cart->coupon->min_order_price|convert} {$currency->sign}</span>
+								{/if}	
+							</p>
+							<p class="coupondiscount">Скидка по купону: <strong>{$cart->coupon_discount|convert}&nbsp;{$currency->sign}</strong>
+							</p>
+							<input class="buttonblue" type="button" name="apply_coupon" value="Отменить купон" onclick="$('input[name=coupon_code]').val('');document.cart.submit();">
+						{/if}
 				
 						{literal}
 						<script>
@@ -169,6 +167,7 @@
 		<div class="del_pay_info" style="{if $cart->total_price < $settings->minorder}display:none;{/if}">
 
 			{$countpoints=0}
+			<div class="del_pay_cart_tab">
 			{* Доставка *}
 			{if $deliveries}
 				{$countpoints=$countpoints+1}
@@ -230,26 +229,10 @@
 
 									{if $delivery->separate_payment}[оплачивается отдельно]{/if} 
 				
-									(<span class="del_price" id="not-null-delivery-price-{$delivery->id}">
-										{if $delivery->free_from > 0 && $cart->total_price >= $delivery->free_from}
-											бесплатно</span>)
-										{elseif (in_array($delivery->id, array(3,114,121)) || $delivery->widget == 1)}
-											---</span>&nbsp;{$currency->sign})
-										{elseif $delivery->price == 0 && $delivery->price2 == 0 && $additional_cost == 0}
-											бесплатно</span>)
-										{elseif $delivery->price2 > 0 || $additional_cost > 0}
-											{$temp_price = 0}
-											{$temp_price = $temp_price + $delivery->price}
-											{if $delivery->price2 > 0 && $cart->total_weight > 3}
-												{$temp_price = $delivery->price + $delivery->price2 * ($cart->total_weight|ceil - 3)}
-											{/if}
-											{if $additional_cost > 0}
-												{$temp_price = $temp_price + $additional_cost}
-											{/if}
-											{$temp_price|convert}</span>&nbsp;{$currency->sign})
-										{else}
-											{$delivery->price|convert}</span>&nbsp;{$currency->sign})
-									{/if}
+									(<span class="del_price" id="not-null-delivery-price-{$delivery->id}">{if $delivery->free_from > 0 && $cart->total_price >= $delivery->free_from}бесплатно</span>)
+									{elseif (in_array($delivery->id, array(3,114,121)) || $delivery->widget == 1)}---</span>&nbsp;{$currency->sign})
+									{elseif $delivery->price == 0 && $delivery->price2 == 0}бесплатно</span>)
+									{else}{if $delivery->price2 > 0}{($delivery->price + ($delivery->price2 * $cart->total_weight|ceil))|convert}{else}{$delivery->price|convert}{/if}</span>&nbsp;{$currency->sign}){/if}
 									</span>
 								</label>
 								{if in_array($delivery->id, array(3,114,121)) || $delivery->widget == 1}
@@ -296,13 +279,11 @@
 				<textarea style="display:none;" name="calc" hidden="hidden" id="calc_info"></textarea>
 			{/if}
 
-			
 			{if $payment_methods}
 				{$countpoints=$countpoints+1}
 				<div class="cart-blue">
 					<span class="whitecube">{$countpoints}</span><h2>Выберите способ оплаты</h2>
 				</div>
-
 				<div class="delivery_payment">             
 					<ul id="payments">
 						{foreach $payment_methods as $payment_method}
@@ -317,8 +298,13 @@
 							</li>
 						{/foreach}
 					</ul>
-				</div>  
+				</div>  	
 			{/if}
+			
+			{if !isset($cart_error) && !isset($error) && empty($settings->cart_tabs) && ($payment_methods || $deliveries)}
+				<div class="buttonred blue anchor delpay_tab_button" data-anchor=".return_tab_button"  onClick="$('.del_pay_cart_tab').hide();$('.contacts_cart_tab').show();$('.return_tab_button').show();">Перейти к следующему шагу &raquo;</div>
+			{/if}
+			</div>
 				<script>
 					function change_payment_method($id) {
 						$('#calc_info').html( $("#li_delivery_"+$id+" .deliveryinfo").text() );
@@ -330,9 +316,10 @@
 							$.each(arr,function(index,value){
 								$("#list_payment_"+value.toString()).css("display","block");
 							});
-						}	
-						$('#payments li:visible:first input[name="payment_method_id"]').attr('checked','checked');
-						payment_first = $('#payments li:visible:first input[name="payment_method_id"]').val();
+						}
+						$('#payments input[name="payment_method_id"]').prop('checked','false');
+						$('#payments li:visible:first input[name="payment_method_id"]').prop('checked','true');
+						//payment_first = $('#payments li:visible:first input[name="payment_method_id"]').val();
 					}
 					
 					$(window).load(function(){ 
@@ -340,81 +327,95 @@
 						change_payment_method(delivery_num);
 					});
 				</script>
-		
-			<div class="cart-blue">
-				<span class="whitecube">{$countpoints+1}</span><h2>Адрес получателя</h2>
-			</div>
-	
-			<div class="form cart_form">         
-				{if isset($error)}
-				<div class="message_error">
-					{if $error == 'empty_name'}Введите имя{/if}
-					{if $error == 'empty_email'}Введите email{/if}
-					{if $error == 'captcha'}Не пройдена проверка на бота{/if}
-					{if $error == 'min_order'}Сумма товаров в заказе меньше минимума{/if}
-				</div>
-				{/if}
-
-				<div class="del_main">
-					<div class="del_left">
-						<label>ФИО *</label>
-						<input name="name" type="text" value="{if !empty($name)}{$name|escape}{/if}" data-format=".+" data-notice="Введите ФИО"/>
-					</div>
-
-					<div class="del_right">
-						<label>Email *</label>
-						<input name="email" type="email" value="{if !empty($email)}{$email|escape}{/if}" data-format="email" data-notice="Введите email" />
-					</div>
-
-					<div class="del_left">
-						<label>Телефон *</label>
-						<input id="phone" name="phone" type="text" data-format=".+" value="{if !empty($phone)}{$phone|escape}{/if}" data-notice="Укажите телефон" />
-					</div>
-
-					<div class="del_right">	
-						<label>Адрес доставки</label>
-						<input name="address" type="text" value="{if !empty($address)}{$address|escape}{/if}"/>
-					</div>
-				</div>
-
-				{* загрузка файлов *}
-				{if $settings->attachment == 1}
-					<div class="separator" style="margin-bottom:10px;">
-						<label>Прикрепить файл
-							<span class="errorupload errortype" style="display:none; margin:0 0px 0 20px;">Неверный тип файла!</span>
-							<span class="errorupload errorsize" style="display:none; margin:0 0px 0 20px;">Файл более {$settings->maxattachment|escape} Мб!</span>
-						</label>
-						<input style="margin-right:20px;" class='attachment' name=files[] type=file multiple accept='pdf/txt/doc/docx/xls/xlsx/odt/ods/odp/gif/jpg/jpeg/png/psd/cdr/ai/zip/rar/gzip' />
-						<span style="font-size:12px;">Максимальный размер: {$settings->maxattachment|escape} Мб! Разрешенные типы: pdf, txt, doc(x), xls(x), odt, ods, odp, gif, jpg, png, psd, cdr, ai, zip, rar, gzip</span>
-					</div>
-		
-					<script>
-						$('.attachment').bind('change', function() {
-							$('.errorsize, .errortype').hide();
-							var size = this.files[0].size; 
-							var name = this.files[0].name;
-							if({$settings->maxattachment|escape * 1024 * 1024}<size){
-								$('.errorsize').show();
-								$('.attachment').val('');
-								setTimeout(function(){ $('.errorsize').fadeOut('slow'); },3000);
-							}
-							var fileExtension = ['pdf', 'txt', 'doc', 'docx', 'xls', 'xlsx', 'odt', 'ods', 'odp', 'gif', 'jpg', 'jpeg', 'png', 'psd', 'cdr', 'ai', 'zip', 'rar', 'gzip'];
-							if ($.inArray(name.split('.').pop().toLowerCase(), fileExtension) == -1) {
-								$('.errortype').show();
-								$('.attachment').val('');
-								setTimeout(function(){ $('.errortype').fadeOut('slow'); },3000);
-							}
-						});
-					</script>
-				{/if}
-				{* загрузка файлов @ *}
-
-				<label>Комментарий к заказу</label>
-				<textarea name="comment" id="order_comment">{if !empty($comment)}{$comment|escape}{/if}</textarea>
-				{include file='conf.tpl'}
-				{include file='antibot.tpl'}
-				<input {if $settings->counters || $settings->analytics}onclick="{if $settings->counters}yaCounter{$settings->counters}.reachGoal('cart'); {/if}{if $settings->analytics}ga ('send', 'event', 'cart', 'order_button');{/if} return true;"{/if} type="submit" name="checkout" class="button hideablebutton" value="Оформить заказ" />
+			
+			{if empty($settings->cart_tabs) && ($payment_methods || $deliveries)}
+				<div class="buttonred blue return_tab_button" style="display:none;margin-bottom:10px;" onClick="$('.del_pay_cart_tab').show();$('.contacts_cart_tab').hide();$('.return_tab_button').hide();">&laquo; Вернуться к выбору доставки и оплаты</div>
+			{/if}
 				
+			<div class="contacts_cart_tab" {if !isset($cart_error) && !isset($error) && empty($settings->cart_tabs)}style="display:none;"{/if}>
+				<div class="cart-blue">
+					<span class="whitecube">{$countpoints+1}</span><h2>Адрес получателя</h2>
+				</div>
+	
+				<div class="form cart_form">        
+					{if isset($cart_error)}
+					<div class="message_error">
+						В вашем заказе есть закончившиеся товары
+					</div>
+					{/if} 
+					{if isset($error)}
+					<div class="message_error">
+						{if $error == 'empty_name'}Введите ФИО
+						{elseif $error == 'empty_email'}Введите email
+						{elseif $error == 'min_order'}Сумма товаров в заказе меньше минимума
+						{elseif $error == 'captcha'}Не пройдена проверка на бота
+						{elseif $error == 'wrong_name'}В поле 'ФИО' может использоваться только кириллица
+						{elseif $error == 'wrong_email'}Некорректный Email
+						{/if}
+					</div>
+					{/if}
+
+					<div class="del_main">
+						<div class="del_left">
+							<label>ФИО *</label>
+							<input name="name" type="text" value="{if !empty($name)}{$name|escape}{/if}" data-format=".+" data-notice="Введите ФИО"/>
+						</div>
+
+						<div class="del_right">
+							<label>Email *</label>
+							<input name="email" type="email" value="{if !empty($email)}{$email|escape}{/if}" data-format="email" data-notice="Введите Email" />
+						</div>
+
+						<div class="del_left">
+							<label>Телефон *</label>
+							<input id="phone" name="phone" type="text" data-format=".+" value="{if !empty($phone)}{$phone|escape}{/if}" data-notice="Укажите телефон" />
+						</div>
+
+						<div class="del_right">	
+							<label>Адрес доставки</label>
+							<input name="address" type="text" value="{if !empty($address)}{$address|escape}{/if}"/>
+						</div>
+					</div>
+
+					{* загрузка файлов *}
+					{if $settings->attachment == 1}
+						<div class="separator" style="margin-bottom:10px;">
+							<label>Прикрепить файл
+								<span class="errorupload errortype" style="display:none; margin:0 0px 0 20px;">Неверный тип файла!</span>
+								<span class="errorupload errorsize" style="display:none; margin:0 0px 0 20px;">Файл более {$settings->maxattachment|escape} Мб!</span>
+							</label>
+							<input style="margin-right:20px;" class='attachment' name=files[] type=file multiple accept='pdf/txt/doc/docx/xls/xlsx/odt/ods/odp/gif/jpg/jpeg/png/psd/cdr/ai/zip/rar/gzip' />
+							<span style="font-size:12px;">Максимальный размер: {$settings->maxattachment|escape} Мб! Разрешенные типы: pdf, txt, doc(x), xls(x), odt, ods, odp, gif, jpg, png, psd, cdr, ai, zip, rar, gzip</span>
+						</div>
+		
+						<script>
+							$('.attachment').bind('change', function() {
+								$('.errorsize, .errortype').hide();
+								var size = this.files[0].size; 
+								var name = this.files[0].name;
+								if({$settings->maxattachment|escape * 1024 * 1024}<size){
+									$('.errorsize').show();
+									$('.attachment').val('');
+									setTimeout(function(){ $('.errorsize').fadeOut('slow'); },3000);
+								}
+								var fileExtension = ['pdf', 'txt', 'doc', 'docx', 'xls', 'xlsx', 'odt', 'ods', 'odp', 'gif', 'jpg', 'jpeg', 'png', 'psd', 'cdr', 'ai', 'zip', 'rar', 'gzip'];
+								if ($.inArray(name.split('.').pop().toLowerCase(), fileExtension) == -1) {
+									$('.errortype').show();
+									$('.attachment').val('');
+									setTimeout(function(){ $('.errortype').fadeOut('slow'); },3000);
+								}
+							});
+						</script>
+					{/if}
+					{* загрузка файлов @ *}
+
+					<label>Комментарий к заказу</label>
+					<textarea name="comment" id="order_comment">{if !empty($comment)}{$comment|escape}{/if}</textarea>
+					{include file='conf.tpl'}
+					{include file='antibot.tpl'}
+					<input {if $settings->counters || $settings->analytics}onclick="{if $settings->counters}ym({$settings->counters},'reachGoal','cart'); {/if}{if $settings->analytics}ga ('send', 'event', 'cart', 'order_button');{/if} return true;"{/if} type="submit" name="checkout" class="button hideablebutton" value="Оформить заказ" />
+				
+				</div>
 			</div>
 			
 		</div>
@@ -436,4 +437,3 @@
 	};
 </script>
 {/literal}
-				

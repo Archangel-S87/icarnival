@@ -145,8 +145,10 @@ class Money extends Fivecms
 		}
 		elseif(isset($_SESSION['currency_id']))
 			$currency = $this->get_currency($_SESSION['currency_id']);
-		else
-			$currency = reset($this->get_currencies(array('enabled'=>1)));
+		else{
+			$get_currencies = $this->get_currencies(array('enabled'=>1));
+			$currency = reset($get_currencies);
+		}
 								
 		$result = $price;
 		
@@ -161,7 +163,8 @@ class Money extends Fivecms
 			$precision = isset($currency->cents)?$currency->cents:2;
 		}
 		
-		$result = round($result, $precision);
+		if($convert_type != 'no_precision')
+			$result = round($result, $precision);
 
 		return $result;
 	}
@@ -174,9 +177,10 @@ class Money extends Fivecms
         if(isset($_SESSION['currency_id']))
             $currency = $this->get_currency($_SESSION['currency_id']);
         // Или первую из списка
-        else
-            $currency = reset($this->get_currencies(array('enabled'=>1)));
-            
+        else{
+        	$get_currencies = $this->get_currencies(array('enabled'=>1));
+            $currency = reset($get_currencies);
+        }    
         return $currency;
     }
 	//Multicurrency end

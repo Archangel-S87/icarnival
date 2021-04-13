@@ -43,16 +43,14 @@ class FeedbackView extends View
 				$this->design->assign('error', 'captcha');	
 			elseif(empty($feedback->email))
 				$this->design->assign('error', 'empty_email');
+			elseif(!empty($feedback->email) && filter_var($feedback->email, FILTER_VALIDATE_EMAIL) === false)	
+				$this->design->assign('error', 'wrong_email');
 			elseif(empty($feedback->message))
 				$this->design->assign('error', 'empty_text');
 			elseif(!$bttrue)
-			{
 				$this->design->assign('error', 'captcha');
-			}
-			elseif($btfalse)
-			{
+			elseif(!empty($btfalse))
 				$this->design->assign('error', 'captcha');
-			}		
 			else
 			{
 				$this->design->assign('message_sent', true);

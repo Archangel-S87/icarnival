@@ -152,7 +152,7 @@ $('select[name=module]').change(function(){
 				<li>* Если не задан параметр defaultCity, то местоположение клиента будет определяться автоматически.</li>
 				<li><label class="property">Из какого города будет идти доставка (cityFrom)</label><input placeholder="Напр.: Москва" name="option2" class="fivecms_inp" type="text" value="{if !empty($delivery->option2)}{$delivery->option2|escape}{/if}" /></li>
 				<li><label class="property">Страна, для которой показывать список ПВЗ (country)</label><input placeholder="Напр.: Россия" name="option3" class="fivecms_inp" type="text" value="{if !empty($delivery->option3)}{$delivery->option3|escape}{/if}" /></li>
-				<li><label class="property">API-ключ Яндекс.Карт (<a href="https://developer.tech.yandex.ru/?from=club" target="_blank">Получить здесь</a>)</label><input placeholder="Напр.: 2e19g7d5-d897-7b59-2ab6-8427cdbf43a1" name="option4" class="fivecms_inp" type="text" value="{if !empty($delivery->option4)}{$delivery->option4|escape}{/if}" /></li>
+				<li><label class="property">API-ключ Яндекс.Карт <a class="bluelink" href="https://5cms.ru/blog/yandex-maps-api" target="_blank">(как получить?)</a></label><input placeholder="Напр.: 2e19g7d5-d897-7b59-2ab6-8427cdbf43a1" name="option4" class="fivecms_inp" type="text" value="{if !empty($delivery->option4)}{$delivery->option4|escape}{/if}" /></li>
 				{*<li><label class="property">Стоимость доставки, если сервер СДЭК недоступен</label><input name="option5" class="fivecms_inp" type="number" min="0" step="1" style="width:50px;" value="{if !empty($delivery->option5)}{$delivery->option5|escape}{/if}" /> {$currency->sign|escape}</li>*}
 				<li>** полученные при регистрации (аккаунт к интеграции и ключ), а также выбранные тарифы необходимо указать в файле /service.php в корневой директории (правится через файловый менеджер)</li>
 			</ul>		
@@ -170,35 +170,124 @@ $('select[name=module]').change(function(){
 						<option value="1" {if isset($delivery->option3) && $delivery->option3 == '1'}selected{/if}>Да</option>
 					</select>
 				</li>
+				<li><label class="property" style="margin-right:10px;">API-ключ Яндекс.Карт (<a  href="http://5cms.ru/blog/yandex-maps-api" target="_blank">получить</a>)</label><input name="option5" class="fivecms_inp" type="text" value="{if !empty($delivery->option5)}{$delivery->option5|escape}{/if}" /></li>
 				<li><label class="property" style="margin-right:10px;">Транспортные компании</label><input placeholder="напр.: shiptor_today,dpd_auto" name="option4" class="fivecms_inp" type="text" value="{if !empty($delivery->option4)}{$delivery->option4|escape}{/if}" /></li>
 				<p style="margin-bottom:10px;">** через запятую из списка ниже (если ничего не указано, то выводятся все):</p>
-				<p><strong>shiptor_today</strong> - Shiptor Today<br>
-				<strong>shiptor_courier</strong> - Shiptor Курьер<br>
-				<strong>shiptor_courier_za_mkad </strong>- Shiptor Курьер за МКАД<br>
-				<strong>shiptor_pvz</strong> - Shiptor Самовывоз<br>
-				<strong>dpd_auto</strong> - DPD Курьер (Авто)<br>
-				<strong>dpd_avia</strong> - DPD Курьер (Авиа)<br>
-				<strong>dpd_pvz</strong> - DPD Самовывоз<br>
-				<strong>russian-post</strong> - Почта России (не сочетается с другими вариантами доставки)<br>
-				<strong>cdek_courier</strong> - СДЭК Курьер<br>
-				<strong>cdek_pvz</strong> - СДЭК Самовывоз<br>
-				<strong>cdek_pvz_e -</strong> CDEK ПВЗ Эконом<br>
-				<strong>iml_courier</strong> - IML Курьер<br>
-				<strong>iml_pvz</strong> - IML Самовывоз<br>
-				<strong>pickpoint</strong> - Pickpoint<br>
-				<strong>boxberry_courier</strong> - BoxBerry Курьер<br>
-				<strong>boxberry_pvz</strong> - BoxBerry Самовывоз<br>
-				<strong>dpd_courier_dd</strong> - Сквозной DPD Дверь-Дверь<br>
-				<strong>dpd_courier_td</strong> - Сквозной DPD ПВЗ-Дверь<br>
-				<strong>dpd_pvz_dt</strong> - Сквозной DPD Дверь-ПВЗ<br>
-				<strong>dpd_pvz_tt</strong> - Сквозной DPD ПВЗ-ПВЗ<br>
-				<strong>cdek_courier_dd</strong> - Сквозной СДЭК Дверь-Дверь<br>
-				<strong>cdek_courier_td</strong> - Сквозной СДЭК ПВЗ-Дверь<br>
-				<strong>cdek_pvz_dt</strong> - Сквозной СДЭК Дверь-ПВЗ<br>
-				<strong>cdek_pvz_tt</strong> - Сквозной СДЭК ПВЗ-ПВЗ<br>
-				<strong>sberlogistics_pvz</strong> - Сберлогистика ПВЗ<br>
-				<strong>sberlogistics_pvz_tt</strong> - Сквозной Сберлогистика ПВЗ-ПВЗ</p>
+				<p>Фильтр для отображения информации по конкретному перевозчику (ТК). Возможное значение:&nbsp;<strong>shiptor</strong>,&nbsp;<strong>boxberry</strong>,&nbsp;<strong>dpd</strong>,<strong>&nbsp;iml</strong>,<strong>&nbsp;russian-post</strong>,<strong>&nbsp;pickpoint</strong>,<strong>&nbsp;cdek</strong>,<strong>&nbsp;shiptor-one-day,&nbsp;sberlogistics </strong>или&nbsp;<strong>sber_courier</strong>.</p>
+			<p style="margin-top:20px;">Чтобы задать составной фильтр из способов доставки, укажите их через запятую, пользуясь списком ниже:</p>
+
+			<p style="margin-top:10px;"><strong>shiptor_today&nbsp;</strong>—&nbsp;Shiptor Today<br>
+			<strong>shiptor_courier&nbsp;</strong>—&nbsp;Shiptor Курьер<br>
+			<strong>shiptor_courier_za_mkad </strong>— Shiptor Курьер за МКАД<br>
+			<strong>shiptor_pvz&nbsp;</strong>— Shiptor Самовывоз<br>
+			<strong>dpd_auto&nbsp;</strong>— DPD Курьер (Авто)<br>
+			<strong>dpd_avia&nbsp;</strong>— DPD Курьер (Авиа)<br>
+			<strong>dpd_pvz&nbsp;</strong>— DPD Самовывоз<br>
+			<strong>dpd_pvz_c&nbsp;</strong>— DPD Самовывоз<br>
+			<strong>cdek_courier&nbsp;</strong>—&nbsp;СДЭК Курьер<br>
+			<strong>cdek_pvz&nbsp;</strong>— СДЭК Самовывоз<br>
+			<strong>cdek_pvz_e </strong>—<strong>&nbsp;</strong>CDEK ПВЗ Эконом<br>
+			<strong>iml_courier&nbsp;</strong>— IML Курьер<br>
+			<strong>iml_pvz&nbsp;</strong>— IML Самовывоз<br>
+			<strong>pickpoint&nbsp;</strong>— Pickpoint<br>
+			<strong>boxberry_courier&nbsp;</strong>—&nbsp;BoxBerry Курьер<br>
+			<strong>boxberry_pvz&nbsp;</strong>— BoxBerry Самовывоз<br>
+			<strong>dpd_courier_dd</strong> — Сквозной DPD Дверь-Дверь<br>
+			<strong>dpd_courier_td</strong> — Сквозной DPD ПВЗ-Дверь<br>
+			<strong>dpd_pvz_dt</strong> — Сквозной DPD Дверь-ПВЗ<br>
+			<strong>dpd_pvz_tt</strong> — Сквозной DPD ПВЗ-ПВЗ<br>
+			<strong>cdek_courier_dd</strong> — Сквозной СДЭК Дверь-Дверь<br>
+			<strong>cdek_courier_td</strong> — Сквозной СДЭК ПВЗ-Дверь<br>
+			<strong>cdek_pvz_dt</strong> — Сквозной СДЭК Дверь-ПВЗ<br>
+			<strong>cdek_pvz_tt</strong> — Сквозной СДЭК ПВЗ-ПВЗ<br>
+			<strong>sberlogistics_pvz</strong> — Сберпосылка<br>
+			<strong>sberlogistics_dd </strong>— Сберкурьер Дверь-Дверь<br>
+			<strong>sberlogistics_td </strong>— Сберкурьер ПВЗ-Дверь<br>
+			<strong>sberlogistics_pvz_dp</strong> — Сберпосылка Дверь-ПВЗ<br>
+			<strong>sber_courier</strong> — Сберкурьер<br>
+			<strong>post&nbsp;</strong>— Shiptor Почта<br>
+			<strong>russian_post_main</strong> — Shiptor Почта<br>
+			<strong>russian_post_courier_online</strong> — Почта «Курьер онлайн»<br>
+			<strong>russian_post_parcel_online</strong> — Почта «Посылка онлайн»</p>
 			</ul>		
+		</div>
+		{elseif $delivery->id == 122}
+
+		<script src="design/js/autocomplete/jquery.autocomplete.js"></script>
+
+		<div class="block layer widget" id="postcalc">
+			<ul>
+				<li>Для начала работы необходимо зарегистрироваться на сайте <a href="https://https://www.postcalc.ru/" target="_blank">Тарифы Почты России и EMS и заключить с ними договор</a></li>
+				<li>
+					<label for="from" class="property" style="width: 350px;">Шестизначный индекс или местоположение EMS (название региона или центр региона)</label>
+					<input id="from" placeholder="Напр.: Москва или 101700" name="option1[default_from]" class="fivecms_inp" type="text" value="{$delivery->option1['default_from']}" />
+				</li>
+				<li>
+					<label class="property" style="width: 350px;">Скрыть адрес отправления</label>
+					<select name="option1[hide_from]">
+						<option value="0" {if isset($delivery->option1['hide_from']) && $delivery->option1['hide_from'] == 0}selected{/if}>Нет</option>
+						<option value="1" {if isset($delivery->option1['hide_from']) && $delivery->option1['hide_from'] == 1}selected{/if}>Да</option>
+					</select>
+				</li>
+				<li>
+					<label for="from" class="property" style="width: 350px;">Округление вверх стоимости доставки</label>
+					<select name="option1[r]">
+						<option value="0.01" {if isset($delivery->option1['r']) && $delivery->option1['r'] == 0.01}selected{/if}>До копеек</option>
+						<option value="1" {if isset($delivery->option1['r']) && $delivery->option1['r'] == 1}selected{/if}>До рублей</option>
+					</select>
+				</li>
+				<li>
+					<label class="property" style="width: 350px;">Запрашивать расчёты для отправлений (Для выбора нескольких значений используйте Ctrl или Shift + click)</label>
+					<select name="option1[p][]" multiple style="height: 200px;">
+						{foreach from=$postcalc->parcels key=$label item=$items}
+							<optgroup label="{$label}">
+								{foreach from=$items key=$key item=$value}
+									<option value="{$key}" {if isset($delivery->option1['p']) && in_array($key, $delivery->option1['p'])}selected{/if}>{$value|escape}</option>
+								{/foreach}
+							</optgroup>
+						{/foreach}
+					</select>
+				</li>
+				<li>
+					<label class="property" style="width: 350px;">Коробка Почты России (пока только для отправления ЕКОМ)</label>
+					<select name="option1[bo]">
+						<option value=""></option>
+						{foreach from=$postcalc->boxes key=$key item=$value}
+							<option value="{$key}" {if isset($delivery->option1['bo']) && $delivery->option1['bo'] == $key}selected{/if}>{$value}</option>
+						{/foreach}
+					</select>
+				</li>
+				<li>
+					<label class="property" style="width: 350px;">Опции и доп. услуги (Для выбора нескольких значений используйте Ctrl или Shift + click)</label>
+					<select name="option1[sv][]" multiple style="height: 200px;">
+						{foreach from=$postcalc->services key=$key item=$value}
+							<option value="{$key}" {if isset($delivery->option1['sv']) && in_array($key, $delivery->option1['sv'])}selected{/if}>{$value|escape}</option>
+						{/foreach}
+					</select>
+				</li>
+			</ul>
+			<script>
+				$(document).ready(function($) {
+					$("input#from").autocomplete({
+						serviceUrl:'/Postcalc/AjaxPostcalc.php',
+						params: {
+							delivery_id: '{$delivery->id}',
+							action: 'autocomplete'
+						},
+						minChars: 0,
+						noCache: false,
+						onSelect: function (suggestion) {
+							$(this).val(suggestion.value);
+							console.log(this);
+							return suggestion.index;
+						},
+						formatResult: function (suggestions) {
+							console.log(suggestions);
+							return suggestions.value;
+						}
+					});
+				});
+			</script>
 		</div>
 		{else}
 			<input name="option1" type="hidden" value="" />

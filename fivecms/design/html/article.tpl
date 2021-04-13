@@ -21,9 +21,94 @@
 	<script src="design/js/jquery/datepicker/jquery.ui.datepicker-en.js"></script>
 {/if}
 
+<script src="design/js/autocomplete/jquery.autocomplete-min.js"></script>
+<style>
+	#list { 
+    border: 0px;
+    padding: 0px;
+    border-radius: 10px;
+    background-color: transparent; 
+	}
+	#list .row{ border-radius:5px;margin-bottom:3px;border:1px solid #dadada;background-color:#ffffff; }
+	#list .cell { padding: 5px 0 5px 10px; }
+	#list .icons { padding: 3px 5px 0 2px; }
+	#list.related_products .name, #list.related_articles .name { padding-left: 10px; }
+	#related_articles, #related_products { margin-top:6px; }
+</style>
 {literal}
 <script>
 $(function() {
+
+	// Удаление связанной статьи
+    $(".related_articles a.delete").live('click', function() {
+         $(this).closest("div.row").fadeOut(200, function() { $(this).remove(); });
+         return false;
+    });
+
+    // Добавление связанной статьи 
+    var new_related_article = $('#new_related_article').clone(true);
+    $('#new_related_article').remove().removeAttr('id');
+    
+    $("input#related_articles").autocomplete({
+		serviceUrl:'ajax/search_articles.php',
+		minChars:0,
+		noCache: false, 
+		onSelect:
+			function(suggestion){
+				$("input#related_articles").val('').focus().blur(); 
+				new_item = new_related_article.clone().appendTo('.related_articles');
+				new_item.removeAttr('id');
+				new_item.find('a.related_article_name').html(suggestion.data.name);
+				new_item.find('a.related_article_name').attr('href', 'index.php?module=ArticleAdmin&id='+suggestion.data.id);
+				new_item.find('input[name*="related_articles"]').val(suggestion.data.id);
+				new_item.show();
+			},
+		formatResult:
+            function(suggestions, currentValue){
+                var reEscape = new RegExp('(\\' + ['/', '.', '*', '+', '?', '|', '(', ')', '[', ']', '{', '}', '\\'].join('|\\') + ')', 'g');
+                var pattern = '(' + currentValue.replace(reEscape, '\\$1') + ')';
+                return "<div>" + (suggestions.data.image?"<img align=absmiddle src='"+suggestions.data.image+"'> ":'') + "</div>" +  "<span>" + suggestions.value.replace(new RegExp(pattern, 'gi'), '<strong>$1<\/strong>') + "</span>";
+            }
+
+	});
+        
+    // Удаление связанного товара
+    $(".related_products a.delete").live('click', function() {
+         $(this).closest("div.row").fadeOut(200, function() { $(this).remove(); });
+         return false;
+    });
+
+    // Добавление связанного товара 
+    var new_related_product = $('#new_related_product').clone(true);
+    $('#new_related_product').remove().removeAttr('id');
+ 
+	$("input#related_products").autocomplete({
+		serviceUrl:'ajax/search_products.php',
+		minChars:0,
+		noCache: false, 
+		onSelect:
+			function(suggestion){
+				$("input#related_products").val('').focus().blur(); 
+				new_item = new_related_product.clone().appendTo('.related_products');
+				new_item.removeAttr('id');
+				new_item.find('a.related_product_name').html(suggestion.data.name);
+				new_item.find('a.related_product_name').attr('href', 'index.php?module=ProductAdmin&id='+suggestion.data.id);
+				new_item.find('input[name*="related_products"]').val(suggestion.data.id);
+				if(suggestion.data.image)
+					new_item.find('img.product_icon').attr("src", suggestion.data.image);
+				else
+					new_item.find('img.product_icon').remove();
+				new_item.show();
+			},
+		formatResult:
+            function(suggestions, currentValue){
+                var reEscape = new RegExp('(\\' + ['/', '.', '*', '+', '?', '|', '(', ')', '[', ']', '{', '}', '\\'].join('|\\') + ')', 'g');
+                var pattern = '(' + currentValue.replace(reEscape, '\\$1') + ')';
+                return "<div>" + (suggestions.data.image?"<img align=absmiddle src='"+suggestions.data.image+"'> ":'') + "</div>" +  "<span>" + suggestions.value.replace(new RegExp(pattern, 'gi'), '<strong>$1<\/strong>') + "</span>";
+            }
+
+	});
+  
 
 	$('input[name="date"]').datepicker({
 		regional:'{/literal}{$admin_lang}{literal}'
@@ -262,7 +347,7 @@ function translit(str)
 						<li>
 							{if $i==1}<span class="toolannot" title="{$tr->toolannot|escape}">{$tr->annotation|escape}</span>{/if}
 							<a href='#' class="delete"><img src='design/images/cross-circle-frame.png'></a>
-							<a href="{$image->filename|resize:800:600:w:$config->resized_articles_images_dir}?{$random}" class="zoom" data-rel="group"><img src="{$image->filename|resize:400:400:false:$config->resized_articles_images_dir}?{$random}" alt="" /></a>
+							<a href="{$image->filename|resize:1024:768:w:$config->resized_articles_images_dir}?{$random}" class="zoom" data-rel="group"><img src="{$image->filename|resize:400:400:false:$config->resized_articles_images_dir}?{$random}" alt="" /></a>
 							<input type=hidden name='images[]' value='{$image->id}'>
 						</li>
 					{/foreach}
@@ -271,6 +356,70 @@ function translit(str)
 				<span class=upload_image><i class="dash_link" id="upload_image">{$tr->upload_image|escape}</i></span>
 				<input class="button_green button_save" type="submit" name="" value="{$tr->save|escape}" />
 			</div>
+			
+			<div class="block">
+				<h2>{$tr->related_prods|escape}</h2>
+				<div id=list class="related_products">
+					{if !empty($related_products)}
+					{foreach from=$related_products item=related_product}
+					<div class="row">
+						<div class="name cell">
+						<input type=hidden name=related_products[] value='{$related_product->id}'>
+						<a href="index.php?module=ProductAdmin&id={$related_product->id}">{$related_product->name}</a>
+						</div>
+						<div class="icons cell">
+						<a href='#' class="delete"></a>
+						</div>
+						<div class="clear"></div>
+					</div>
+					{/foreach}
+					{/if}
+					<div id="new_related_product" class="row" style='display:none;'>
+						<div class="name cell">
+						<input type=hidden name=related_products[] value=''>
+						<a class="related_product_name" href=""></a>
+						</div>
+						<div class="icons cell">
+						<a href='#' class="delete"></a>
+						</div>
+						<div class="clear"></div>
+					</div>
+				</div>
+				<input type=text name=related id='related_products' class="input_autocomplete" placeholder='{$tr->choose_prod_add|escape}'>
+			</div>
+
+			<div class="block layer">
+				<h2>{$tr->rel_articles}</h2>
+				<div id=list class="related_articles">
+					{if !empty($related_articles)}
+					{foreach from=$related_articles item=related_article}
+					<div class="row">
+						<div class="name cell">
+						<input type=hidden name=related_articles[] value='{$related_article->id}'>
+						<a href="{url id=$related_article->id}">{$related_article->name}</a>
+						</div>
+						<div class="icons cell">
+						<a href='#' class="delete"></a>
+						</div>
+						<div class="clear"></div>
+					</div>
+					{/foreach}
+					{/if}
+					<div id="new_related_article" class="row" style='display:none;'>
+						<div class="name cell">
+						<input type=hidden name=related_articles[] value=''>
+						<a class="related_article_name" href=""></a>
+						</div>
+						<div class="icons cell">
+						<a href='#' class="delete"></a>
+						</div>
+						<div class="clear"></div>
+					</div>
+				</div>
+				<input type=text name=related id='related_articles' class="input_autocomplete" placeholder='{$tr->choose_article_add}'>
+			</div>
+			
+			
 		</div>
 		<!-- Right column | Правая колонка (The End)--> 
 		

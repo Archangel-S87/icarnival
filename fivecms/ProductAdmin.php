@@ -31,15 +31,14 @@ class ProductAdmin extends Fivecms
 			$product->meta_keywords = $this->request->post('meta_keywords');
 			$product->meta_description = $this->request->post('meta_description');
 			
-			$product->views = $this->request->post('views');
+			$product->ref_url = $this->request->post('ref_url');
+			
 			$product->rating = $this->request->post('rating');
 			$product->votes = $this->request->post('votes');
 			
 			$product->annotation = $this->request->post('annotation');
 			$product->body = $this->request->post('body');
-			$product->video = $this->request->post('video');
-			$product->out_of = $this->request->post('out_of', 'boolean');; // GLOOBUS 2017-05-12 снято с производства
-			$product->podzakaz = $this->request->post('podzakaz', 'integer');   
+            $product->video = $this->request->post('video');
 
 			// Варианты товара
 			if($this->request->post('variants'))
@@ -230,7 +229,6 @@ class ProductAdmin extends Fivecms
 					}
 	
 					// Удаление изображений
-					//$images = (array)$this->request->post('images');
 					$images = (array)$this->request->post('images');
 					$colors = $this->request->post('imagecolors');
 					$current_images = $this->products->get_images(array('product_id'=>$product->id));
@@ -283,6 +281,17 @@ class ProductAdmin extends Fivecms
 					}
 					$images = $this->products->get_images(array('product_id'=>$product->id));
 					
+					// Проверка загрузки всех изображений из интернета
+					if(!empty($this->settings->check_download)){
+						foreach($images as $url){
+							if(!empty($url->filename) && (substr($url->filename,0,7) == 'http://' || substr($url->filename,0,8) == 'https://')){
+								$new_name=$this->image->download_image($url->filename);
+							}
+						}
+						$images = $this->products->get_images(array('product_id'=>$product->id));
+					}	
+					// Проверка загрузки всех изображений из интернета @
+					
 					$files 		= array();
 					$files 		= (array)$this->request->post('files');
 
@@ -323,17 +332,15 @@ class ProductAdmin extends Fivecms
 					foreach($this->features->get_product_options($product->id) as $po)
 						$this->features->delete_option($product->id, $po->feature_id);
 						
-					// Свойства текущей категории
+					// Свойства всех категорий товара
 					$category_features = array();
-					foreach($this->features->get_features(array('category_id'=>$product_categories[0])) as $f)
-						$category_features[] = $f->id;
-	
-	  	    		//if(is_array($options))
-					//foreach($options as $option)
-					//{
-					//	if(in_array($option->feature_id, $category_features))
-					//		$this->features->update_option($product->id, $option->feature_id, $option->value);
-					//}
+					if(!empty($product_categories)){
+						foreach($product_categories as $prod_cat){
+							foreach ($this->features->get_features(array('category_id'=>$prod_cat)) as $f){ 
+								$category_features[] = $f->id;
+							}
+						}
+					}
 
 					if(is_array($options))
 					foreach($options as $option)
@@ -348,7 +355,7 @@ class ProductAdmin extends Fivecms
 						}
 					}
 					
-					// Новые характеристики
+					// Новые свойства
 					$new_features_names = $this->request->post('new_features_names');
 					$new_features_values = $this->request->post('new_features_values');
 					if(is_array($new_features_names) && is_array($new_features_values))
@@ -369,7 +376,7 @@ class ProductAdmin extends Fivecms
 								$this->features->update_option($product->id, $feature_id, $value);
 							}
 						}
-						// Свойства товара
+						// Значения свойств товара
 						$options = $this->features->get_product_options($product->id);
 					}
 					
@@ -404,6 +411,17 @@ class ProductAdmin extends Fivecms
 				// Изображения товара
 				$images = $this->products->get_images(array('product_id'=>$product->id));
 				
+				// Проверка загрузки всех изображений из интернета
+				if(!empty($this->settings->check_download)){
+					foreach($images as $url){
+						if(!empty($url->filename) && (substr($url->filename,0,7) == 'http://' || substr($url->filename,0,8) == 'https://')){
+							$new_name=$this->image->download_image($url->filename);
+						}
+					}
+					$images = $this->products->get_images(array('product_id'=>$product->id));
+				}	
+				// Проверка загрузки всех изображений из интернета @
+				
 				// Файлы товара
 				$files = $this->files->get_files(array('object_id'=>$product->id,'type'=>'product'));
 				
@@ -424,23 +442,23 @@ class ProductAdmin extends Fivecms
 			}
 		}
 		
-		
 		if(empty($variants))
 			$variants = array(1);
 			
 		if(empty($product_categories))
 		{
-			if($category_id = $this->request->get('category_id'))
-				$product_categories[0]->id = $category_id;		
-			else
+			if($category_id = $this->request->get('category_id')){
+				$product_categories[] = new \stdClass();
+				$product_categories[0]->id = $category_id;
+			} else {
 				$product_categories = array(1);
+			}	
 		}
 		if(empty($product->brand_id) && $brand_id=$this->request->get('brand_id'))
 		{
 			$product->brand_id = $brand_id;
 		}
 			
-
 		if(!empty($related_products))
 		{
 			foreach($related_products as &$r_p)
@@ -457,14 +475,13 @@ class ProductAdmin extends Fivecms
 				$r_products[$image->product_id]->images[] = $image;
 			}
 
-				$related_products_variants = $this->variants->get_variants(array('product_id'=>array_keys($r_products)), 1);
-				foreach($related_products_variants as $r_variant)
-				{
-						$r_products[$r_variant->product_id]->variants[] = $r_variant;
-				}
+			$related_products_variants = $this->variants->get_variants(array('product_id'=>array_keys($r_products)), 1);
+			foreach($related_products_variants as $r_variant)
+			{
+				$r_products[$r_variant->product_id]->variants[] = $r_variant;
+			}
 		}
 
-			
 		if(is_array($options))
 		{
 			$temp_options = array();
@@ -483,7 +500,8 @@ class ProductAdmin extends Fivecms
 		$this->design->assign('product_images', $images);
 		$this->design->assign('options', $options);
 		$this->design->assign('related_products', $related_products);
-		$this->design->assign('cms_files', $files);
+		if(!empty($files))
+			$this->design->assign('cms_files', $files);
 		
 		// Все бренды
 		$brands = $this->brands->get_brands();
@@ -493,16 +511,17 @@ class ProductAdmin extends Fivecms
 		$categories = $this->categories->get_categories_tree();
 		$this->design->assign('categories', $categories);
 		
-
 		// Все свойства
-		$category = reset($product_categories);
-		if(!is_object($category))
-			$category = reset($categories);		
-		if(is_object($category))
-		{
-			$features = $this->features->get_features(array('category_id'=>$category->id));
-			$this->design->assign('features', $features);
-		}
+		if(!empty($product_categories)){
+			foreach($product_categories as $pr){
+				if(!empty($pr->id))
+					$prod_cats[] = $pr->id;
+			}
+        }
+		$features = array();
+		if(!empty($prod_cats))
+			$features = $this->features->get_features(array('category_id'=>$prod_cats));
+		$this->design->assign('features', $features);
 
 		//Multicurrency
 		// Все валюты

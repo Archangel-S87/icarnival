@@ -22,11 +22,7 @@
             $to = $mail->email;
             $subject = $mail->title;
             $body = $mail->body;
-			$headers  = 'MIME-Version: 1.0' . "\r\n";
-			$headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
-       		$headers .= 'From: '.$from. "\r\n";
-       		$headers .= 'Reply-To: '.$from. "\r\n";
-			//mail($to, $subject, $body, $headers);
+
 			$fivecms->notify->email($to, $subject, $body, $fivecms->settings->notify_from_email, $from);
 
 			if ($fivecms->settings->mails_pause) {

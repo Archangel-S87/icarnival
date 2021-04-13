@@ -8,6 +8,7 @@ class ArticleAdmin extends Fivecms
 	{
 		$images = array();
 
+		$post = new \stdClass();
 		if($this->request->method('post'))
 		{
 			$post->id = $this->request->post('id', 'integer');
@@ -22,12 +23,32 @@ class ArticleAdmin extends Fivecms
 			$post->annotation = $this->request->post('annotation');
 			$post->text = $this->request->post('body');
 
+			// Связанные товары
+            if(is_array($this->request->post('related_products')))
+            {
+                foreach($this->request->post('related_products') as $p)
+                {
+                    @$rp[$p]->related_id = $p;
+                    $rp[$p]->type = 'product';
+                }
+                $related_objects = $rp;
+            }   
+
+            // Связанные статьи
+            if(is_array($this->request->post('related_articles')))
+            {
+                foreach($this->request->post('related_articles') as $p)
+                {
+                    @$rp[$p]->related_id = $p;
+                    $rp[$p]->type = 'article';
+                }
+                $related_objects = $rp;
+            } 
+
  			// Не допустить одинаковые URL разделов.
 			if(($a = $this->articles->get_article($post->url)) && $a->id!=$post->id)
 			{			
 				$this->design->assign('message_error', 'url_exists');
-				if(!empty($post->id))
-					$images = $this->articles->get_images(array('post_id'=>$post->id));
 			}
 			else
 			{
@@ -81,25 +102,64 @@ class ArticleAdmin extends Fivecms
 						}
 					}
 				}
-				if(!empty($post->id))
-					$images = $this->articles->get_images(array('post_id'=>$post->id));
    	    		
 			}
+			
+			if(!empty($post->id))
+				$images = $this->articles->get_images(array('post_id'=>$post->id));
+			
+			// Связанные объекты
+            $query = $this->db->placehold('DELETE FROM __article_objects WHERE article_id=?', $post->id);
+            $this->db->query($query);
+            if(!empty($related_objects) && is_array($related_objects))
+            {
+              $pos = 0;
+              foreach($related_objects  as $i=>$related_object)
+                   $this->articles->add_related_object($post->id, $related_object->related_id, $related_object->type);
+            }   
+			
 		}
 		else
 		{
 			$post->id = $this->request->get('id', 'integer');
 			$post = $this->articles->get_article(intval($post->id));
 
-			if($post && !empty($post->id))
-			{
+			if(!empty($post))
 				$images = $this->articles->get_images(array('post_id'=>$post->id));
-			}
-
 		}
 
-		if(empty($post->date))
+		if(empty($post)){
+			$post = new stdClass;
 			$post->date = date($this->settings->date_format, time());
+		} else {
+			$related_objects = $this->articles->get_related_objects(array('id'=>$post->id));
+		}
+		
+		// Связанные объекты
+        if(!empty($related_objects))
+        {
+            $r_products = array();
+            $r_articles = array();
+            
+            foreach($related_objects as &$r_p)
+                if($r_p->type == 'product') $r_products[$r_p->object_id] = &$r_p;
+                elseif($r_p->type == 'article') $r_articles[$r_p->object_id] = &$r_p;
+             
+            if(!empty($r_products)) {
+                $temp_products = $this->products->get_products(array('id'=>array_keys($r_products)));
+                foreach($temp_products as $temp_product)
+                    $r_products[$temp_product->id] = $temp_product;
+            }
+            
+            if(!empty($r_articles)) {
+                $temp_articles = $this->articles->get_articles(array('id'=>array_keys($r_articles)));
+                foreach($temp_articles as $temp_article)
+                    $r_articles[$temp_article->id] = $temp_article;
+            }
+        
+            $this->design->assign('related_products', $r_products);
+            $this->design->assign('related_articles', $r_articles);
+        }
  		
 		$this->design->assign('post_images', $images);
 

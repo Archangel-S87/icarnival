@@ -1,0 +1,121 @@
+[2021-01-18 15:39:06] [info] Message: Send request: POST /payments 
+[2021-01-18 15:39:07] [info] Message: Response with code 200 received. 
+[2021-01-25 20:28:12] [error] Message: Authorization headers not set 
+[2021-02-08 01:02:51] [error] Message: Authorization headers not set 
+[2021-02-08 10:24:51] [info] Message: Send request: POST /payments 
+[2021-02-08 10:24:52] [info] Message: Response with code 200 received. 
+[2021-02-08 10:27:51] [info] Message: Send request: POST /payments 
+[2021-02-08 10:27:51] [info] Message: Response with code 200 received. 
+[2021-02-08 10:28:21] [info] Message: Send request: POST /payments 
+[2021-02-08 10:28:21] [info] Message: Response with code 200 received. 
+[2021-02-08 10:28:49] [info] Message: Send request: POST /payments 
+[2021-02-08 10:28:50] [info] Message: Response with code 200 received. 
+[2021-02-08 10:29:00] [info] Message: Send request: POST /payments 
+[2021-02-08 10:29:01] [info] Message: Response with code 200 received. 
+[2021-02-08 10:32:13] [info] Message: Send request: POST /payments 
+[2021-02-08 10:32:13] [info] Message: Response with code 200 received. 
+[2021-02-08 10:32:45] [info] Message: Send request: POST /payments 
+[2021-02-08 10:32:45] [info] Message: Response with code 200 received. 
+[2021-02-08 10:34:09] [info] Message: Send request: POST /payments 
+[2021-02-08 10:34:09] [info] Message: Response with code 200 received. 
+[2021-02-08 11:00:22] [info] Message: Send request: POST /payments 
+[2021-02-08 11:00:22] [info] Message: Response with code 200 received. 
+[2021-02-08 11:15:40] [info] Message: Send request: POST /payments 
+[2021-02-08 11:15:40] [info] Message: Response with code 200 received. 
+[2021-02-08 11:18:40] [info] Message: Send request: POST /payments 
+[2021-02-08 11:18:40] [info] Message: Response with code 200 received. 
+[2021-02-08 11:30:54] [info] Message: Send request: POST /payments 
+[2021-02-08 11:30:55] [info] Message: Response with code 200 received. 
+[2021-02-08 11:31:24] [info] Message: Send request: POST /payments 
+[2021-02-08 11:31:24] [info] Message: Response with code 200 received. 
+[2021-02-08 11:32:02] [info] Message: Send request: POST /payments 
+[2021-02-08 11:32:04] [info] Message: Response with code 200 received. 
+[2021-02-08 11:43:19] [info] Message: Send request: POST /payments 
+[2021-02-08 11:43:19] [info] Message: Response with code 200 received. 
+[2021-02-08 11:52:51] [info] Message: Send request: POST /payments 
+[2021-02-08 11:52:51] [info] Message: Response with code 200 received. 
+[2021-02-08 12:14:34] [info] Message: Send request: POST /payments 
+[2021-02-08 12:14:34] [info] Message: Response with code 200 received. 
+[2021-02-08 12:23:55] [info] Message: Send request: POST /payments 
+[2021-02-08 12:23:56] [info] Message: Response with code 200 received. 
+[2021-02-08 12:25:44] [info] Message: Send request: POST /payments 
+[2021-02-08 12:25:44] [info] Message: Response with code 200 received. 
+[2021-02-08 12:36:19] [info] Message: Send request: POST /payments 
+[2021-02-08 12:36:19] [info] Message: Response with code 200 received. 
+[2021-02-08 12:47:57] [info] Message: Send request: POST /payments 
+[2021-02-08 12:47:58] [info] Message: Response with code 200 received. 
+[2021-02-08 12:50:33] [info] Message: Send request: POST /payments 
+[2021-02-08 12:50:33] [info] Message: Response with code 200 received. 
+[2021-02-08 12:55:26] [info] Message: Send request: POST /payments 
+[2021-02-08 12:55:26] [info] Message: Response with code 200 received. 
+[2021-02-08 12:56:28] [info] Message: Send request: POST /payments 
+[2021-02-08 12:56:28] [info] Message: Response with code 200 received. 
+[2021-02-08 13:40:38] [info] Message: Send request: POST /payments 
+[2021-02-08 13:40:39] [info] Message: Response with code 200 received. 
+[2021-02-08 13:41:25] [info] Message: Send request: POST /payments 
+[2021-02-08 13:41:25] [info] Message: Response with code 200 received. 
+[2021-02-08 13:44:52] [info] Message: Send request: POST /payments 
+[2021-02-08 13:44:52] [info] Message: Response with code 200 received. 
+[2021-02-08 14:01:47] [info] Message: Send request: POST /payments 
+[2021-02-08 14:01:48] [info] Message: Response with code 200 received. 
+[2021-02-08 14:03:13] [info] Message: Send request: GET /payments/27b32ddc-000f-5000-9000-179c96fedf7f 
+[2021-02-08 14:03:13] [info] Message: Response with code 200 received. 
+[2021-02-08 14:03:17] [info] Message: Send request: POST /payments 
+[2021-02-08 14:03:17] [info] Message: Response with code 200 received. 
+[2021-02-08 14:03:48] [info] Message: Send request: GET /payments/27b32e35-000f-5000-8000-15b7c8dd4005 
+[2021-02-08 14:03:48] [info] Message: Response with code 200 received. 
+[2021-02-08 14:03:48] [info] Message: Cancel order. OrderId: 2 
+[2021-02-08 14:03:50] [info] Message: Send request: POST /payments 
+[2021-02-08 14:03:50] [info] Message: Response with code 200 received. 
+[2021-02-08 14:32:55] [info] Message: Send request: POST /payments 
+[2021-02-08 14:32:56] [info] Message: Response with code 200 received. 
+[2021-02-08 14:48:48] [info] Message: Send request: POST /payments 
+[2021-02-08 14:48:48] [info] Message: Response with code 200 received. 
+[2021-02-08 14:59:16] [info] Message: Send request: POST /payments 
+[2021-02-08 14:59:17] [info] Message: Response with code 200 received. 
+[2021-02-08 15:12:01] [info] Message: Send request: POST /payments 
+[2021-02-08 15:12:02] [info] Message: Response with code 200 received. 
+[2021-02-08 16:28:03] [info] Message: Send request: POST /payments 
+[2021-02-08 16:28:04] [info] Message: Response with code 200 received. 
+[2021-02-08 16:32:29] [info] Message: Send request: GET /payments/27b35023-000f-5000-8000-14fce3ce63d3 
+[2021-02-08 16:32:29] [info] Message: Response with code 200 received. 
+[2021-02-08 16:32:29] [info] Message: Complete payment #27b35023-000f-5000-8000-14fce3ce63d3 orderId: 2 
+[2021-02-08 16:36:47] [info] Message: Send request: POST /payments 
+[2021-02-08 16:36:47] [info] Message: Response with code 200 received. 
+[2021-02-08 16:47:55] [info] Message: Send request: POST /payments 
+[2021-02-08 16:47:56] [info] Message: Response with code 200 received. 
+[2021-02-08 17:05:36] [info] Message: Send request: POST /payments 
+[2021-02-08 17:05:37] [info] Message: Response with code 200 received. 
+[2021-02-08 18:49:27] [info] Message: Send request: POST /payments 
+[2021-02-08 18:49:27] [info] Message: Response with code 200 received. 
+[2021-02-08 20:02:40] [info] Message: Send request: POST /payments 
+[2021-02-08 20:02:41] [info] Message: Response with code 200 received. 
+[2021-02-08 21:19:26] [info] Message: Send request: POST /payments 
+[2021-02-08 21:19:26] [info] Message: Response with code 200 received. 
+[2021-02-08 22:08:49] [info] Message: Send request: POST /payments 
+[2021-02-08 22:08:49] [info] Message: Response with code 200 received. 
+[2021-02-10 15:12:00] [error] Message: Authorization headers not set 
+[2021-02-21 12:53:29] [info] Message: Send request: POST /payments 
+[2021-02-21 12:53:29] [info] Message: Response with code 400 received. 
+[2021-02-21 12:53:29] [error] Message: Invalid parameter's value (for example, the value is illegal or its format is incorrect). Send the value in accordance with the documentation.. Error code: invalid_request. Parameter name: receipt.customer.phone. 
+[2021-02-21 12:54:01] [info] Message: Send request: POST /payments 
+[2021-02-21 12:54:02] [info] Message: Response with code 200 received. 
+[2021-02-21 12:55:03] [info] Message: Send request: POST /payments 
+[2021-02-21 12:55:03] [info] Message: Response with code 400 received. 
+[2021-02-21 12:55:03] [error] Message: Invalid parameter's value (for example, the value is illegal or its format is incorrect). Send the value in accordance with the documentation.. Error code: invalid_request. Parameter name: receipt.customer.phone. 
+[2021-02-21 12:56:26] [info] Message: Send request: POST /payments 
+[2021-02-21 12:56:26] [info] Message: Response with code 400 received. 
+[2021-02-21 12:56:26] [error] Message: Invalid parameter's value (for example, the value is illegal or its format is incorrect). Send the value in accordance with the documentation.. Error code: invalid_request. Parameter name: receipt.customer.phone. 
+[2021-02-21 12:57:02] [info] Message: Send request: POST /payments 
+[2021-02-21 12:57:03] [info] Message: Response with code 400 received. 
+[2021-02-21 12:57:03] [error] Message: Invalid parameter's value (for example, the value is illegal or its format is incorrect). Send the value in accordance with the documentation.. Error code: invalid_request. Parameter name: receipt.customer.phone. 
+[2021-02-21 12:58:56] [info] Message: Send request: POST /payments 
+[2021-02-21 12:58:56] [info] Message: Response with code 200 received. 
+[2021-02-21 14:02:58] [info] Message: Send request: POST /payments 
+[2021-02-21 14:02:59] [info] Message: Response with code 200 received. 
+[2021-02-21 14:04:25] [info] Message: Send request: POST /payments 
+[2021-02-21 14:04:26] [info] Message: Response with code 200 received. 
+[2021-02-21 14:06:22] [info] Message: Send request: POST /payments 
+[2021-02-21 14:06:22] [info] Message: Response with code 200 received. 
+[2021-02-21 15:01:54] [info] Message: Send request: POST /payments 
+[2021-02-21 15:01:55] [info] Message: Response with code 200 received. 

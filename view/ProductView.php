@@ -12,32 +12,38 @@ class ProductView extends View
 		
 		if(empty($product_url))
 			return false;
+			
+		$filter = array();
+		if($this->settings->showinstock == '1')
+			$filter['in_stock'] = 1;	
 
 		$product = $this->products->get_product((string)$product_url);
 		if(empty($product) || (!$product->visible && empty($_SESSION['admin'])))
 			return false;
-
-		if($product->visible && empty($_SESSION['admin']))
-		$this->products->update_views($product->id); 
 		
 		$product->images = $this->products->get_images(array('product_id'=>$product->id));
 		
 		// Проверка загрузки всех изображений из интернета
-		foreach($product->images as $url){
-			if(!empty($url->filename) && (substr($url->filename,0,7) == 'http://' || substr($url->filename,0,8) == 'https://')){
-				$new_name=$this->image->download_image($url->filename);
+		if(!empty($this->settings->check_download)){
+			foreach($product->images as $url){
+				if(!empty($url->filename) && (substr($url->filename,0,7) == 'http://' || substr($url->filename,0,8) == 'https://')){
+					$new_name=$this->image->download_image($url->filename);
+				}
 			}
-		}
-		$product->images = $this->products->get_images(array('product_id'=>$product->id));
+			$product->images = $this->products->get_images(array('product_id'=>$product->id));
+		}	
 		// Проверка загрузки всех изображений из интернета @
 		
 		$product->image = reset($product->images);
 
 		$variants = array();
-        // выбираем даже отсутствующие варианты
-        //foreach($this->variants->get_variants(array('product_id'=>$product->id)) as $v)
-		// выбираем варианты в наличии
-		foreach($this->variants->get_variants(array('product_id'=>$product->id, 'in_stock'=>true)) as $v)
+
+		// Выбираем варианты в наличии, если нет, то включая отсутствующие
+		$get_variants = $this->variants->get_variants(array('product_id'=>$product->id, 'in_stock'=>true));
+		if(empty($get_variants)){
+			$get_variants = $this->variants->get_variants(array('product_id'=>$product->id));
+		}
+		foreach($get_variants as $v)
 			$variants[$v->id] = $v;
 
 		$ids=array();	
@@ -49,8 +55,10 @@ class ProductView extends View
 		}
 		$classes=array();
 		for($i=0;$i<2;$i++) 
-		if(is_array($ids[$i]))foreach ($ids[$i] as $name => $ids1) {
-			$classes[$i][$name]='c'.join(' c', $ids1);
+		if(isset($ids[$i]) && is_array($ids[$i])){
+			foreach ($ids[$i] as $name => $ids1) {
+				$classes[$i][$name]='c'.join(' c', $ids1);
+			}
 		}
 		$product->vproperties = $classes;
 
@@ -110,12 +118,14 @@ class ProductView extends View
 			elseif($this->settings->spam_cyr == 1 && !preg_match('/^[а-яё \t]+$/iu', $comment->name))
 				$this->design->assign('error', 'wrong_name');
 			elseif(!empty($this->settings->spam_symbols) && mb_strlen($comment->name,'UTF-8') > $this->settings->spam_symbols)
-				$this->design->assign('error', 'captcha');	
+				$this->design->assign('error', 'captcha');
+			elseif(!empty($comment->email) && filter_var($comment->email, FILTER_VALIDATE_EMAIL) === false)	
+				$this->design->assign('error', 'wrong_email');	
 			elseif (empty($comment->text))
 				$this->design->assign('error', 'empty_comment');
 			elseif(!$bttrue)
 				$this->design->assign('error', 'captcha');
-			elseif($btfalse)
+			elseif(!empty($btfalse))
 				$this->design->assign('error', 'captcha');	
 			else
 			{
@@ -123,49 +133,25 @@ class ProductView extends View
 				$comment->type      = 'product';
 				$comment->ip        = $ip;
 				$comment_id = $this->comments->add_comment($comment);
+				
+				if($this->settings->auto_subscribe == 1)
+					$this->mailer->add_mail($comment->name, $comment->email);		
+				
 				$this->notify->email_comment_admin($comment_id);				
 				//header('location: '.$_SERVER['REQUEST_URI'].'#comment_'.$comment_id);
 				header('location: '.$_SERVER['REQUEST_URI']);
 			}			
 		}
-				
+		
+		// Связанные товары	
 		$related_ids = array();
-		$related_products = array();
 		foreach($this->products->get_related_products($product->id) as $p)
 		{
 			$related_ids[] = $p->related_id;
-			$related_products[$p->related_id] = null;
 		}
 		if(!empty($related_ids))
 		{
-			foreach($this->products->get_products(array('id'=>$related_ids, 'limit' => count($related_ids), 'in_stock'=>1, 'visible'=>1)) as $p)
-				$related_products[$p->id] = $p;
-			
-			$related_products_images = $this->products->get_images(array('product_id'=>array_keys($related_products)));
-			foreach($related_products_images as $related_product_image)
-				if(isset($related_products[$related_product_image->product_id]))
-					$related_products[$related_product_image->product_id]->images[] = $related_product_image;
-			$related_products_variants = $this->variants->get_variants(array('product_id'=>array_keys($related_products), 'in_stock'=>1));
-			foreach($related_products_variants as $related_product_variant)
-			{
-				if(isset($related_products[$related_product_variant->product_id]))
-				{
-					$related_products[$related_product_variant->product_id]->variants[] = $related_product_variant;
-				}
-			}
-			foreach($related_products as $id=>$r)
-			{
-				if(is_object($r))
-				{
-					$r->image = &$r->images[0];
-					$r->variant = &$r->variants[0];
-				}
-				else
-				{
-					unset($related_products[$id]);
-				}
-			}
-			$this->design->assign('related_products', $related_products);
+			$this->design->assign('related_ids', $related_ids);
 		}
 
 		$comments = $this->comments->get_comments(array('type'=>'product', 'object_id'=>$product->id, 'approved'=>1, 'ip'=>$ip));
@@ -181,8 +167,10 @@ class ProductView extends View
 		$category = reset($product->categories);
         $this->design->assign('category', $category);	
 		
-		$this->design->assign('next_product', $this->products->get_next_product($category->id, $product->position));
-		$this->design->assign('prev_product', $this->products->get_prev_product($category->id, $product->position));
+		if(!empty($category->id)){
+			$this->design->assign('next_product', $this->products->get_next_product($category->id, $product->position, $filter));
+			$this->design->assign('prev_product', $this->products->get_prev_product($category->id, $product->position, $filter));
+		}
 		
 		// Добавление в историю просмотренных товаров
         $max_visited_products = 100; // Максимальное число хранимых товаров в истории

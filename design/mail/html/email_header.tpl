@@ -3,7 +3,7 @@
 <head>
 	<style>
 		{literal}
-		body {font-family:Arial,tahoma,sans-serif;font-size:14px;color:#333333;}
+		body {font-family:Arial,tahoma,sans-serif;font-size:15px;color:#333333;}
 		div {box-sizing:border-box;}
 		{/literal}
 	</style>

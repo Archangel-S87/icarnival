@@ -55,10 +55,7 @@ display: table;
    width: 100%;
 margin-bottom: 0px;
 }
-a.delete {display:inline-block;}
-a.delete svg { 
-height:30px; width:30px;
-}
+.del_compare {fill:#EA2E49;cursor:pointer;height:24px;width:24px;}
 .features1 tr:nth-child(odd) {background: #F4F4F4;}
 tr, td.image {background-color: #FFFFFF;}
 tr.variant {background-color: transparent;}
@@ -160,60 +157,6 @@ padding: 5px 13px;
    text-align:center;
 }
 </style>
-
-<script language="JavaScript">
-
-function toggleCompareDiffProperties(objCheckbox)
-{
-	var arrObj = $('table.compareinner > tbody > tr').not('.diff').not('.action');
-
- 	if( $(objCheckbox).prop('checked') )
- 	{
-  	 	arrObj.hide();
- 	}
- 	else
- 	{
-   		arrObj.show();
- 	}
-}
-
-// Скрываем/отображаем колонки
-function showHideCompareColumn(objInTd, needShow)
-{
- var td = $(objInTd).parents('td:first');
- var index = th.index();
-
- $('table.compareinner').find('tr.hideable').each(function(rowIndex)
- {
-   var td = $(this).find('td').eq(index);
-   if(td.length == 0) td = $(this).find('td').eq(index);
-
-   var content = '';//$(td).find('div.hidden').html();
-   if(! needShow) content = '<div class="hidden">' + $(td).html() + '</div>&nbsp;';
-   else content = $(td).find('div.hidden').html();
-
-   // Нв верхней строке будет кнопочка, чтобы можно было развернуть (это если мы скрываем колонку)
-   if(! rowIndex && ! needShow)
-   {
-    content = '<center><div class="expand" title="Показать скрытый товар" onclick="showHideCompareColumn(this, true); return false"></div></center>' + content;
-   }
-
-   $(td).html(content);
- });
-}
-
-</script>
-
-<script type="text/javascript">
-	$(document).ready(function(){
-		var quqntity=$(".scroll_child div").length;
-		var widthScroll=0;
-		for (i=0;i<quqntity;i++){
-			widthScroll+=$(".scroll_child div:eq("+i+")").width();
-		}
-		$(".scroll_child").width(widthScroll);
-	});
-</script>
 {/literal}
 
 <div class="page-pg">
@@ -237,13 +180,11 @@ function showHideCompareColumn(objInTd, needShow)
 	
 					{foreach $compare->products as $product}
 				   <td align="center" class="image" valign="top" width="{100/$compare->total}%">
-					   <div style="position: relative; text-align: right; margin: 0px 0px 3px 0;">
-							<a class="delete" href='compare/remove/{$product->id}'>
-								<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-									<path d="M0 0h24v24H0z" fill="none"/>
-									<path d="M14.59 8L12 10.59 9.41 8 8 9.41 10.59 12 8 14.59 9.41 16 12 13.41 14.59 16 16 14.59 13.41 12 16 9.41 14.59 8zM12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
-								</svg>
-							</a>
+					   <div class="delete" style="position: relative; text-align: right; margin: 0px 0px 3px 0;">
+							<svg class="del_compare" data-remove="{$product->id}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+								<path d="M0 0h24v24H0z" fill="none"/>
+								<path d="M14.59 8L12 10.59 9.41 8 8 9.41 10.59 12 8 14.59 9.41 16 12 13.41 14.59 16 16 14.59 13.41 12 16 9.41 14.59 8zM12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+							</svg>
 					   </div>
 					   <div style="padding: 10px; display: table;">
 					   <!-- Фото товара -->
@@ -335,7 +276,7 @@ function showHideCompareColumn(objInTd, needShow)
 									{if $variant|count==1  && !isset($variant->name)}<span style="display: block; height: 23px;"></span>{/if}
 									<select class="b1c_option" name="variant" {if $variant|count==1  && !isset($variant->name)}style='display:none;'{/if}>
 										{foreach $variant as $v}
-											<option value="{$v->id}" {if $v->compare_price > 0}compare_price="{$v->compare_price|convert}"{/if} price="{$v->price|convert}" click="{$v->name}">
+											<option value="{$v->id}" {if $v->compare_price > 0}compare_price="{$v->compare_price|convert}"{/if} price="{$v->price|convert}" click="{$v->name}" v_unit="{if !empty($v->unit)}{$v->unit}{else}{$settings->units}{/if}">
 											{$v->name}
 											</option>
 										{/foreach}
@@ -343,8 +284,9 @@ function showHideCompareColumn(objInTd, needShow)
 								
 								<div class="price">
 									{foreach $variant as $v}{if $v@first}
-									<span class="price">{$v->price|convert}</span>
-									<span class="currency">{$currency->sign|escape}</span>{/if}{/foreach}
+										<span class="price">{$v->price|convert}</span>
+										<span class="currency">{$currency->sign|escape}{if $settings->b9manage}/<span class="unit">{if !empty($v->unit)}{$v->unit}{else}{$settings->units}{/if}</span>{/if}</span>{/if}
+									{/foreach}
 								</div>
 							</form>
 							{else}
@@ -370,11 +312,11 @@ function showHideCompareColumn(objInTd, needShow)
 </div>
 
 {if !empty($compare->total)}
-	<div class="separator" style="height:60px; padding:0 15px 15px 15px;">
+	{*<div class="separator" style="height:60px; padding:0 15px 15px 15px;">
 		{literal}
 		<a name="#" onclick="if (document.referrer) { location.href=document.referrer } else { history.go(-1) }" class="buttonblue">Вернуться</a>
 		{/literal}
-	</div>
+	</div>*}
 {else}
 	<div class="have-no comphaveno separator">
 		<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -385,8 +327,70 @@ function showHideCompareColumn(objInTd, needShow)
 {/if}
 
 {literal}
-<script>
-	if (document.referrer) {history.replaceState(null, null, document.referrer)} else {history.replaceState(null, null, '/catalog')};
+<script language="JavaScript">
+	$(document).ready(function(){
+		$(document).on('click','.del_compare',function(){
+			var prod_id=$(this).attr('data-remove');
+			$.ajax({url:"ajax/compare.php",
+				data:{remove:prod_id},
+				dataType:'json',
+				success:function(data){
+					if(data){
+						location.reload();
+					}
+				}
+			});
+			return false;
+		});	
+	});	
+function toggleCompareDiffProperties(objCheckbox)
+{
+	var arrObj = $('table.compareinner > tbody > tr').not('.diff').not('.action');
+
+ 	if( $(objCheckbox).prop('checked') )
+ 	{
+  	 	arrObj.hide();
+ 	}
+ 	else
+ 	{
+   		arrObj.show();
+ 	}
+}
+
+// Скрываем/отображаем колонки
+function showHideCompareColumn(objInTd, needShow)
+{
+ var td = $(objInTd).parents('td:first');
+ var index = th.index();
+
+ $('table.compareinner').find('tr.hideable').each(function(rowIndex)
+ {
+   var td = $(this).find('td').eq(index);
+   if(td.length == 0) td = $(this).find('td').eq(index);
+
+   var content = '';//$(td).find('div.hidden').html();
+   if(! needShow) content = '<div class="hidden">' + $(td).html() + '</div>&nbsp;';
+   else content = $(td).find('div.hidden').html();
+
+   // Нв верхней строке будет кнопочка, чтобы можно было развернуть (это если мы скрываем колонку)
+   if(! rowIndex && ! needShow)
+   {
+    content = '<center><div class="expand" title="Показать скрытый товар" onclick="showHideCompareColumn(this, true); return false"></div></center>' + content;
+   }
+
+   $(td).html(content);
+ });
+}
+
+
+	$(document).ready(function(){
+		var quqntity=$(".scroll_child div").length;
+		var widthScroll=0;
+		for (i=0;i<quqntity;i++){
+			widthScroll+=$(".scroll_child div:eq("+i+")").width();
+		}
+		$(".scroll_child").width(widthScroll);
+	});
 
 	$(function() {
 		adjustCatalogElements2();
@@ -400,5 +404,4 @@ function showHideCompareColumn(objInTd, needShow)
 	}
 </script>
 {/literal}
-
 

@@ -6,6 +6,7 @@ class CommentAdmin extends Fivecms
 {
 	public function fetch()
 	{
+		$comment = new \stdClass();
 		if($this->request->method('POST'))
 		{
 			$comment->id = $this->request->post('id', 'integer');
@@ -62,7 +63,7 @@ class CommentAdmin extends Fivecms
 			$responses = array();
 			$responses_ids = array();
 			$responses_ids[] = $comment->object_id;
-			foreach($this->pages->get_pages(array('id'=>responses_ids)) as $p)
+			foreach($this->pages->get_pages(array('id'=>$responses_ids)) as $p)
 				$responses[$p->id] = $p;
 			if(isset($responses[$comment->object_id]))
 				$comment->response = $responses[$comment->object_id];

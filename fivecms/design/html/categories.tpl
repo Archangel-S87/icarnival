@@ -32,6 +32,9 @@
 			});
 		})
 	</script>
+	<style>
+		#sidetreecontrol{display: block;}
+	</style>
 {/literal}
 
 <div id="sidetreecontrol" class="treecontrol"><a href="?#">{$tr->roll_up_all|escape}</a> | <a href="?#">{$tr->expand_all|escape}</a></div>

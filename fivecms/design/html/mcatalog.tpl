@@ -30,16 +30,18 @@
 		{if in_array('orders', $manager->permissions) || in_array('labels', $manager->permissions)}
 		<div class="menuseparator {if $mod=="OrdersAdmin" || $mod=="OrderAdmin" || $mod=="OrdersLabelsAdmin" || $mod=="OrdersLabelAdmin"} showed{/if}">
 			<div class="menutitle">{$tr->orders|escape}					
-					<div onclick="window.location='/fivecms/index.php?module=OrdersAdmin'" class="counter tooltips" id="count_new_orders" style="{if !$new_orders_counter}display:none{/if}">
-					   <span>{$new_orders_counter}</span> 
-					</div>
+				<div onclick="window.location='/fivecms/index.php?module=OrdersAdmin'" class="counter tooltips" id="count_new_orders" style="{if !$new_orders_counter}display:none{/if}">
+					<span>{$new_orders_counter}</span> 
+				</div>
 			</div>
 			<div class="arrow">
 				<svg viewBox="0 0 20 20"><path d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"></path><path d="M0-.25h24v24H0z" fill="none"></path></svg>
 			</div>
 			<ul id="main_menu">				
 				<li>
-					<a href="index.php?module=OrdersAdmin">{$tr->orders|escape}</a>
+					<a href="index.php?module=OrdersAdmin">{$tr->orders|escape} <div onclick="window.location='/fivecms/index.php?module=OrdersAdmin'" class="counter tooltips" id="count_new_orders" style="{if !$new_orders_counter}display:none{/if}">
+					<span>{$new_orders_counter}</span> 
+				</div></a>
 				</li>
 				<li><a href="index.php?module=OrdersLabelsAdmin">{$tr->orders_labels|escape}</a></li>
 			</ul>
@@ -111,7 +113,8 @@
 			</div>
 			<ul id="main_menu">				
 				{if in_array('comments', $manager->permissions)}
-					<li><a href="index.php?module=CommentsAdmin">{$tr->comments|escape}</a></li>
+					<li><a href="index.php?module=CommentsAdmin">{$tr->comments|escape} {if $new_comments_counter}<div onclick="window.location='/fivecms/index.php?module=CommentsAdmin'" style="margin-left:10px;position: relative;" class='counter'><span>{$new_comments_counter}</span></div>{/if}</a>
+					</li>
 				{/if}					
 				{if in_array('feedbacks', $manager->permissions)}
 					<li><a href="index.php?module=FeedbacksAdmin">{$tr->email|escape}</a></li>
@@ -125,7 +128,8 @@
 		{/if}	
 
 		{if in_array('import', $manager->permissions) || in_array('export', $manager->permissions) || in_array('multichanges', $manager->permissions) || in_array('backup', $manager->permissions) || in_array('import', $manager->permissions)}
-		<div class="menuseparator {if $mod=="ImportAdmin" || $mod=="ImportYmlAdmin" || $mod=="ExportAdmin" || $mod=="MultichangesAdmin" || $mod=="BackupAdmin" || $mod=="OnecAdmin"} showed{/if}">
+		<div class="menuseparator {if in_array($mod, array('ImportAdmin', 'ImportYmlAdmin', 'ExportAdmin', 'MultichangesAdmin', 'BackupAdmin', 'OnecAdmin'))} showed{/if}"
+		>
 			<div class="menutitle">{$tr->automation|escape}</div>
 			<div class="arrow">
 				<svg viewBox="0 0 20 20"><path d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"></path><path d="M0-.25h24v24H0z" fill="none"></path></svg>
@@ -137,7 +141,10 @@
 				{/if}					
 				{if in_array('export', $manager->permissions)}
 					<li><a href="index.php?module=ExportAdmin">{$tr->export_csv|escape}</a></li>
-				{/if}					
+				{/if}
+				{if in_array('settings', $manager->permissions)}
+					<li><a href="index.php?module=SetCatAdmin#manageyandex">{$tr->export|escape} YML</a></li>
+				{/if}	
 				{if in_array('multichanges', $manager->permissions)}
 					<li><a href="index.php?module=MultichangesAdmin">{$tr->packet|escape}</a></li>
 				{/if}
@@ -158,7 +165,7 @@
 		{/if}
 
 		{if in_array('design', $manager->permissions) || in_array('slides', $manager->permissions)}
-		<div class="menuseparator {if in_array($mod, array('ThemeAdmin', 'ColorAdmin', 'SlidesAdmin', 'SlideAdmin', 'MobthemeAdmin', 'SlidesmAdmin', 'SlidemAdmin', 'MobsetAdmin', 'MobileTemplatesAdmin', 'MobileStylesAdmin', 'ImagesAdmin', 'TemplatesAdmin', 'StylesAdmin', 'BannersAdmin'))} showed{/if}">
+		<div class="menuseparator {if in_array($mod, array('ThemeAdmin', 'ColorAdmin', 'SlidesAdmin', 'SlideAdmin', 'MobthemeAdmin', 'SlidesmAdmin', 'SlidemAdmin', 'MobsetAdmin', 'MobileTemplatesAdmin', 'MobileStylesAdmin', 'ImagesAdmin', 'TemplatesAdmin', 'StylesAdmin', 'BannersAdmin', 'ScriptsAdmin', 'MobileScriptsAdmin'))} showed{/if}">
 			<div class="menutitle">{$tr->design|escape}</div>
 			<div class="arrow">
 				<svg viewBox="0 0 20 20"><path d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"></path><path d="M0-.25h24v24H0z" fill="none"></path></svg>
@@ -221,6 +228,9 @@
 				{/if}
 				{if in_array('settings', $manager->permissions)}
 					<li><a href="index.php?module=SystemAdmin">{$tr->system_title|escape}</a></li>
+				{/if}
+				{if in_array('design', $manager->permissions)}
+					<li><a href="index.php?module=MobsetAdmin">{$tr->settings_mob|escape}</a></li>
 				{/if}
 			</ul>
 		</div>

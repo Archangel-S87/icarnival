@@ -419,8 +419,7 @@ class Image extends Fivecms
 		$thumb->stripImage();
 		
 		//		$thumb->setImageCompressionQuality(100);
-
-        $temp = $thumb->writeImages($dst_file, true);
+		
 		// Записываем картинку
 		if(!$thumb->writeImages($dst_file, true))
 			return false;

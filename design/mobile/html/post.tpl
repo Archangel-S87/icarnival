@@ -48,7 +48,7 @@
 	<ul id="gallerypic" class="tiny_products">
 		{foreach $post->images|cut as $i=>$image}
 			<li class="product"><div class="image">
-			<a rel="gallery" href="{$image->filename|resize:800:600:w:$config->resized_blog_images_dir}" class="swipebox" title="{$post->name|escape}">
+			<a rel="gallery" href="{$image->filename|resize:1024:768:w:$config->resized_blog_images_dir}" class="swipebox" title="{$post->name|escape}">
 			<img alt="{$post->name|escape}" title="{$post->name|escape}" src="{$image->filename|resize:400:400:false:$config->resized_blog_images_dir}" /></a></div>
 			</li>
 		{/foreach}
@@ -64,7 +64,7 @@
 	{/if}
 </div>
 
-{if $settings->hidecomment == 0}
+{if empty($settings->hidecomment)}
 	{* Комментарии *}
 	<div id="comments">
 		{if $comments}
@@ -112,9 +112,11 @@
 				{elseif $error=='empty_comment'}
 				Введите комментарий
 				{elseif $error=='empty_email'}
-				Введите E-Mail
+				Введите Email
 				{elseif $error == 'wrong_name'}
-				В поле 'Имя' может использоваться только кириллица	
+				В поле 'Имя' может использоваться только кириллица
+				{elseif $error == 'wrong_email'}
+				Некорректный Email
 				{/if}
 			</div>
 			{/if}
@@ -123,7 +125,7 @@
 
 			<input style="margin-top:7px;" placeholder="* Имя" class="input_name" type="text" id="comment_name" name="name" value="{if !empty($comment_name)}{$comment_name|escape}{/if}" data-format=".+" data-notice="Введите имя" required/>
 
-			<input style="margin-top:10px;" placeholder="* E-mail" class="input_name" type="email" id="comment_email" name="email" value="{if !empty($comment_email)}{$comment_email|escape}{/if}" data-format=".+" data-notice="Введите E-Mail" required/>
+			<input style="margin-top:10px;" placeholder="* Email" class="input_name" type="email" id="comment_email" name="email" value="{if !empty($comment_email)}{$comment_email|escape}{/if}" data-format=".+" data-notice="Введите Email" required/>
 
 			<div class="captcha-block">
 				{include file='antibot.tpl'}
@@ -137,3 +139,16 @@
 	</div>
 {/if}
 
+	{if !empty($category->id)}
+		{get_posts var=last_posts category_id=$category->id limit=3 sort=rand}
+	{else}
+		{get_posts var=last_posts limit=3 sort=rand}
+	{/if}
+	{if !empty($last_posts)}
+		<div class="mainproduct blog_also noradius" style="margin-top:0;">Рекомендуем прочесть</div>
+		<ul class="comment_list">
+		{foreach $last_posts as $post}
+			{include file='blog_item.tpl'}
+		{/foreach}
+		</ul>
+	{/if}

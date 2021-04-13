@@ -59,7 +59,7 @@
 					<a class="approve" href="#">{$tr->approve|escape}</a>
 					</div>
 					
-					<div class="comment_body">{$comment->text|escape|nl2br}</div>
+					<div class="comment_body">{$comment->text|strip_tags|escape|nl2br}</div>
 			
 					{if $comment->otvet}
 					<div class="comment_admint">{$tr->comment_otvet|escape}:</div>
@@ -71,11 +71,11 @@
 					<div class="comment_info">
 					{$comment->date|date} {$comment->date|time}
 					{if $comment->type == 'product'}
-						{$tr->comment_product|escape} <a target="_blank" href="{$config->root_url}/products/{$comment->product->url}#comment_{$comment->id}">{$comment->product->name}</a>
+						{$tr->comment_product|escape} <a target="_blank" href="{$config->root_url}/products/{$comment->product->url}#comment_{$comment->id}">{$comment->product->name|escape}</a>
 					{elseif $comment->type == 'blog' && !empty($comment->post->name)}
-						{$tr->comment_blog|escape} <a target="_blank" href="{$config->root_url}/blog/{$comment->post->url}#comment_{$comment->id}">"{$comment->post->name}"</a>
+						{$tr->comment_blog|escape} <a target="_blank" href="{$config->root_url}/blog/{$comment->post->url}#comment_{$comment->id}">"{$comment->post->name|escape}"</a>
 					{elseif $comment->type == 'response' && !empty($comment->response->name)}
-						{$tr->page|capitalize} <a target="_blank" href="{$config->root_url}/{$comment->response->url}">"{$comment->response->name}"</a>
+						{$tr->page|capitalize} <a target="_blank" href="{$config->root_url}/{$comment->response->url}">"{$comment->response->name|escape}"</a>
 					{elseif $comment->type == 'response'}
 						{$tr->website_responses}
 					{/if}

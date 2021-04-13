@@ -98,6 +98,8 @@ $tr->save = 'Apply';
 $tr->short_description = 'Short description';
 $tr->full_description = 'Full description';
 $tr->standart = 'text and images formatting standard';
+$tr->rel_articles = 'Related articles';
+$tr->choose_article_add = 'Choose article to add';
 /* articles_categories.tpl */
 $tr->add = 'Add new';
 $tr->choose_all = 'Choose all';
@@ -153,6 +155,7 @@ $tr->no = 'no';
 $tr->show_cart_wishcomp = 'Show "To cart", "Wishlist", "Compare" in products catalog';
 $tr->mob_products_num = 'Products nummer, blog posts number, articles number, surveys number on page';
 $tr->mob_discount = 'Additional discount for mobile app orders';
+$tr->mob_phone = 'Number to call in mobile design';
 /* mobtheme.tpl */
 $tr->mob_theme_intro = 'Main colors:</h2><p>* Also used in process of building mobile application</p><p>** Appearance of the mobile design may be different from the one on the right</p><p>*** to expand the menu, click on <strong>icon</strong>';
 $tr->mob_theme_intro_two = 'Click "Save..." for the changes to take effect';
@@ -195,6 +198,7 @@ $tr->templates = 'Templates';
 $tr->template = 'Template';
 $tr->choose_gamma = 'Choose color cheme';
 $tr->customizable = 'customizable';
+$tr->color_help = '* Some elements in the image below may differ from your website';
 /* comment.tpl */
 $tr->comment = 'Comment';
 $tr->approved = 'Approved';
@@ -235,6 +239,8 @@ $tr->currency_name = 'Currency name';
 $tr->sign = 'Sign';
 $tr->iso = 'ISO code';
 $tr->cents = 'Show cents';
+$tr->round_up = 'Round';
+$tr->round_notice = 'Round to integer prices with this currency';
 /* delivery.tpl */
 $tr->available_payments = 'Available payment methods';
 $tr->delivery_price = 'Cost of delivery';
@@ -290,6 +296,7 @@ $tr->dont_show = 'Don`t show';
 $tr->normal = 'Normal';
 $tr->range = 'Range';
 $tr->feature_help = '<p style="margin-top: 30px;">Pay attention! Feature of product should be linked to <strong>all</strong> categories and subcategories in which you want this feature to be displayed.</p>';
+$tr->choose_sub = 'select nested';
 /* features.tpl */	
 $tr->use_in_filter = 'Use in filter';
 $tr->dont_use_in_filter = 'Don`t use in filter';
@@ -319,7 +326,7 @@ $tr->main_help = '<ul class="stars">
 <li>logo and Favicon <a href="index.php?module=SettingsAdmin#logo">here...</a></li>
 <li>Settings of desktop color scheme <a href="index.php?module=ColorAdmin">here...</a></li>
 <li>Settings of mobile color scheme <a href="index.php?module=MobthemeAdmin">here...</a></li>
-<li>Discounts, bonuses <a href="index.php?module=DiscountGroupAdmin">here...</a></li>
+<li>Discounts, bonuses, coupons <a href="index.php?module=DiscountGroupAdmin">here...</a></li>
 <li>Minimal order amount <a href="index.php?module=SetCatAdmin#managecat">here...</a></li>
 <li>Additional menus can be added <a href="index.php?module=MenuAdmin">here...</a></li>
 <li>HTLM of popup window when leaving website <a href="index.php?module=TemplatesAdmin&file=dontgo.tpl">here...</a> |  
@@ -327,7 +334,7 @@ $tr->main_help = '<ul class="stars">
   Landing page <a href="index.php?module=PagesAdmin&menu_id=18">here...</a></li>
 <li>Links to socials <a href="index.php?module=SocialAdmin">here...</a></li>
 <li>SMTP and Emails settings <a href="index.php?module=SmtpAdmin">here...</a></li>
-<li>Edit robots.txt <a href="index.php?module=RobotsAdmin">here...</a><li>
+<li>Edit robots.txt <a href="index.php?module=RobotsAdmin">here...</a></li>
 <li>Price: '.$this->config->root_url.'/price</li>
 <li>Sitemap (HTML): '.$this->config->root_url.'/sitemap</li>
 <li>Sitemap (XML): '.$this->config->root_url.'/sitemap.xml</li>
@@ -402,7 +409,7 @@ $tr->load_server = 'Upload file from internet';
 $tr->enter_url = 'Enter file URL for uploading';
 $tr->supported_formats = 'Supported formats';
 $tr->import_help = 'Using additional params you can send additional info: meta-tags, variants, stock, full description, size/color, sku, units';
-$tr->delete_all_products = 'You can <strong>delete all products!</strong> <a href="index.php?module=OnecAdmin">on this page...</a>';
+$tr->delete_all_products = 'You can <strong>delete all products!</strong> <a href="index.php?module=OnecAdmin#delete_all_products">on this page...</a>';
 $tr->read_parameters = 'Read parameters from file';
 /* import.tpl */
 $tr->ident_products = 'Combine products with';
@@ -516,6 +523,7 @@ $tr->mailing_list_clear = 'Clear the mailing queue';
 $tr->email_subject = 'Email subject';
 $tr->email_body = 'Email body';
 $tr->to_mailing_list = 'Send to mailing queue';
+$tr->error = 'Error';
 /* maillist.tpl */
 $tr->add_subscriber = 'Add subscriber';
 $tr->no_name = 'no name';
@@ -742,6 +750,9 @@ $tr->in_chat = 'online chat';
 $tr->offline = 'offline';
 $tr->another = 'another';
 $tr->referer = 'Referer';
+$tr->stock_from = 'Products stock is';
+$tr->stock_closed = 'written off';
+$tr->not = 'not';
 /* orders.tpl */
 $tr->orders_ov = 'orders';
 $tr->filter_by_order_date = 'Filter by order date';
@@ -871,6 +882,7 @@ $tr->attached_files = 'Attached files';
 $tr->allowed_extentions = 'Allowed files extentions';
 $tr->attached_files_help = 'Name of downloading file must be no more than 100 characters, in lowercase';
 $tr->filename_on_website = 'File name on website';
+$tr->ref_url_help = 'Follow the link instead of adding to cart';
 /* products.tpl */
 $tr->add_product = 'Add product';
 $tr->product_a = 'products';
@@ -945,12 +957,14 @@ $tr->hours = 'hours';
 $tr->days = 'days';
 $tr->period = 'Period';
 $tr->product_variants = 'Product variants';
+$tr->sales_cat_report = 'Sales report by categories';
+$tr->items = 'items';
 /* robots.tpl */
 $tr->write_error = 'Write error';
 /* services_category.tpl */
 $tr->main_image = 'Main image';
 $tr->additional_images = 'Additional images';
-/* set_cat.tpl */
+/* setcat.tpl */
 $tr->cache_cleared = 'Cache cleared';
 $tr->price_format = 'Price format';
 $tr->decimals_point = 'Decimals point';
@@ -971,11 +985,11 @@ $tr->color_filter = 'Color filter';
 $tr->to_end_list = 'to the end of list';
 $tr->out_of_stock_prods = 'Out of stock products';
 $tr->min_order_amount = 'Minimal order amount';
-$tr->views_num = 'Product views number';
 $tr->rating_num = 'Product rating (from 0 to 5)';
 $tr->votes_num = 'Votes number in product rating';
 $tr->cut_description_height = 'Max description height to hide under cut';
 $tr->cut_seo_height = 'Max SEO-text height to hide under cut';
+$tr->check_download = 'Check products images download';
 $tr->in_product_card = 'in product card';
 $tr->youtube = 'YouTube video selection for product card (desktop)';
 $tr->cache_settings = 'Cache settings';
@@ -996,6 +1010,8 @@ $tr->pickup = 'Pickup';
 $tr->manufacturer_warranty = 'Manufacturer warranty';
 $tr->seller_warranty = 'Seller warranty';
 $tr->symbols = 'symbols';
+$tr->to_cart_name = '"Add to cart" button name';
+$tr->show1click = 'Button "Buy in 1 click"';
 /* setmod.tpl */
 $tr->main_page = 'Main page';
 $tr->desktop_design = 'desktop design';
@@ -1024,13 +1040,14 @@ $tr->in_server_sett = 'in server settings';
 $tr->soc_auth = 'Authorization via socials (Ulogin)';
 $tr->stad = 'Herd instinct';
 $tr->spam_protect = 'Spam protection';
-$tr->block_session = 'Block sequential registration of users with the same IP or session ID';
+$tr->block_session = 'Block sequential registration, responses, backcall from visitors with the same IP or session ID';
 $tr->block_noncyr = 'Block sending forms by visitors who have characters other than Cyrillic in their name';
 $tr->block_long_name = 'Block sending forms by visitors who have in "name" field more than';
 $tr->ad_unit = 'Ad unit';
 $tr->motivate_ads = 'Motivational texts (or banners) at the bottom of all articles, blog entries, services';
 $tr->collect_cookies_warn = 'Collect cookies warning';
 $tr->chat = 'Online Chat';
+$tr->cart_tabs = 'Step-by-step checkout';
 $tr->redhelper = 'Enter login set at <a class="bluelink" href="http://redhelper.ru/?p=2009838" target="_blank">registration</a> in RedHelper';
 $tr->help_adv = '<p style="font-weight:700;margin:10px 0 10px 0;text-transform:uppercase;">Preset classes:</p>
 		<ul style="margin-bottom:5px;" class="stars">
@@ -1038,10 +1055,14 @@ $tr->help_adv = '<p style="font-weight:700;margin:10px 0 10px 0;text-transform:u
 			<li>On red background: p class="advertred"</li>
 			<li>Оn blue background: p class="advertblue"</li>
 		</ul>';
+$tr->main_cat_num = 'Number of popular categories';
+$tr->main_cat_columns = 'Columns number in popular categories';
+$tr->if_null_hide = 'hidden if 0';
+$tr->if_empty_hide = 'hiden if empty field';			
 /* settings.tpl */		
 $tr->cart_db_cleared = 'Shopping carts from DB deleted';
 $tr->change_lang = 'Change language';
-$tr->site_name = 'Site name (e.g. in email footer and etc)';
+$tr->site_name = 'Site name (e.g. in email footer, microdata, tupbo-pages, SMS and etc)';
 $tr->company_name = 'Company name (in structured data and order print form)';
 $tr->date_format = 'Date format';
 $tr->admin_pass_remind = 'for admin password remind';
@@ -1079,7 +1100,7 @@ $tr->offline_template = 'Close website for maintenance';
 /* slide.tpl */
 $tr->wideslider_helper = '<p>* Slide image should have width exact <strong>1905 px</strong>, recommended height <strong>470 px</strong></p>';
 $tr->tinyslider_helper = '<p>* Slide image should have width exact <strong>1480 px</strong></p>';
-$tr->sideslider_helper = '<p style="margin:10px 0 20px 0;line-height: 22px;">* Slide image should have exact size <strong>1036 x 450 px</strong></p><a class="bigbutton" style="margin-bottom:20px;" href="index.php?module=ThreeBannersAdmin">Banners at the right side of slider</a>';
+$tr->sideslider_helper = '<p style="margin:10px 0 20px 0;line-height: 22px;">* Slide image should have exact size <strong>1036 x 500 px</strong></p><a class="bigbutton" style="margin-bottom:20px;" href="index.php?module=ThreeBannersAdmin">Banners at the right side of slider</a>';
 $tr->text = 'Text';
 /* slides.tpl */
 $tr->choose = 'Choose';
@@ -1148,3 +1169,11 @@ $tr->apply_checked = 'Apply to checked';
 /* users.tpl */
 $tr->found_buyers = 'Buyers';
 $tr->groups = 'groups';
+/* import_images.tpl */
+$tr->check_images = 'Check products images download from external websites';
+$tr->check_images_sh = 'Check images';
+$tr->check_images_num = 'Number of products for each check cycle';
+$tr->check_images_help = '* If the server returns an error, then significantly reduce the number of products.';
+$tr->check_images_help2 = 'Do not close or reload this page, wait for the process to complete!';
+$tr->check_ended = 'Check ended!';
+$tr->start = 'Start';

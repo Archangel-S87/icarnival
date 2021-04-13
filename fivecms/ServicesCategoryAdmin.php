@@ -8,6 +8,7 @@ class ServicesCategoryAdmin extends Fivecms
   
   function fetch()
   {
+  		$category = new \stdClass();
 		if($this->request->method('post'))
 		{
 			$category->id = $this->request->post('id', 'integer');
@@ -124,7 +125,8 @@ class ServicesCategoryAdmin extends Fivecms
 			}
 			
 		}
-		$this->design->assign('post_images', $images);
+		if(!empty($images))
+			$this->design->assign('post_images', $images);
 
 		$services_categories = $this->services_categories->get_services_categories_tree();
 

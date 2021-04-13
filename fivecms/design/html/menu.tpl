@@ -98,6 +98,12 @@ $(function() {
 			</li>
 		</ul>
 		{/foreach}
+		<ul id="new_currency" style='display:none;'>
+			<li class="move"><div class="move_zone"></div></li>
+			<li class="menuID"><input name="menu[id][]" type="hidden" value="" /></li>
+			<li class="name"><input name="menu[name][]" type="" value="" /></li>
+			<li class="icons"></li>
+		</ul>
 		</div>
 
 	</div>

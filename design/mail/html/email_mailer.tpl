@@ -1,21 +1,20 @@
-	<style>
-		{literal}
-		body {font-family:Arial,tahoma,sans-serif;font-size:14px;color:#333333;}
+<style>
+	{literal}
 		.message {padding:8px 8px 3px 8px;}
 		p {margin:0 0 10px 0;}
 		.unsubscribe {padding:8px 8px 3px 8px;background-color:#efefef;display:table;width:100%;font-size:12px; color:#776b6b;border-radius:5px;}
 		.unsubscribe p {margin:0 0 5px 0;}
 		.unsubscribe a {font-size:12px; color:#776b6b;}
-		{/literal}
-	</style>
+	{/literal}
+</style>
 
 <div class="message">
-{if $name}
+{if !empty($name)}
 <p>{if $name|count_words > 2}{$name|escape|strstr:' ':false|ltrim:' '}{elseif $name|count_words == 2}{$name|escape|strstr:' ':true|rtrim:' '}{elseif $name|count_words == 1}{$name|escape}{/if}, {$settings->mails_hello}</p>
 {else}
 <p>{$settings->mails_hello_noname}</p>
 {/if}
-{$message}
+{if !empty($message)}{$message}{/if}
 </div>
 <br />
 <div class="unsubscribe">

@@ -42,6 +42,8 @@ $(function() {
 	meta_description_touched = true;
 	url_touched = true;
 	
+	if($('input[name="menu"]').val() == generate_menu_item_name() || $('input[name="menu"]').val() == '')
+		menu_item_name_touched = false;
 	if($('input[name="meta_title"]').val() == generate_meta_title() || $('input[name="meta_title"]').val() == '')
 		meta_title_touched = false;
 	if($('input[name="meta_keywords"]').val() == generate_meta_keywords() || $('input[name="meta_keywords"]').val() == '')
@@ -50,7 +52,8 @@ $(function() {
 		meta_description_touched = false;
 	if($('input[name="url"]').val() == generate_url() || $('input[name="url"]').val() == '')
 		url_touched = false;
-		
+	
+	$('input[name="menu"]').change(function() { menu_item_name_touched = true; });		
 	$('input[name="meta_title"]').change(function() { meta_title_touched = true; });
 	$('input[name="meta_keywords"]').change(function() { meta_keywords_touched = true; });
 	$('textarea[name="meta_description"]').change(function() { meta_description_touched = true; });
@@ -62,6 +65,8 @@ $(function() {
 
 function set_meta()
 {
+	if(!menu_item_name_touched)
+		$('input[name="menu"]').val(generate_menu_item_name());
 	if(!meta_title_touched)
 		$('input[name="meta_title"]').val(generate_meta_title());
 	if(!meta_keywords_touched)
@@ -70,6 +75,12 @@ function set_meta()
 		$('textarea[name="meta_description"]').val(generate_meta_description());
 	if(!url_touched)
 		$('input[name="url"]').val(generate_url());
+}
+
+function generate_menu_item_name()
+{
+	name = $('input[name="name"]').val();
+	return name;
 }
 
 function generate_meta_title()
@@ -172,7 +183,7 @@ function translit(str)
 					{foreach from=$cats item=cat}
 						{if !empty($category->id) && $category->id == $cat->id}
 						{else}
-							<option value='{$cat->id}' {if $category->parent_id == $cat->id}selected{/if}>{section name=sp loop=$level}&nbsp;&nbsp;&nbsp;&nbsp;{/section}{$cat->name}</option>
+							<option value='{$cat->id}' {if !empty($category->parent_id) && $category->parent_id == $cat->id}selected{/if}>{section name=sp loop=$level}&nbsp;&nbsp;&nbsp;&nbsp;{/section}{$cat->name}</option>
 							{if !empty($cat->subcategories)}
 								{category_select cats=$cat->subcategories level=$level+1}
 							{/if}
@@ -182,18 +193,25 @@ function translit(str)
 					{category_select cats=$categories}
 				</select>
 		</div>
+		
+		{if !empty($category->external_id)}<div class="external_id">External_ID (1C): {$category->external_id|escape}</div>{/if}
 			
 		<!-- Левая колонка свойств товара -->
 		<div id="column_left">
 				
 			<!-- Параметры страницы -->
 			<div class="block layer">
+				<ul>
+					<li>
+						<label style="width: 180px;" class=property>{$tr->name_menu_item|escape}</label><input style="width:390px;" name="menu" class="fivecms_inp" type="text" value="{if !empty($category->menu)}{$category->menu|escape}{/if}" maxlength="125" />
+					</li>
+				</ul>
 				<h2>{$tr->page_parameters|escape}</h2>
 				<ul>
-					<li><label style="width: 90px;" class=property>{$tr->url|escape}</label><div class="page_url" style="width:51px;">/catalog/</div><input name="url" class="page_url" type="text" value="{if !empty($category->url)}{$category->url|escape}{/if}" style="width:348px;"/></li>
-					<li><label style="width: 90px;" class=property>{$tr->meta_title|escape}</label><input id="text-count1" name="meta_title" class="fivecms_inp" type="text" value="{if !empty($category->meta_title)}{$category->meta_title|escape}{/if}" /><span style="margin-left: 5px;" id="count1"></span></li>
-					<li><label style="width: 90px;" class=property>{$tr->keywords|escape}</label><input id="text-count2" name="meta_keywords" class="fivecms_inp" type="text" value="{if !empty($category->meta_keywords)}{$category->meta_keywords|escape}{/if}" /><span style="margin-left: 5px;" id="count2"></span></li>
-					<li><label style="width: 90px;" class=property>{$tr->meta_description|escape}</label><textarea id="text-count3" style="width: 400px;" maxlength="250" name="meta_description" class="fivecms_inp" />{if !empty($category->meta_description)}{$category->meta_description|escape}{/if}</textarea><span style="margin-left: 5px;" id="count3"></span></li>
+					<li><label style="width: 90px;" class=property>{$tr->url|escape}</label><div class="page_url" style="width:51px;">/catalog/</div><input name="url" class="page_url" type="text" value="{if !empty($category->url)}{$category->url|escape}{/if}" style="width:426px;"/></li>
+					<li><label style="width: 90px;" class=property>{$tr->meta_title|escape}</label><input style="width:480px;" id="text-count1" maxlength="125" name="meta_title" class="fivecms_inp" type="text" value="{if !empty($category->meta_title)}{$category->meta_title|escape}{/if}" /><span style="margin-left: 5px;" id="count1"></span></li>
+					<li><label style="width: 90px;" class=property>{$tr->keywords|escape}</label><input style="width:480px;" id="text-count2" maxlength="250" name="meta_keywords" class="fivecms_inp" type="text" value="{if !empty($category->meta_keywords)}{$category->meta_keywords|escape}{/if}" /><span style="margin-left: 5px;" id="count2"></span></li>
+					<li><label style="width: 90px;" class=property>{$tr->meta_description|escape}</label><textarea id="text-count3" style="width: 480px;" maxlength="250" name="meta_description" class="fivecms_inp" />{if !empty($category->meta_description)}{$category->meta_description|escape}{/if}</textarea><span style="margin-left: 5px;" id="count3"></span></li>
 					<li><input type="checkbox" name="copy_features" id="copy_features" value="1"> <label for="copy_features" style="vertical-align: middle;">{$tr->copy_features|escape}</label></li>
 				</ul>
 				<input style="float:left;" class="button_green button_save" type="submit" name="" value="{$tr->save|escape}" />

@@ -4,18 +4,21 @@ require_once('api/Fivecms.php');
 
 class View extends Fivecms
 {
+	/* Смысл класса в доступности следующих переменных в любом View */
 	public $currency;
 	public $currencies;
 	public $user;
 	public $group;
 	public $page;
 	
+	/* Класс View похож на синглтон, храним статически его инстанс */
 	private static $view_instance;
 	
 	public function __construct()
 	{
 		parent::__construct();
 
+		// Если инстанс класса уже существует - просто используем уже существующие переменные
 		if(self::$view_instance)
 		{
 			$this->currency     = &self::$view_instance->currency;
@@ -26,13 +29,17 @@ class View extends Fivecms
 		}
 		else
 		{
+			// Сохраняем свой инстанс в статической переменной,
+            // чтобы в следующий раз использовать его
 			self::$view_instance = $this;
 			
 			if($this->settings->site_disabled && !isset($_SESSION['admin'])) {
+				header("X-Powered-CMS: 5CMS v".$this->config->version);
 				print $this->design->fetch('offline.tpl');
 				exit();
 			}
 
+			// Валюта
 			$this->currencies = $this->money->get_currencies(array('enabled'=>1));
 	
 			if($currency_id = $this->request->get('currency_id', 'integer'))
@@ -42,6 +49,7 @@ class View extends Fivecms
 			}
 			
 			// multicurrency	
+			//возвращаем  текущую валюту
 			$this->currency = $this->money->get_current();
 			// multicurrency end
 	
@@ -55,29 +63,28 @@ class View extends Fivecms
 				}
 			}
 
-			// partner_id to cookie
-			$appid = intval($this->request->get('appid', 'integer'));
-            if($appid){
+			// Пишем partner_id в cookie
+			if(!empty($this->request->get('appid', 'integer')))
+				$appid = intval($this->request->get('appid', 'integer'));
+            if(!empty($appid)){
 				$partner = $this->users->get_user($appid);
-				if($appid != intval($_SESSION['user_id']) && !empty($partner) && $partner->enabled && $partner->id != $_COOKIE['partner_id']){
-						$expires_partner = time()+60*60*24*intval($this->settings->ref_cookie);
-						setcookie('partner_id',$partner->id,$expires_partner);
-				}
-				if(!empty($partner->id)){
+				if(!empty($partner) && $partner->enabled){
+					$expires_partner = time()+60*60*24*intval($this->settings->ref_cookie);
+					setcookie('partner_id',$partner->id,$expires_partner,'/');
 					$this->users->update_ref_views($partner->id);
 				}
-				//򫱻㡥ꟲef-믤
+				//скрываем ref-код
 				header("Location: ".$this->request->url(array('appid'=>null)));
             }
-			// partner_id to cookie end
 
+			// Текущая страница (если есть)
 			$subdir = substr(dirname(dirname(__FILE__)), strlen($_SERVER['DOCUMENT_ROOT']));
 			$page_url = trim(substr($_SERVER['REQUEST_URI'], strlen($subdir)),"/");
 			if(strpos($page_url, '?') !== false)
 				$page_url = substr($page_url, 0, strpos($page_url, '?'));
 			$this->page = $this->pages->get_page((string)$page_url);
 			$this->design->assign('page', $this->page);
-			
+			// Передаем в дизайн то, что может понадобиться в нем
 			$this->design->assign('currencies',	$this->currencies);
 			$this->design->assign('currency',	$this->currency);
 			$this->design->assign('user',       $this->user);
@@ -89,7 +96,8 @@ class View extends Fivecms
 			if($this->design->is_mobile_browser())
 				$this->design->assign('mobtheme',	$this->mobtheme);
 				
-			// Π裠 󦫳椮 􉁳�ࡸ᢫響			$mod = $this->request->get('module', 'string');
+			// Название текущего модуля в шаблон
+			$mod = $this->request->get('module', 'string');
 			$this->design->assign('mod', $mod);
 		
 			/* // Last purchases
@@ -99,7 +107,7 @@ class View extends Fivecms
 							GROUP BY p.product_id
 							ORDER BY o.id DESC LIMIT 5"));
 			$this->design->assign('last_purchases',	$this->db->results());*/
-
+			// Настраиваем плагины для смарти
 			$this->design->smarty->registerPlugin("function", "get_comments", 			array($this, 'get_comments_plugin'));
 			$this->design->smarty->registerPlugin("function", "get_posts",              array($this, 'get_posts_plugin'));
 			$this->design->smarty->registerPlugin("function", "get_links",              array($this, 'get_links_plugin'));
@@ -110,11 +118,11 @@ class View extends Fivecms
 			$this->design->smarty->registerPlugin("function", "get_brands",             array($this, 'get_brands_plugin'));
 			$this->design->smarty->registerPlugin("function", "get_browsed_products",   array($this, 'get_browsed_products'));
 			$this->design->smarty->registerPlugin("function", "get_products",        	array($this, 'get_products_plugin'));
-			$this->design->smarty->registerPlugin("function", "get_wishlist_products",  array($this, 'get_wishlist_products_plugin'));
 			$this->design->smarty->registerPlugin("function", "get_slides",             array($this, 'get_slides_plugin'));
 			$this->design->smarty->registerPlugin("function", "get_slidesm",            array($this, 'get_slidesm_plugin'));
 			$this->design->smarty->registerPlugin("function", "get_forms",              array($this, 'get_forms_plugin'));
 			$this->design->smarty->registerPlugin("function", "get_banners", 			array($this, 'get_banners_plugin'));
+			$this->design->smarty->registerPlugin("function", "get_object_articles", array($this, 'get_object_articles_plugin'));
 		}
 	}
 		
@@ -142,20 +150,21 @@ class View extends Fivecms
             	return false;
         	}
 			
-			$posts_ids = array();
 			foreach($temp_posts as $p) {
 				$posts[$p->id] = $p;
-				$posts_ids[] = $p->id;
-				// û⩰᦬ 񡨤欻
+
+				// Выбираем разделы
 				$section = $this->blog_categories->get_category(intval($p->category));
-				if(!empty($section))
-					$posts[$p->id]->sections[] = $section;
-					
-				// û⩰᦬ 𐦰㯥 騮Ⱡ禭飠⬮䞊				$images = $this->blog->get_images(array('post_id'=>$p->id));
+				if(!empty($section)){
+					$posts[$p->id]->section = array();
+					$posts[$p->id]->section = $section;
+				}	
+				// Выбираем первое изображение блога
+				$images = $this->blog->get_images(array('post_id'=>$p->id));
 				if(!empty($images))
 					$posts[$p->id]->images[] = $images[0];
 				
-				// ˮ鮢졪ﭬ殲񩦢	
+				// Кол-во комментриев	
 				$comments_count = $this->comments->count_comments(array('type'=>'blog', 'object_id'=>$p->id, 'approved'=>1));
 				if(isset($comments_count))
 					$posts[$p->id]->comments_count = $comments_count;
@@ -189,16 +198,18 @@ class View extends Fivecms
             	return false;
         	}
 			
-			$posts_ids = array();
 			foreach($temp_posts as $p) {
 				$posts[$p->id] = $p;
-				$posts_ids[] = $p->id;
 				
-				// û⩰᦬ 롲椮񩦊				$category = $this->articles_categories->get_articles_category(intval($p->category_id));
-				if(!empty($category))
-					$posts[$p->id]->categories[] = $category;
+				// Выбираем категории
+				$category = $this->articles_categories->get_articles_category(intval($p->category_id));
+				if(!empty($category)){
+					$posts[$p->id]->section = array();
+					$posts[$p->id]->section = $category;
+				}	
 					
-				// û⩰᦬ 𐦰㯥 騮Ⱡ禭飠򳡲戉			$images = $this->articles->get_images(array('post_id'=>$p->id));
+				// Выбираем первое изображение статьи
+				$images = $this->articles->get_images(array('post_id'=>$p->id));
 				if(!empty($images))
 					$posts[$p->id]->images[] = $images[0];
 			}
@@ -363,48 +374,13 @@ class View extends Fivecms
 				$smarty->assign($params['var'], $products);
 		}
 	}
-
-	public function get_wishlist_products_plugin($params, $smarty)
-	{
-        if(!empty($_COOKIE['wished_products']))
-        {
-            $products_ids = explode(',', $_COOKIE['wished_products']);
-            $products_ids = array_reverse($products_ids);
-            if(isset($params['limit']))
-                $products_ids = array_slice($products_ids, 0, $params['limit']);
-
-            $products = array();
-            foreach($this->products->get_products(array('id'=>$products_ids)) as $p)
-                $products[$p->id] = $p;
-            
-            $products_images = $this->products->get_images(array('product_id'=>$products_ids));
-            foreach($products_images as $product_image)
-                if(isset($products[$product_image->product_id]))
-                    $products[$product_image->product_id]->images[] = $product_image;
-                    
-            $products_variants = $this->variants->get_variants(array('product_id'=>$products_ids));
-            foreach($products_variants as $product_variants)
-                if(isset($products[$product_variants->product_id]))
-                    $products[$product_variants->product_id]->variants[] = $product_variants;
-            
-            foreach($products_ids as $id)
-            {    
-                if(isset($products[$id]))
-                {
-                    if(isset($products[$id]->images[0])) $products[$id]->image = $products[$id]->images[0];
-                    if(isset($products[$id]->variants[0])) $products[$id]->variant = $products[$id]->variants[0];
-                    $result[] = $products[$id];
-                }
-            }
-            $smarty->assign($params['var'], $result);
-        }
-	}
 	
 	public function get_banners_plugin($params, $smarty)
 	{
 		if($params['group'])
 		{
-			$filter['show_all_pages'] = true;//ϡ衲欼 𐡰᭥󮈉		$filter['group'] = (int)$params['group'];
+			$filter['show_all_pages'] = true;//Обязательный параметр
+			$filter['group'] = (int)$params['group'];
 			
 			@$category = $smarty->get_template_vars('category');
 			@$brand = $smarty->get_template_vars('brand');
@@ -421,12 +397,46 @@ class View extends Fivecms
 			$smarty->assign('banners', $banners);
 		}
 	}
+	
+	public function get_object_articles_plugin($params, $smarty)
+	{
+		if(!empty($params['var']) && !empty($params['id'])) {
+			$related_articles = $this->articles->get_related_articles($params);
+			
+			if(empty($related_articles)) 
+            	return false;
+			
+            $r_articles = array();
+                                
+            foreach($related_articles as &$r_p)
+                $r_articles[$r_p->article_id] = &$r_p;
+ 
+ 			$params['id'] = array_keys($r_articles);
+			
+ 			$temp_posts = $this->articles->get_articles($params);
+
+            foreach($temp_posts as $p){
+				$posts[$p->id] = $p;
+				
+				// Выбираем категории
+				$category = $this->articles_categories->get_articles_category(intval($p->category_id));
+				if(!empty($category))
+					$posts[$p->id]->categories[] = $category;
+					
+				// Выбираем первое изображение статьи
+				$images = $this->articles->get_images(array('post_id'=>$p->id));
+				if(!empty($images))
+					$posts[$p->id]->images[] = $images[0];
+			}
+			$smarty->assign($params['var'], $posts);
+		}
+	}
 
 	public function setHeaderLastModify($lastModify, $lastExpire) {
         $lastModify=empty($lastModify)?date("Y-m-d H:i:s"):$lastModify;
         $lastExpire=empty($lastExpire)?604800:$lastExpire;
         $LastModified_unix = strtotime($lastModify);
-        //а񫞠鵨롶馠򳱠
+        //Проверка модификации страницы
         $LastModified = gmdate("D, d M Y H:i:s \G\M\T", $LastModified_unix); 
         $LastExpires = gmdate("D, d M Y H:i:s \G\M\T", $LastModified_unix + $lastExpire);               
         $IfModifiedSince = false;
@@ -440,6 +450,7 @@ class View extends Fivecms
         }
         header('Last-Modified: '.$LastModified);
         header('Expires: '.$LastExpires);
+        //header('Cache-Control: max-age='.$lastExpire);
     }
 
 }

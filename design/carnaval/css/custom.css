@@ -1,0 +1,30 @@
+.tiny_products.hoverable {
+    overflow: hidden;
+}
+.tiny_products.hoverable .product_wrap {
+    height: 450px;
+}
+
+.tiny_products.owl-carousel .product:hover {
+    border: none;
+}
+
+.tiny_products .product .image {
+    height: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.tiny_products .product .image img {
+    object-fit: cover;
+}
+
+.tiny_products .product .amountwrapper {
+    display: none;
+}
+
+.product #amount {
+    display: none;
+}

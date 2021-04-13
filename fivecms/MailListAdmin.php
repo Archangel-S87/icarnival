@@ -38,15 +38,35 @@ class MailListAdmin extends Fivecms
 		$filter = array();
 		$filter['page'] = max(1, $this->request->get('page', 'integer')); 		
 		$filter['limit'] = 20;
+		
+		// Поиск
+		$keyword = $this->request->get('keyword');
+		if(!empty($keyword))
+		{
+			$filter['keyword'] = $keyword;
+			$this->design->assign('keyword', $keyword);
+		}		
+		
+		// Сортировка пользователей, сохраняем в сессии, чтобы текущая сортировка не сбрасывалась
+		if($sort = $this->request->get('sort', 'string'))
+			$_SESSION['maillist_admin_sort'] = $sort;		
+		if (!empty($_SESSION['maillist_admin_sort']))
+			$filter['sort'] = $_SESSION['maillist_admin_sort'];			
+		else
+			$filter['sort'] = 'name';			
+		$this->design->assign('sort', $filter['sort']);
         
-	  	$mails_count = $this->mailer->count_mails();
+	  	$mails_count = $this->mailer->count_mails($filter);
+	  	
+	  	// Показать все страницы сразу
+		if($this->request->get('page') == 'all')
+			$filter['limit'] = $mails_count;	
 	  	
 	  	$pages_count = ceil($mails_count/$filter['limit']);
 	  	$filter['page'] = min($filter['page'], $pages_count);
 	 	$this->design->assign('mails_count', $mails_count);
 	 	$this->design->assign('pages_count', $pages_count);
 	 	$this->design->assign('current_page', $filter['page']);
-
 
 		$maillist = $this->mailer->get_maillist($filter);
 				

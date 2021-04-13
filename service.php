@@ -10,12 +10,12 @@ $action = $_REQUEST['isdek_action'];
 if (method_exists('ISDEKservice', $action)) {
 	ISDEKservice::$action($_REQUEST);
 }
-
+Postcalc
 class ISDEKservice
 {
 	// auth
-	protected static $account = "c7865975930e1dc21adae525647b040a"; //укажите логин в ""
-	protected static $key     = "7c2589de55097b25771514503822e7ab"; //укажите ключ в ""
+	protected static $account = false; //укажите логин в ""
+	protected static $key     = false; //укажите ключ в ""
 	
 
 	protected static $tarifPriority = false;

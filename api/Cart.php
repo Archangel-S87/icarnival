@@ -63,17 +63,14 @@ class Cart extends Fivecms
 						$items[$variant->id]->amount = $session_items[$variant->id];
 					else {
 						$items[$variant->id]->amount = 0;
-						$this->design->assign('error_stock', 'out_of_stock_order');	
+						$this->design->assign('cart_error', 'out_of_stock_order');	
 					}	
 					$products_ids[] = $variant->product_id;
 				}
 	
 				$products = array();
 				foreach($this->products->get_products(array('id'=>$products_ids, 'limit' => count($products_ids))) as $p)
-					{
-					$p->variants=$this->variants->get_variants(array('product_id'=>$p->id));
 					$products[$p->id]=$p;
-					}
 				
 				$images = $this->products->get_images(array('product_id'=>$products_ids));
 				foreach($images as $image)
@@ -213,8 +210,7 @@ class Cart extends Fivecms
 				
 			}
 		}
-		//print_r($cart);
-		//print_r($_SESSION['ct']);	
+			
 		return $cart;
 	}
 	
@@ -291,59 +287,6 @@ class Cart extends Fivecms
 			} else {
 				setcookie("ct_".$variant_id,$amount,time()+31536000,"/");
 			}
-		}
- 
-	}
-
-	/*
-	*
-	* Изменение варианта товара
-	*
-	*/
-	public function update_item_v($variant_id, $var_id = 1)
-	{
-		if($this->settings->cart_storage == 0) {
-			foreach($_COOKIE as $key => $cookie)
-			{
-				if(strpos($key, 't_') != false)
-				{
-					$id = str_replace('ct_', '', $key);
-					$session_items[$id] = $cookie;
-				}
-			}
-        	}		
-		// Выберем товар из базы, заодно убедившись в его существовании
-		$variant = $this->variants->get_variant($var_id);
-		if($this->settings->cart_storage == 1 || $this->settings->cart_storage == 2) {
-			if(isset($_SESSION['ct'][$var_id]))
-      			$amount = max(1, $_SESSION['ct'][$var_id]+$_SESSION['ct'][$variant_id]);
-      			else
-      			$amount = max(1, $_SESSION['ct'][$variant_id]);
-		} else {
-			if(isset($session_items[$var_id]))
-            		$amount = max(1, $session_items[$var_id]+$session_items[$variant_id]);
-            		else
-            		$amount = max(1, $session_items[$variant_id]);	
-		}
-		//print_r($this->settings->cart_storage);
-		//print_r($session_items);
-		//print_r($amount);
-		$this->cart->delete_item($variant_id);
-		
-		// Если товар существует, добавим его в корзину
-		if(!empty($variant) && $variant->stock>0)
-		{
-			// Не дадим больше чем на складе
-			$amount = min($amount, $variant->stock);
-	     
-	     	if($this->settings->cart_storage == 1) {
-				$_SESSION['ct'][$var_id] = intval($amount); 
-			} elseif($this->settings->cart_storage == 2) {
-				$_SESSION['ct'][$var_id] = intval($amount); 
-				$this->cart_to_base();	
-			} else {
-				setcookie("ct_".$var_id,$amount,time()+31536000,"/");
-			}			
 		}
  
 	}

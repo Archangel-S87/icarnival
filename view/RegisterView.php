@@ -8,21 +8,23 @@ class RegisterView extends View
 	{
 		$default_status = 1; // Активен ли пользователь сразу после регистрации (0 или 1)
 		
-		if($this->user) {
+		if(!empty($this->user)) {
 			header('Location: '.$this->config->root_url.'/user');
 			exit();
 		}
 		
 		// auth ULogin start
 		if(isset($_POST['token'])) {
-				$s = file_get_contents('https://ulogin.ru/token.php?token='.$_POST['token'].'&host='.$_SERVER['HTTP_HOST']);
+				$h = mb_strtolower(getenv("HTTP_HOST"));
+				$h = strtok($h, ':');
+				$s = file_get_contents('https://ulogin.ru/token.php?token='.$_POST['token'].'&host='.$h);
 				$fivecms = json_decode($s, true);
 				
 				if (isset($fivecms['identity'])) {
 					$name = $fivecms['first_name'].' '.$fivecms['last_name'];
 					$email = $fivecms['email'];
 					$password = md5($fivecms['identity'].'newpass');
-					//checking in DB if e-mail exists
+
 					$this->db->query('SELECT count(*) as count, id FROM __users WHERE email=?', $email);
 					$user_exists = $this->db->result();
 					if($user_exists->count) {
@@ -115,18 +117,19 @@ class RegisterView extends View
 				$this->design->assign('error', 'captcha');	
 			elseif(empty($email))
 				$this->design->assign('error', 'empty_email');
+			elseif(!empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL) === false)	
+				$this->design->assign('error', 'wrong_email');	
 			elseif(empty($password))
 				$this->design->assign('error', 'empty_password');	
 			elseif(empty($tel))
 				$this->design->assign('error', 'empty_tel');		
-			elseif(!$bttrue)
+			elseif(empty($bttrue))
 				$this->design->assign('error', 'captcha');
-			elseif($btfalse)
+			elseif(!empty($btfalse))
 				$this->design->assign('error', 'captcha');
 			elseif($user_id = $this->users->add_user(array('name'=>$name, 'email'=>$email, 'password'=>$password, 'phone'=>$tel, 'enabled'=>$default_status, 'last_ip'=>$_SERVER['REMOTE_ADDR'])))
 			{
-				$this->notify->email_user_registration($user_id, $password);
-				
+				// Добавляем подписчика в рассылку
 				if($this->settings->auto_subscribe == 1)
 					$this->mailer->add_mail($name, $email);
 				
@@ -151,6 +154,9 @@ class RegisterView extends View
 							$this->users->update_user(intval($user_id), array('partner_id'=>$partner->id));
 					}
 				}
+				
+				// Отправляем пароль пользователю
+				$this->notify->email_user_registration($user_id, $password);
 				
 				/*if(!empty($_SESSION['current_for_login']))
 					header('Location: '.$_SESSION['current_for_login']);				

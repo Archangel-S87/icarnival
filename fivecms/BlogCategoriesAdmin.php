@@ -37,7 +37,6 @@ class BlogCategoriesAdmin extends Fivecms
 			    {
 				    foreach($ids as $id)
 						$this->blog_categories->delete_category($id); 
-						echo 'deleted'.$id;   
 			        break;
 			    }
 			}			

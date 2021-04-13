@@ -32,7 +32,7 @@
 	<!-- Системное сообщение (The End)-->
 	{/if}
 				
-	<div id="main_list" style="max-width:82%;">
+	<div id="main_list" style="max-width:87%;">
 	
 	<!-- Основная форма -->
 	<form method=post id=product enctype="multipart/form-data">
@@ -178,7 +178,7 @@
 				<h2>{$tr->logo}</h2>
 				<ul style="display: block; width: 500px; float: left; margin-bottom: 0;">
 					<li style="width: 500px;">
-						<label style="margin-bottom:10px;width:500px !important;" class=property>{$tr->upload} {$tr->file|lower} (.png {$tr->on_transp_background} {$tr->max} 340x186px)</label>
+						<label style="margin-bottom:10px;width:500px !important;" class=property>{$tr->upload} {$tr->file|lower} (.png {$tr->on_transp_background}, {$tr->size|lower} {$tr->max} 370x138px)</label>
 						<input name="logoimg_file" class="fivecms_inp" type="file" />
 						<img style='display:block;max-width:100%;max-height:79px;border:0px solid #d0d0d0; margin:10px 0 10px 0;' src="{$config->root_url}/{$config->logoimg_file}?{math equation='rand(10,10000)'}">
 					</li>
@@ -189,7 +189,7 @@
 				<h2>Favicon.ico</h2>
 				<ul style="display: block; width: 500px; float: left; margin-bottom: 0;">
 					<li style="width: 500px;">
-						<label style="margin-bottom:10px;width:500px !important;" class=property>{$tr->upload} {$tr->file|lower} favicon.ico (<strong>{$tr->size|lower} 16x16px</strong>)</label>
+						<label style="margin-bottom:10px;width:500px !important;" class=property>{$tr->upload} {$tr->file|lower} favicon.ico ({$tr->size|lower} 16x16px) <a href="http://5cms.ru/blog/favicon" target="_blank" class="bluelink">(?)</a></label>
 						<input name="faviconimg_file" class="fivecms_inp" type="file" />
 						<img style='display:block; border:0px solid #d0d0d0; margin:10px 0 10px 0;' src="{$config->root_url}/{$config->faviconimg_file}?{math equation='rand(10,10000)'}">
 					</li>
@@ -197,21 +197,6 @@
 			</div>
 	
 			<input style="margin-top: 20px;" class="button_green button_save" type="submit" name="save" value="{$tr->save|escape}" />
-
-		<!-- Параметры -->
-		<div class="block layer">
-			<h2>ТОРГ-12</h2>
-			<ul>
-				<li><label class=property>Грузоотправитель</label><textarea name="consignor">{$settings->consignor|escape}</textarea></li>
-				<li><label class=property>Поставщик</label><textarea name="supplier">{$settings->supplier|escape}</textarea></li>
-				<li>
-					<label class=property>Доставка в накладной</label>
-					<input name="torg12_delivery" type="checkbox" {if $settings->torg12_delivery eq 'true'}checked{/if} value="true" />
-				</li>
-				
-			</ul>
-		</div>
-		<!-- Параметры (The End)-->
 	
 			<div id="disclaimer" class="block layer">
 				<h2>{$tr->disclaimer}</h2>
@@ -248,15 +233,6 @@
 						</li>
 					</ul>
 					
-				</div>
-			</div>
-	
-			<div id="rekvizites" class="block layer">
-				<h2>{$tr->bank_details}</h2>
-				<a class="hideBtn" href="javascript://" onclick="hideShow(this);return false;">{$tr->more}</a>
-				<div id="hideCont">
-					<p style="margin-top: 10px;">{$tr->bank_print}</p>
-					<textarea style='width:96%;height:200px;margin: 15px 0;' name="rekvizites">{$settings->rekvizites}</textarea>
 				</div>
 			</div>
 			

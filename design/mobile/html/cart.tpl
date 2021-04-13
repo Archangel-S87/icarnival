@@ -98,6 +98,18 @@
 				{if !empty($cart->coupon->min_order_price)}<span class="coupondisc">Купон "{$cart->coupon->code|escape}" <span>для заказов от {$cart->coupon->min_order_price|convert} {$currency->sign}</span>{/if}
 				{if !empty($cart->coupon_discount)}<br /><span class="coupondiscount">Скидка по купону: <strong>{$cart->coupon_discount|convert}&nbsp;{$currency->sign}</strong></span>{/if}
 	
+				{if $cart->coupon_discount>0}
+					<p class="coupondisc">
+						Купон "{$cart->coupon->code|escape}" 
+						{if !empty($cart->coupon->min_order_price|round)}
+							<span>для заказов от {$cart->coupon->min_order_price|convert} {$currency->sign}</span>
+						{/if}	
+					</p>
+					<p class="coupondiscount">Скидка по купону: <strong>{$cart->coupon_discount|convert} {$currency->sign}</strong>
+					</p>
+					<input class="buttonblue" type="button" name="apply_coupon"  value="Отменить купон" onclick="$('input[name=coupon_code]').val('');document.cart.submit();">
+				{/if}
+	
 				{literal}
 				<script>
 				$("input[name='coupon_code']").keypress(function(event){
@@ -160,15 +172,9 @@
 			{$delivcount=0}
 			{foreach $deliveries as $delivery}
 				{if $delivery@first}
-					<div id="selected_delivery" style="display: none;">{$delivery->id}</div>
-					{$delivcount=$delivcount+1}
-				{/if}
-
-				{$additional_cost = 0}
-				{if $delivery->additional_cost > 0}
-					{$additional_cost = ($delivery->additional_cost|convert)}
-				{/if}
-
+				<div id="selected_delivery" style="display: none;">{$delivery->id}</div>
+				{$delivcount=$delivcount+1}
+			{/if}
 			<li id="li_delivery_{$delivery->id}">
 				<div class="checkbox">
 					<input class="{if $delivery@first}first{else}other{/if} {if $delivery->id == 3 ||$delivery->id == 114 || $delivery->id == 121 || $delivery->widget == 1}del_widget{/if}" type="radio" name="delivery_id" value="{$delivery->id}" {if $delivery@first}checked{/if} id="deliveries_{$delivery->id}" onchange="change_payment_method({$delivery->id})" 
@@ -186,25 +192,10 @@
 							
 							{if $delivery->separate_payment}[оплачивается отдельно]{/if} 
 				
-							(<span id="not-null-delivery-price-{$delivery->id}">
-								{if $delivery->free_from > 0 && $cart->total_price >= $delivery->free_from}
-								бесплатно</span>)
-							{elseif in_array($delivery->id, array(3,114,121)) || $delivery->widget == 1}
-								---</span>&nbsp;{$currency->sign})
-							{elseif $delivery->price==0 && $delivery->price2 == 0 && $additional_cost == 0}
-								бесплатно</span>)
-							{elseif $delivery->price2 > 0 || $additional_cost > 0}
-								{$temp_price = 0}
-								{$temp_price = $temp_price + $delivery->price}
-								{if $delivery->price2 > 0 && $cart->total_weight > 3}
-									{$temp_price = $delivery->price + $delivery->price2 * ($cart->total_weight|ceil - 3)}
-								{/if}
-								{if $additional_cost > 0}
-									{$temp_price = $temp_price + $additional_cost}
-								{/if}
-								{$temp_price|convert}</span>&nbsp;{$currency->sign})
-							{else}
-								{$delivery->price|convert}</span>&nbsp;{$currency->sign})
+							(<span id="not-null-delivery-price-{$delivery->id}">{if $delivery->free_from > 0 && $cart->total_price >= $delivery->free_from}бесплатно</span>)
+							{elseif in_array($delivery->id, array(3,114,121)) || $delivery->widget == 1}---</span>&nbsp;{$currency->sign})
+							{elseif $delivery->price==0 && $delivery->price2 == 0}бесплатно</span>)
+							{else}{if $delivery->price2 > 0}{($delivery->price + ($delivery->price2 * $cart->total_weight|ceil))|convert}{else}{$delivery->price|convert}{/if}</span>&nbsp;{$currency->sign})
 							{/if}
 						</div>
 					</label>
@@ -334,23 +325,27 @@
 		<span class="whitecube">{$countpoints+1}</span><h2>Адрес получателя</h2>
 	</div>
 	
-	<div class="form cart_form">         
+	<div class="form cart_form">   
+		{if isset($cart_error)}
+		<div class="message_error">
+			В вашем заказе есть закончившиеся товары
+		</div>
+		{/if}       
 		{if isset($error)}
 		<div class="message_error">
-			{if $error == 'empty_name'}Введите имя{/if}
-			{if $error == 'empty_email'}Введите email{/if}
-			{if $error == 'empty_phone'}Укажите телефон{/if}
-			{if $error == 'captcha'}Не пройдена проверка на бота{/if}
-		</div>
-		{/if}
-		{if isset($error_stock)}
-		<div class="message_error">
-			{if $error_stock == 'out_of_stock_order'}В вашем заказе есть закончившиеся товары{/if}
+			{if $error == 'empty_name'}Введите ФИО
+			{elseif $error == 'empty_email'}Введите Email
+			{elseif $error == 'empty_phone'}Укажите телефон
+			{elseif $error == 'captcha'}Не пройдена проверка на бота
+			{elseif $error == 'wrong_name'}В поле 'ФИО' может использоваться только кириллица
+			{elseif $error == 'wrong_email'}Некорректный Email
+			{elseif $error == 'out_of_stock_order'}В вашем заказе есть закончившиеся товары
+			{/if}
 		</div>
 		{/if}
 		
 		<input placeholder="* ФИО" name="name" type="text" value="{if !empty($name)}{$name|escape}{/if}" data-format=".+" data-notice="Введите ФИО" required />
-		<input placeholder="* E-mail" name="email" type="email" value="{if !empty($email)}{$email|escape}{/if}" data-format="email" data-notice="Введите E-mail" required />
+		<input placeholder="* Email" name="email" type="email" value="{if !empty($email)}{$email|escape}{/if}" data-format="email" data-notice="Введите Email" required />
 		<input placeholder="* Телефон" id="phone" name="phone" type="tel" value="{if !empty($phone)}{$phone|escape}{/if}" data-format=".+" data-notice="Укажите телефон" required />
 		<input placeholder="Адрес доставки" name="address" type="text" value="{if !empty($address)}{$address|escape}{/if}"/>
 		
@@ -394,7 +389,7 @@
 			{include file='antibot.tpl'}
 		</div>
 
-		<input type="submit" name="checkout" class="button hideablebutton" value="Оформить заказ" {if $settings->counters || $settings->analytics}onclick="{if $settings->counters}yaCounter{$settings->counters}.reachGoal('cart'); {/if}{if $settings->analytics}ga ('send', 'event', 'cart', 'order_button');{/if} return true;"{/if} />
+		<input type="submit" name="checkout" class="button hideablebutton" value="Оформить заказ" {if $settings->counters || $settings->analytics}onclick="{if $settings->counters}ym({$settings->counters},'reachGoal','cart'); {/if}{if $settings->analytics}ga ('send', 'event', 'cart', 'order_button');{/if} return true;"{/if} />
 	</div>
 
 </form>

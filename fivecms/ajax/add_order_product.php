@@ -39,11 +39,14 @@
 			// Скидка в варианте товара @
 		
 			$variant->oprice = $variant->price;
-            $variant->compare_oprice = $variant->compare_price;
+			if(isset($variant->compare_price))
+            	$variant->compare_oprice = $variant->compare_price;
             //делаем пересчет в базовый курс
             if($variant->currency_id > 0) {
                 $variant->price = $variant->price * $currencies[$variant->currency_id]->rate_to / $currencies[$variant->currency_id]->rate_from;
-                $variant->compare_price = $variant->compare_price * $currencies[$variant->currency_id]->rate_to / $currencies[$variant->currency_id]->rate_from;
+                if(isset($variant->compare_price)){
+                	$variant->compare_price = $variant->compare_price * $currencies[$variant->currency_id]->rate_to / $currencies[$variant->currency_id]->rate_from;
+                }
             }
 			$products[$variant->product_id]->variants[] = $variant;
 		}

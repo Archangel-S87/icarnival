@@ -1,3 +1,4 @@
+{if !empty($blog_categories)}
 <!-- incl. mblog_cat -->
 <div class="box">
 	<div class="box-heading">Разделы блога</div>
@@ -16,3 +17,4 @@
 	</div>
 </div>
 <!-- incl. mblog_cat @-->
+{/if}

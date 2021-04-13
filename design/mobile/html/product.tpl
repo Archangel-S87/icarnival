@@ -1,5 +1,33 @@
 {* Канонический адрес страницы *}
 {$canonical="/products/{$product->url}" scope=root}
+{* product seo title *}
+	{if !empty($category->name)}{$ctg = " | "|cat:$category->name}{else}{$ctg = ''}{/if}
+	{if !empty($brand->name)}{$brnd = " | "|cat:$brand->name}{else}{$brnd = ''}{/if}
+	{if empty($meta_title) && !empty($product->name)}
+		{$seo_title=$product->name|cat:$ctg|cat:$brnd scope=root}
+	{/if}
+{* product seo description *}
+	{if !empty($category)}{$first_category = $category->path|first}{/if}
+	{if !empty($category->seo_one)}
+		{$seo_one = $category->seo_one}
+	{elseif !empty($first_category->seo_one)}
+		{$seo_one = $first_category->seo_one}
+	{else}
+		{$seo_one = ''}
+	{/if}
+	{if !empty($category->seo_two)}
+		{$seo_two = $category->seo_two}
+	{elseif !empty($first_category->seo_two)}
+		{$seo_two = $first_category->seo_two}
+	{else}
+		{$seo_two = ''}
+	{/if}
+	{if !empty($category->seo_type) && !empty($product->variant->price)}
+		{$seo_description = $seo_one|cat:$product->name|cat:" ✩ за "|cat:($product->variant->price|convert|strip:'')|cat:" "|cat:$currency->sign|cat:$seo_two scope=root}
+	{else}
+		{$seo_description = $seo_one|cat:$product->name|cat:$seo_two scope=root}
+	{/if}
+	
 <div class="product">
 	<div style="position:relative;">
 		<div class="labelsblock blockimg">
@@ -18,7 +46,7 @@
 				{foreach $product->images as $i=>$image}
 					<div imcolor="{$image->color}" {if $image->color}class="blockwrapp"{else}class="showanyway" style="visibility:visible;"{/if}>
 						<div class="imgwrapper">
-							<img alt="{$product->name|escape}" title="{$product->name|escape}" class="blockimage" src="{$image->filename|resize:800:600:w}" />
+							<img alt="{$product->name|escape}" title="{$product->name|escape}" class="blockimage" src="{$image->filename|resize:1024:768:w}" />
 						</div>
 					</div>
 				{/foreach}
@@ -30,7 +58,7 @@
 				</div>
 			{/if}
 		</div>
-		{if $product->images|count>1}
+		{if !empty($product->images) && $product->images|count>1}
 		<div class="directionNav">
 			<span onClick="Swipeslider.Prev();" class="prev"></span><span onClick="Swipeslider.Next();" class="next"></span>
 		</div>
@@ -39,16 +67,14 @@
 
 	{* Описание товара *}
 	<div class="description">
-		{$count_stock = 0}
+		{$notinstock=1}
 		{foreach $product->variants as $pv}
-			{$count_stock = $count_stock + $pv->stock}
+			{if $pv->stock > 0}
+				{$notinstock=0}
+				{break}
+			{/if}
 		{/foreach}
-		{if $count_stock > 0}
-			{$notinstock=0}
-		{else}
-			{$notinstock=1}
-		{/if}
-		{if $notinstock == 0}
+
 			{* Выбор варианта товара *}
 			<form class="variants" action="/cart">
 				<div class="bm_good">	
@@ -70,7 +96,7 @@
 							{/foreach}
 						</span>
 	
-						<input id="vhidden" class="1clk" name="variant" value="" type="hidden" />
+						<input id="vhidden" class="1clk vhidden" name="variant" value="" type="hidden" />
 
 						<div class="variantsblock">
 							<select name="variant1" class="p0"{if $cntname1 == 0} style="display:none;"{/if}>
@@ -93,13 +119,14 @@
 						</div>
 	
 						<div class="amount-price">
+							{if empty($notinstock)}
 							<div id="amount">
 								<input type="button" class="minus" value="−" />
 								<input type="number" class="amount" name="amount" value="1" size="2" data-max="{$settings->max_order_amount|escape}" />
 								<input type="button" class="plus" value="+" />
 								<span class="umnozh">X</span>
 							</div>
-					
+							{/if}
 							<div class="price-block {if !$product->variant->compare_price > 0}pricebig{/if}">
 								{if $product->variant->compare_price > 0}
 									<div ID="priceold" class="compare_price"></div>
@@ -114,7 +141,7 @@
 							<select class="b1c_option" name="variant">
 								{foreach $product->variants as $v}
 									{$ballov = ($v->price * $settings->bonus_order/100)|convert|replace:' ':''|round}
-									<option v_name="{$v->name}" v_price="{$v->price|convert} {$currency->sign|escape}" v_stock="{if $v->stock < $settings->max_order_amount}{$v->stock}{else}много{/if}" v_unit="{if $v->unit}{$v->unit}{else}{$settings->units}{/if}" v_sku="{if $v->sku}Арт.: {$v->sku}{/if}" v_bonus="{$ballov} {$ballov|plural:'балл':'баллов':'балла'}" value="{$v->id}" {if $v->compare_price > 0}compare_price="{$v->compare_price|convert}"{/if} price="{$v->price|convert}" click="{$v->name}" {if $product->variant->id==$v->id}selected{/if}>
+									<option v_name="{$v->name}" v_price="{$v->price|convert} {$currency->sign|escape}" v_stock="{if $v->stock < $settings->max_order_amount}{$v->stock}{else}много{/if}" v_unit="{if $v->unit}{$v->unit}{else}{$settings->units}{/if}" v_sku="{if $v->sku}Арт.: {$v->sku}{/if}" v_bonus="{$ballov} {$ballov|plural:'балл':'баллов':'балла'}" value="{$v->id}" {if $v->compare_price > 0}compare_price="{$v->compare_price|convert}"{/if} price="{$v->price|convert}" click="{$v->name}" {if $product->variant->id==$v->id}selected{/if} {if $v->stock == 0}disabled{/if}>
 										{$v->name}&nbsp;
 									</option>
 								{/foreach}
@@ -122,15 +149,41 @@
 						</div>
 										
 						<div class="price" style="display:table; float:left; width:100%;">
+							{if empty($notinstock)}
 							<div id="amount">
 								<input type="button" class="minus" value="−" />
 								<input type="number" class="amount" name="amount" value="1" size="2" data-max="{$settings->max_order_amount|escape}"/>
 								<input type="button" class="plus" value="+" />
 								<span class="umnozh">X</span>
 							</div>
+							{/if}
+							<script>
+								$(window).load(function() {
+									stock=parseInt($('.productview select[name=variant]').find('option:selected').attr('v_stock'));
+									if( !$.isNumeric(stock) ){ stock = {$settings->max_order_amount|escape}; }
+									$('.variants .amount').attr('data-max',stock);
+									if(stock == 0)	
+										$('.variants .amount').val(0);
+								});
+								$('.productview select[name=variant]').change(function(){
+									stock=parseInt($(this).find('option:selected').attr('v_stock'));
+									if( !$.isNumeric(stock) ) 
+										stock = {$settings->max_order_amount|escape};
+	
+									$('.variants .amount').attr('data-max',stock);
+	
+									oldamount = parseInt($('.variants .amount').val());
+
+									if(oldamount > stock) 
+										$('.variants .amount').val(stock);
+									else if(stock != 0)
+										$('.variants .amount').val(1);
+									else if(stock == 0)	
+										$('.variants .amount').val(0);
+								});
+							</script>
 
 							<div class="price-block {if !$product->variant->compare_price > 0}pricebig{/if}">
-						
 								{if $product->variant->compare_price > 0}
 									<div class="compare_price">{$product->variant->compare_price|convert}</div>
 								{/if}
@@ -139,24 +192,41 @@
 							</div>
 						</div>
 					{/if}
+					<script>
+						$(window).load(function() {		
+							// Проверяем кол-во
+                        	$(document).on('change','.description .amount',function(){
+                        		amount = parseInt($('.description .amount').val());
+                        		max_order_amount = parseInt($('.description .amount').attr('data-max'));
+                        		if(!$.isNumeric(max_order_amount))
+                        			max_order_amount = {$settings->max_order_amount|escape};
+                        		if(!$.isNumeric(amount)){	
+                        			amount = 1;
+                        			$('.description .amount').val(amount);
+                        		}	
+								if(amount > max_order_amount)
+									$('.description .amount').val(max_order_amount);
+							});
+						});
+					</script>
 
 					<div class="separator" style="margin-bottom:15px;">
 						{if $settings->b9manage}<div style="float:right;font-size:13px;margin:0px 0 15px 0;">Цена указана за <span class="unit">{if $product->variant->unit}{$product->variant->unit}{else}{$settings->units}{/if}</span></div>{/if}
 
 						<div class="separator skustock">
 							<div class="skustockleft">
-								{if $settings->showsku == 1}<p class="sku">{if $product->variant->sku}Арт.: {$product->variant->sku}{/if}</p>{/if}
-								{if $settings->showstock == 1}<div class="stockblock">На складе: <span class="stock">{if $product->variant->stock < $settings->max_order_amount}{$product->variant->stock}{else}много{/if}</span></div>{/if}
+								{if $settings->showsku == 1}<p class="sku">{if !empty($product->variant->sku)}Арт.: {$product->variant->sku}{/if}</p>{/if}
+								{if $settings->showstock == 1}<div class="stockblock">На складе: <span class="stock">{if !empty($notinstock)}нет в наличии{elseif $product->variant->stock < $settings->max_order_amount}{$product->variant->stock}{else}много{/if}</span></div>{/if}
 							</div>
 							{if $settings->bonus_limit && $settings->bonus_order}{$ballov = ($product->variant->price * $settings->bonus_order/100)|convert|replace:' ':''|round}<span class="bonus">+ <span class="bonusnum">{$ballov} {$ballov|plural:'балл':'баллов':'балла'}</span></span>{/if}
 						</div>
 					</div>
-			
+					{if empty($notinstock)}
 					<div class="buttonsblock">
-						<input style="float: left;" type="submit" class="buttonred" value="в корзину" data-result-text="добавлено" />
-						{include file='1click.tpl'}
+						<input style="float: left;" {if !empty($product->ref_url)}onClick="window.open('{$product->ref_url|escape}', '_blank');return false;"{/if} type="submit" class="buttonred" value="{$settings->to_cart_name|escape}" data-result-text="добавлено" />
+						{if !empty($settings->show1click) && empty($product->ref_url)}{include file='1click.tpl'}{/if}
 					</div>
-
+					{/if}
 				</div>
 			</form>
 			{* Выбор варианта товара (The End) *}
@@ -167,7 +237,6 @@
 				{$rating = $settings->prods_rating|floatval}
 			{/if}	
 			{$votes = $settings->prods_votes|intval + $product->votes}
-			{$views = $settings->prods_views|intval + $product->views}
 			<div class="separator">
 				<div class="testRater" id="product_{$product->id}">
 					<div class="statVal">
@@ -176,7 +245,7 @@
 								<span class="rater-starsOn" style="width:{$rating*115/5|string_format:"%.0f"}px"></span>
 							</span>
 							<span class="test-text">
-								<span class="rater-rating">{$rating|string_format:"%.1f"}</span>&#160;(голосов <span class="rater-rateCount">{$votes|string_format:"%.0f"}</span> / просмотров {$views})
+								<span class="rater-rating">{$rating|string_format:"%.1f"}</span>&#160;(голосов <span class="rater-rateCount">{$votes|string_format:"%.0f"}</span>)
 							</span>
 						</span>
 					</div>
@@ -184,17 +253,7 @@
 				{* rating (The End) *}
 				{include file='wishcomp.tpl'}
 			</div>
-	
-		{else}
-			{if $settings->showsku == 1 && !empty($product->variant->sku)}
-				<p class="page-pg sku">Арт.: {$product->variant->sku}</p>
-			{/if}
-			<p class="page-pg not_in_stock_label">Нет в наличии</p>
-			<div class="separator" style="margin-bottom:10px;">
-				{include file='wishcomp.tpl'}
-			</div>
-			<input name="variant" v_name="" v_price="" style="display:none;"/>
-		{/if}
+
 	
 	</div>
 	
@@ -207,28 +266,38 @@
 	<div class="container">
 	
 		<ul class="tabs">
-			{if $product->annotation}<li class="anchor" data-anchor=".tab_container"><a href="#tab0" title="Аннотация">Аннотация</a></li>{/if}
-			{if $product->body}<li class="anchor" data-anchor=".tab_container"><a href="#tab1" title="Описание">Описание</a></li>{/if}
-			{if $product->features}<li class="anchor" data-anchor=".tab_container"><a href="#tab2" title="Характеристики">Характеристики</a></li>{/if}
-			{if $cms_files}<li class="anchor" data-anchor=".tab_container"><a href="#tab4" title="Файлы">Файлы</a></li>{/if}
-			{if $settings->hidecomment == 0}<li><a href="#tab3" title='Отзывы'>Отзывы{if $comments} ({$comments|count}){/if}</a></li>{/if}
+			{if !empty($product->annotation)}<li class="anchor" data-anchor=".tab_container"><a href="#tab0" title="Аннотация">Аннотация</a></li>{/if}
+			{if !empty($product->body)}<li class="anchor" data-anchor=".tab_container"><a href="#tab1" title="Описание">Описание</a></li>{/if}
+			{if !empty($product->features)}<li class="anchor" data-anchor=".tab_container"><a href="#tab2" title="Характеристики">Характеристики</a></li>{/if}
+			{if !empty($cms_files)}<li class="anchor" data-anchor=".tab_container"><a href="#tab4" title="Файлы">Файлы</a></li>{/if}
+			{if empty($settings->hidecomment)}<li><a href="#tab3">Отзывы{if !empty($comments)} ({$comments|count}){/if}</a></li>{/if}
+			{if !empty($settings->del_pay)}<li><a href="#tab6">Оплата и доставка</a></li>{/if}
+			
+			{if !empty($notinstock)}
+				{get_products var=related_products category_id=$category->id sort=rand limit=5}
+				{$related_title="Похожие товары"}
+			{elseif !empty($related_ids)}
+				{get_products var=related_products id=$related_ids}
+				{$related_title="С этим товаром покупают"}
+			{/if}	
+			{if !empty($related_title)}<li><a href="#tab7">{$related_title}</a></li>{/if}
 		</ul>
 	
 		<div class="tab_container">
 		
-			{if $product->annotation}
+			{if !empty($product->annotation)}
 				<div id="tab0" class="tab_content">
 					<div class="page-pg">{$product->annotation}</div>
 				</div>
 			{/if}
 	
-			{if $product->body}
+			{if !empty($product->body)}
 				<div id="tab1" class="tab_content">
 					<div class="page-pg">{$product->body}</div>
 				</div>
 			{/if}
 	
-			{if $product->features}
+			{if !empty($product->features)}
 				<div id="tab2" class="tab_content">
 					<ul class="features">
 					{foreach $product->features as $f}
@@ -241,14 +310,19 @@
 				</div>
 			{/if}
 			
-			{if $cms_files}
+			{if !empty($cms_files)}
 				<div id="tab4" class="tab_content">
 					<div class="page-pg">
 						<ul class="stars">
 						{foreach $cms_files as $file}
 							<li>
-								<a href="{$config->cms_files_dir}{$file->filename}">
-									{if $file->name}{$file->name}{else}{$file->filename}{/if}
+								{if $file->filename|substr:0:4 == 'http'}
+									{$filename = $file->filename}
+								{else}
+									{$filename = $config->cms_files_dir|cat:$file->filename}	
+								{/if}
+								<a href="{$filename}" {if empty($mobile_app)}download="{$filename}"{/if}>
+									{if $file->name}{$file->name|escape}{else}{$file->filename}{/if}
 								</a>
 							</li>
 						{/foreach}
@@ -257,10 +331,10 @@
 				</div>
 			{/if}
 	
-			{if $settings->hidecomment == 0}
+			{if empty($settings->hidecomment)}
 				<div id="tab3" class="tab_content">
 					<div id="comments">
-						{if $comments}
+						{if !empty($comments)}
 							<ul class="comment_list">
 								{foreach $comments as $comment}
 								<li>
@@ -301,17 +375,19 @@
 								{elseif $error=='empty_comment'}
 								Введите комментарий
 								{elseif $error=='empty_email'}
-								Введите E-Mail
+								Введите Email
 								{elseif $error == 'wrong_name'}
-								В поле 'Имя' может использоваться только кириллица	
+								В поле 'Имя' может использоваться только кириллица
+								{elseif $error == 'wrong_email'}
+								Некорректный Email
 								{/if}
 							</div>
 							{/if}
 							<textarea class="comment_textarea" id="comment_text" name="text" data-format=".+" data-notice="Введите комментарий">{if !empty($comment_text)}{$comment_text|escape}{/if}</textarea><br />
 							<div>
-								<input style="margin-top:7px;" placeholder="* ФИО" class="input_name" type="text" id="comment_name" name="name" value="{if !empty($comment_name)}{$comment_name}{/if}" data-format=".+" data-notice="Введите ФИО"/><br />
+								<input style="margin-top:7px;" placeholder="* Имя" class="input_name" type="text" id="comment_name" name="name" value="{if !empty($comment_name)}{$comment_name}{/if}" data-format=".+" data-notice="Введите имя"/><br />
 	
-								<input style="margin-top:10px;" placeholder="* E-mail" class="input_email" type="email" id="comment_email" name="email" value="{if !empty($comment_email)}{$comment_email}{/if}" data-format="email" data-notice="Введите E-Mail"/>
+								<input style="margin-top:10px;" placeholder="* Email" class="input_email" type="email" id="comment_email" name="email" value="{if !empty($comment_email)}{$comment_email}{/if}" data-format="email" data-notice="Введите Email"/>
 			
 								<div class="captcha-block">
 									{include file='antibot.tpl'}
@@ -323,6 +399,23 @@
 					</div>
 				</div>
 			{/if}
+			
+			{if !empty($settings->del_pay)}
+				<div id="tab6" class="tab_content page-pg">
+					{include file='del_pay.tpl'}
+				</div>
+			{/if}
+			
+			{if !empty($related_products)}
+				<div id="tab7" class="tab_content">
+					<ul class="tiny_products">
+						{foreach $related_products as $product}
+							{include file='products_item.tpl'}
+						{/foreach}
+					</ul>
+				</div>
+			{/if}
+			
 		</div>
 	</div>
 	{* Tabs end *}

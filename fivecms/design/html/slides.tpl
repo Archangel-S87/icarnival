@@ -2,7 +2,8 @@
 {capture name=tabs}
 	{if in_array('design', $manager->permissions)}<li><a href="index.php?module=ThemeAdmin">{$tr->theme}</a></li>{/if}
 	{if in_array('design', $manager->permissions)}<li><a href="index.php?module=TemplatesAdmin">{$tr->templates}</a></li>{/if}		
-	{if in_array('design', $manager->permissions)}<li><a href="index.php?module=StylesAdmin">{$tr->styles}</a></li>{/if}		
+	{if in_array('design', $manager->permissions)}<li><a href="index.php?module=StylesAdmin">{$tr->styles}</a></li>{/if}
+	{if in_array('design', $manager->permissions)}<li><a href="index.php?module=ScriptsAdmin">JS</a></li>{/if}		
 	{if in_array('design', $manager->permissions)}<li><a href="index.php?module=ImagesAdmin">{$tr->images}</a></li>{/if}		
 	{if in_array('design', $manager->permissions)}<li><a href="index.php?module=ColorAdmin">{$tr->gamma}</a></li>{/if}
 	<li class="active"><a href="index.php?module=SlidesAdmin">{$tr->slider}</a></li>

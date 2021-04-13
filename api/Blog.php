@@ -58,8 +58,12 @@ class Blog extends Fivecms
 		if(isset($filter['keyword']))
 		{
 			$keywords = explode(' ', $filter['keyword']);
-			foreach($keywords as $keyword)
-				$keyword_filter .= $this->db->placehold('AND (b.name LIKE "%'.$this->db->escape(trim($keyword)).'%" OR b.meta_keywords LIKE "%'.$this->db->escape(trim($keyword)).'%" OR b.text LIKE "%'.$this->db->escape(trim($keyword)).'%") ');
+			foreach($keywords as $keyword){
+				$kw = $this->db->escape(trim($keyword));
+				if($kw!==''){
+					$keyword_filter .= $this->db->placehold("AND (b.name LIKE '%$kw%' OR b.meta_keywords LIKE '%$kw%' OR b.text LIKE '%$kw%')");
+				}
+			}	
 		}
 		
 		if(!empty($filter['category_id']))
@@ -118,8 +122,12 @@ class Blog extends Fivecms
 		if(isset($filter['keyword']))
 		{
 			$keywords = explode(' ', $filter['keyword']);
-			foreach($keywords as $keyword)
-				$keyword_filter .= $this->db->placehold('AND (b.name LIKE "%'.$this->db->escape(trim($keyword)).'%" OR b.meta_keywords LIKE "%'.$this->db->escape(trim($keyword)).'%" OR b.text LIKE "%'.$this->db->escape(trim($keyword)).'%") ');
+			foreach($keywords as $keyword){
+				$kw = $this->db->escape(trim($keyword));
+				if($kw!==''){
+					$keyword_filter .= $this->db->placehold("AND (b.name LIKE '%$kw%' OR b.meta_keywords LIKE '%$kw%' OR b.text LIKE '%$kw%')");
+				}
+			}
 		}
 		
 		if(!empty($filter['category_id']))
@@ -202,8 +210,10 @@ class Blog extends Fivecms
 			if($this->db->query($query))
 			{
 				$query = $this->db->placehold("DELETE FROM __comments WHERE type='blog' AND object_id=?", intval($id));
-				if($this->db->query($query))
-					return true;
+				$this->db->query($query);
+				
+				$this->delete_tags('blog', intval($id));
+				return true;
 			}
 							
 		}

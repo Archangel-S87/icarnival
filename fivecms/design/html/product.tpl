@@ -196,9 +196,9 @@ $(function() {
 	}
 	
 	// Изменение набора свойств при изменении категории
-	$('select[name="categories[]"]:first').change(function() {
+	/*$('select[name="categories[]"]:first').change(function() {
 		show_category_features($("option:selected",this).val());
-	});
+	});*/
 
 	// Автодополнение свойств
 	$('ul.prop_ul input[name*=options]').each(function(index) {
@@ -414,12 +414,6 @@ function translit(str)
 			<input placeholder="{$tr->product_name_h1|escape}" class="name" name=name type="text" value="{if !empty($product->name)}{$product->name|escape}{/if}" required /> 
 			<input name=id type="hidden" value="{if !empty($product->id)}{$product->id|escape}{/if}"/> 
 			<div class="checkbox">
-				<input name=out_of value='1' type="checkbox" id="out_checkbox" {if $product->out_of}checked{/if}/> <label for="out_checkbox">Снято с производства</label>
-			</div>		
-			<div class="checkbox">
-				<input name="podzakaz" value="1" type="checkbox" id="podzakaz_checkbox" {if $product->podzakaz}checked{/if}/> <label for="podzakaz_checkbox">Под заказ</label>
-			</div>
-			<div class="checkbox">
 				<input name=visible value='1' type="checkbox" id="active_checkbox" {if !empty($product->visible)}checked{/if}/><label for="active_checkbox">{$tr->active|escape}</label>
 			</div>
 			<div class="checkbox">
@@ -496,7 +490,7 @@ function translit(str)
 			{foreach from=$product_variants item=variant}
 			{if !empty($variant->id)}{$variant_id = $variant->id}{else}{$variant_id = ''}{/if}
 			<ul>
-				<li class="variant_move"><div class="move_zone"></div></li>
+				<li class="variant_move"><div class="move_zone" style="cursor:help;" {if !empty($variant->id)}title="variant_ID: {$variant->id|escape}{* добавить external_id в выборку в get_variants {if !empty($variant->external_id)} | var_external_ID (1C): {$variant->external_id|escape}{/if}*}"{/if}></div></li>
 				<li class="variant_name">      <input name="variants[id][{$variant_id}]"            type="hidden" value="{$variant_id|escape}" /><input maxlength="255" name="variants[name][{$variant_id}]" type="" value="{if !empty($variant->name)}{$variant->name|escape}{/if}" /> <a class="del_variant" href=""><img src="design/images/cross-circle-frame.png" alt="" /></a></li>
 				<li class="variant_name2">       <input maxlength="25" name="variants[name1][{$variant_id}]"           type="text"   value="{if !empty($variant->name1)}{$variant->name1|escape}{/if}" /></li>
 				<li class="variant_name2">       <input maxlength="25" class="curr" name="variants[name2][{$variant_id}]"           type="text"   value="{if !empty($variant->name2)}{$variant->name2|escape}{/if}" /></li>
@@ -593,16 +587,22 @@ function translit(str)
 				</ul>
 			</div>
 			
+			<div class="block layer" style="padding:9px 0 0 0;">
+				<ul>
+					<li><label class="property" style="width: 103px;">Ref-{$tr->link|lower} <a target="_blank" href="http://5cms.ru/blog/ref-sell" title="{$tr->ref_url_help}" class="bluelink">(?)</a></label><input placeholder="{$tr->example}: http://site.ru" style="width: 479px;" name="ref_url" class="ref_url" type="text" value="{if !empty($product->ref_url)}{$product->ref_url|escape}{/if}" /></li>
+				</ul>	
+			</div>
+			
 			<div class="layer" style="padding:9px 0 13px 0;">
 				<div style="display:inline-block;">
-					<label class=property style="margin:3px 10px 0 0px;width: 100px;">{$tr->views|escape}</label><input style="width: 50px;" name="views" class="fivecms_inp" type="number" min="0" step="1" value="{if !empty($product->views)}{$product->views|escape}{/if}" />
-				</div>	
-				<div style="display:inline-block;">
-					<label class=property style="margin:3px 10px 0 10px;width:102px;">{$tr->rating|escape} (0-5)</label><input style="width: 50px;" name="rating" class="fivecms_inp" type="number" min="0" max="5" step="0.1" value="{if !empty($product->rating)}{$product->rating|escape}{/if}" />
+					<label class=property style="margin:3px 10px 0 0px;width:102px;">{$tr->rating|escape} (0-5)</label><input style="width: 50px;" name="rating" class="fivecms_inp" type="number" min="0" max="5" step="0.1" value="{if !empty($product->rating)}{$product->rating|escape}{/if}" />
 				</div>
 				<div style="display:inline-block;">	
 					<label class=property style="margin:3px 10px 0 10px;width:70px;">{$tr->votes|escape}</label><input style="width: 50px;" name="votes" class="fivecms_inp" type="number" min="0" step="1" value="{if !empty($product->votes)}{$product->votes|escape}{/if}" />
-				</div>	
+				</div>
+				
+				{if !empty($product->external_id)}<div class="external_id">Product_External_ID (1C) <span title="Внешний ID, передаваемый при обмене с 1C" style="cursor:help;border-bottom:0;" class="bluelink">(?)</span>: {$product->external_id|escape}</div>{/if}
+					
 			</div>
 	
 			<script type="text/javascript">
@@ -651,12 +651,13 @@ function translit(str)
 				<span class="add"><i class="dash_link" id="add_new_feature">{$tr->add_new_feature|escape}</i></span>
 				<input class="button_green button_save" type="submit" name="" value="{$tr->save|escape}" />			
 			</div>
-			<h2>Видео</h2>
-			<textarea maxlength="250" id="text-count3" style="width: 500px; height: 62px;" name="video" class="fivecms_inp" />{if !empty($product->video)}{$product->video}{/if}</textarea>
 			<!-- Свойства товара (The End)-->
-			
+			<h2>Видео</h2>
+			<textarea maxlength="250" id="text-count3" style="width: 100%; height: 62px;" name="video" class="fivecms_inp" />{if !empty($product->video)}{$product->video}{/if}</textarea>
 		</div>
-		<!-- Левая колонка свойств товара (The End)--> 
+		<!-- Левая колонка свойств товара (The End)-->
+
+
 		
 		<!-- Правая колонка свойств товара -->	
 		<div id="column_right" style="float:right;">
@@ -673,7 +674,7 @@ function translit(str)
 						{foreach from=$product_images item=image}
 						<li>
 							<a href='#' class="delete"><img src='design/images/cross-circle-frame.png'></a>
-							<span style="line-height: 100px; width: 100px; vertical-align: middle; display: table-cell; text-align: center;"><a href="{$image->filename|resize:800:600:w}?{$random}" class="zoom" data-rel="group"><img src="{$image->filename|resize:100:100}?{$random}" alt="" /></a></span>
+							<span style="line-height: 100px; width: 100px; vertical-align: middle; display: table-cell; text-align: center;"><a href="{$image->filename|resize:1024:768:w}?{$random}" class="zoom" data-rel="group"><img src="{$image->filename|resize:100:100}?{$random}" alt="" /></a></span>
 	
 							<input type="text" class="curr" name="imagecolors[]" value="{$image->color}" placeholder="Цвет" style="width:80px;margin-top:5px;position:absolute;bottom:5px;left:8px;">
 							<input type=hidden name='images[]' value='{$image->id}'>

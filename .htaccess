@@ -28,14 +28,11 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_URI} ^(.+)/$
 RewriteRule ^(.+)/$ %1 [R=301,L]
 
-# Запрет на открытие сайта во фрейме
-#<IfModule mod_headers.c>
-#	Header always set X-Frame-Options SAMEORIGIN
-#</IfModule>
+Redirect 302 /.well-known/change-password /user
 
 # Cache
 <Ifmodule mod_expires.c>
-    <filesmatch "\.(jpg|jpeg|png|gif|js|css|swf|ico|pdf|webp|jp2|jxr|woff|woff2)$">
+    <filesmatch "\.(jpg|jpeg|png|gif|js|css|swf|ico|pdf|webp|jp2|jxr|woff|woff2|mp3)$">
         ExpiresActive on
         ExpiresDefault "access plus 1 year"
     </filesmatch>
@@ -43,7 +40,7 @@ RewriteRule ^(.+)/$ %1 [R=301,L]
 
 # Cache-Control
 <IfModule mod_headers.c>
-	<filesMatch "\.(ico|pdf|jpg|jpeg|png|gif|swf|css|js|webp|jp2|jxr)$">
+	<filesMatch "\.(ico|pdf|jpg|jpeg|png|gif|swf|css|js|webp|jp2|jxr|woff|woff2|mp3)$">
 		Header set Cache-Control "max-age=31536000, public"
 	</filesMatch>
 </IfModule>
@@ -89,8 +86,6 @@ RewriteRule ^catalog/([^/]+)/([^/]+)/?$	index.php?module=ProductsView&category=$
 RewriteRule ^products/([^/]+)/?$	index.php?module=ProductView&product_url=$1 [L,QSA]
 RewriteRule ^products/?$	index.php?module=ProductsView [L,QSA]
 
-RewriteRule ^products_ajax/([^/]+)/?$	index.php?module=ProductAjaxView&product_url=$1 [L,QSA]
-
 RewriteRule ^pages/?$	index.php?module=SpeccatalogView [L,QSA]
 RewriteRule ^pages/([^/]+)/?$	index.php?module=SpeccatalogView&link_url=$1 [L,QSA]
 
@@ -98,7 +93,6 @@ RewriteRule ^browsed/?$	index.php?module=BrowsedView [L,QSA]
 RewriteRule ^hits/?$ index.php?module=ProductsView&mode=hits [L,QSA]
 RewriteRule ^discounted/?$ index.php?module=ProductsView&mode=discounted [L,QSA]
 RewriteRule ^new/?$ index.php?module=ProductsView&mode=is_new [L,QSA]
-RewriteRule ^popular/?$ index.php?module=ProductsView&mode=popular&sort=views [L,QSA]
 RewriteRule ^rated/?$ index.php?module=ProductsView&mode=rated&sort=rating [L,QSA]
 
 RewriteRule ^brands/([^/]+)/?$	index.php?module=ProductsView&brand=$1 [L,QSA]
@@ -193,17 +187,28 @@ RewriteRule ^files/(.+)/(.+) resize/resize.php?type=$1&file=$2 [L,QSA]
 # Скрывает подпись сервера
 ServerSignature Off
 
-# Поддержка STS для https
 <IfModule mod_headers.c>
+# Поддержка STS для https
 Header unset Strict-Transport-Security
-Header always set Strict-Transport-Security "max-age=31536000; includeSubdomains" env=HTTPS
+Header always set Strict-Transport-Security "max-age=63072000; includeSubdomains; preload" env=HTTPS
+# Запрет на открытие сайта во фрейме
+# Header always set X-Frame-Options SAMEORIGIN
+# Прочее
+# Header set X-XSS-Protection "1; mode=block;"
+# Header set X-Content-Type-Options nosniff
+# Header set Content-Security-Policy-Report-Only "default-src 'self';report-uri='site.ru';report-sample='site.ru'"
+# Header set Referrer-Policy "origin-when-cross-origin"
+# Header unset X-Powered-By
+Header unset Server
+Header unset Pragma
 </IfModule>
 
 # Закрываемся от libwww-perl user-agent (защита)
 RewriteCond %{HTTP_USER_AGENT} libwww-perl.*
 RewriteRule .* ? [F,L]
 
-# Защита от инъекций
+# Дополнительная защита
+# от инъекций
 Options +FollowSymLinks
 # XSS
 RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
@@ -225,11 +230,9 @@ RewriteCond %{QUERY_STRING} base64_(en|de)code[^(]*\([^)]*\) [NC,OR]
 RewriteCond %{QUERY_STRING} (NULL|OUTFILE|LOAD_FILE) [OR]
 RewriteCond %{QUERY_STRING} (\./|\../|\.../)+(motd|etc|bin) [NC,OR]
 RewriteCond %{QUERY_STRING} (localhost|loopback|127\.0\.0\.1) [NC,OR]
-RewriteCond %{QUERY_STRING} (<|>|'|%0A|%0D|%27|%3C|%3E|%00) [NC,OR]
 RewriteCond %{QUERY_STRING} concat[^\(]*\( [NC,OR]
 RewriteCond %{QUERY_STRING} union([^s]*s)+elect [NC,OR]
 RewriteCond %{QUERY_STRING} union([^a]*a)+ll([^s]*s)+elect [NC,OR]
-RewriteCond %{QUERY_STRING} (;|<|>|'|"|\)|%0A|%0D|%22|%27|%3C|%3E|%00).*(/\*|union|select|insert|drop|delete|update|cast|create|char|convert|alter|declare|order|script|set|md5|benchmark|encode) [NC,OR]
 RewriteCond %{QUERY_STRING} (boot\.ini|etc/passwd|self/environ) [NC,OR]
 RewriteCond %{QUERY_STRING} (thumbs?(_editor|open)?|tim(thumb)?)\.php [NC,OR]
 RewriteCond %{QUERY_STRING} (sp_executesql) [NC]
@@ -237,9 +240,9 @@ RewriteCond %{QUERY_STRING} (eval\() [NC,OR]
 RewriteCond %{QUERY_STRING} (127\.0\.0\.1) [NC,OR]
 RewriteCond %{QUERY_STRING} ([a-z0-9]{2000,}) [NC,OR]
 RewriteRule ^(.*)$ - [F,L]
-# Отклонение запросов TRACE|TRACK
+# отклонение запросов TRACE|TRACK
 RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)  
 RewriteRule .* - [F]
-# Запрет любых запросов кроме GET,PROPFIND,POST,OPTIONS,PUT,HEAD
+# запрет любых запросов кроме GET,PROPFIND,POST,OPTIONS,PUT,HEAD
 RewriteCond %{REQUEST_METHOD} !^(GET|HEAD|POST|PROPFIND|OPTIONS|PUT)$ [NC]
 RewriteRule .* - [F,NS,L]

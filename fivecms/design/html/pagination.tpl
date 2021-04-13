@@ -42,7 +42,8 @@
 		{* Ссылка на последнююю страницу отображается всегда *}
 		<a class="{if $current_page==$pages_count}selected{else}droppable{/if}"  href="{url page=$pages_count}">{$pages_count}</a>
 	
-		<a href="{url page=all}">{$tr->all_pages|escape}</a>
+		{* Если товаров менее 3000, то показываем кнопку "все сразу" *}
+		{if (isset($products_count) && $products_count < 3000) || !isset($products_count)}<a href="{url page=all}">{$tr->all_pages|escape}</a>{/if}
 		{if $current_page>1}<a id="PrevLink" href="{url page=$current_page-1}"><</a>{/if}
 		{if $current_page<$pages_count}<a id="NextLink" href="{url page=$current_page+1}">></a>{/if}	
 	

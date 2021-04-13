@@ -30,6 +30,7 @@ class ServicesView extends View
 			
 			$filter['category_id'] = $category->children;
 			// изображения 
+			$service = new \stdClass();
 			$service->images = $this->services_categories->get_images(array('post_id'=>$category->id));
 			$this->design->assign('service', $service);
 			// изображения end
@@ -58,7 +59,7 @@ class ServicesView extends View
 	
 		
 		// Устанавливаем мета-теги и заголовки в зависимости от запроса
-		if($this->page->url == 'services')
+		if(isset($this->page->url) && $this->page->url == 'services')
 		{
 			$this->design->assign('meta_title', $this->page->meta_title);
 			$this->design->assign('meta_keywords', $this->page->meta_keywords);

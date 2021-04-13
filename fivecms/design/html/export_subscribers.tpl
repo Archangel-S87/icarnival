@@ -12,9 +12,6 @@
 <script src="{$config->root_url}/fivecms/design/js/piecon/piecon.js"></script>
 <script>
 	var in_process=false;
-	var group_id='{if isset($group_id)}{$group_id|escape}{/if}';
-	var keyword='{if isset($keyword)}{$keyword|escape}{/if}';
-	var sort='{if isset($sort)}{$sort|escape}{/if}';
 
 	{literal}	
 	var in_process=false;
@@ -39,7 +36,7 @@
 
 			$.ajax({
 					url: "ajax/export_subscribers.php",
-					data: {page:page, group_id:group_id, keyword:keyword, sort:sort},
+					data: {page:page},
 					dataType: 'json',
 					success: function(data){
 				

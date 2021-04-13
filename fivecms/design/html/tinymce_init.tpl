@@ -3,8 +3,9 @@
 tinymce.init({ 
     selector: "textarea.editor_large,textarea.editor_small",
     language : "{$admin_lang}",
-	relative_urls : false,
-	remove_script_host : false, // true to cut domen name
+    document_base_url : "{$config->root_url}/",
+	relative_urls : true,
+	remove_script_host : true, // true to cut domen name
 	convert_urls : true,
 	verify_html: false,
 	remove_linebreaks : false,

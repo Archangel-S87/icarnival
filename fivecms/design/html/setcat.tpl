@@ -73,7 +73,6 @@
 								<option value="name" {if $settings->sort_by == 'name'}selected{/if}>{$tr->by_name|escape}</option>
 								<option value="date" {if $settings->sort_by == 'date'}selected{/if}>{$tr->by_date|escape}</option>
 								<option value="stock" {if $settings->sort_by == 'stock'}selected{/if}>{$tr->by_stock|escape}</option>
-								<option value="views" {if $settings->sort_by == 'views'}selected{/if}>{$tr->by_popularity|escape}</option>
 								<option value="rating" {if $settings->sort_by == 'rating'}selected{/if}>{$tr->by_rating|escape}</option>
 							</select>
 						</li>
@@ -116,14 +115,19 @@
 
 						<li><label class=property>{$tr->min_order_amount|escape}</label><input min="0" step="1" style="max-width: 85px;" name="minorder" class="fivecms_inp" type="number" value="{$settings->minorder|escape}" /> {$currency->sign}</li>
 						
-						<li><label class=property>{$tr->views_num|escape} {$tr->default|escape}</label><input min="0" step="1" style="max-width: 85px;" name="prods_views" class="fivecms_inp" type="number" value="{$settings->prods_views|escape}" /></li>
-						
 						<li><label class=property>{$tr->rating_num|escape} {$tr->default|escape}</label><input min="0" max="5" step="0.1" style="max-width: 85px;" name="prods_rating" class="fivecms_inp" type="number" value="{$settings->prods_rating|escape}" /></li>
 						
 						<li><label class=property>{$tr->votes_num|escape} {$tr->default|escape}</label><input min="0" step="1" style="max-width: 85px;" name="prods_votes" class="fivecms_inp" type="number" value="{$settings->prods_votes|escape}" /></li>
 						
 						<li><label class=property>{$tr->cut_description_height|escape}</label><input min="100" step="1" style="max-width: 55px;" name="cutouter" class="fivecms_inp" type="number" value="{$settings->cutouter|escape}" /> px</li>
 						<li><label class=property>{$tr->cut_seo_height|escape}</label><input min="0" step="1" style="max-width: 55px;" name="cutseo" class="fivecms_inp" type="number" value="{$settings->cutseo|escape}" /> px</li>
+						
+						<li><label class="property">{$tr->check_download|escape}</label>
+							<select name="check_download" class="fivecms_inp" style="width:75px;min-width:75px;">
+								<option value='0' {if $settings->check_download == '0'}selected{/if}>{$tr->no|escape}</option>
+								<option value='1' {if $settings->check_download == '1'}selected{/if}>{$tr->yes|escape}</option>
+							</select>
+						</li>
 
 					</ul>
 				</div>
@@ -132,6 +136,15 @@
 				<!-- Параметры -->
 				<div id="manageproduct" class="block layer">
 					<ul>
+						<li><label class="property">{$tr->to_cart_name}</label><input style="max-width: 185px;" name="to_cart_name" class="fivecms_inp" type="text" value="{$settings->to_cart_name|escape}" /></li>
+					
+						<li><label class="property">{$tr->show1click}</label>
+							<select name="show1click" class="fivecms_inp" style="width:100px;">
+								<option value='0' {if $settings->show1click == '0'}selected{/if}>{$tr->hide|lower|escape}</option>
+								<option value='1' {if $settings->show1click == '1'}selected{/if}>{$tr->show|lower|escape}</option>
+							</select>
+						</li>
+					
 						<li><label class=property>{$tr->sku|capitalize|escape} {$tr->in_product_card|escape}</label>
 							<select name="showsku" class="fivecms_inp" style="width: 100px;">
 								<option value='0' {if $settings->showsku == '0'}selected{/if}>{$tr->hide|lower|escape}</option>
@@ -144,7 +157,14 @@
 								<option value='0' {if $settings->showstock == '0'}selected{/if}>{$tr->hide|lower|escape}</option>
 								<option value='1' {if $settings->showstock == '1'}selected{/if}>{$tr->show|lower|escape}</option>
 							</select>
-						</li>			
+						</li>
+						
+						<li><label class=property>"{$tr->payment} & {$tr->delivery|lower}" {$tr->in_product_card|escape}</label>
+							<select name="del_pay" class="fivecms_inp" style="width: 100px;">
+								<option value='0' {if $settings->del_pay == '0'}selected{/if}>{$tr->hide|lower|escape}</option>
+								<option value='1' {if $settings->del_pay == '1'}selected{/if}>{$tr->show|lower|escape}</option>
+							</select>
+						</li>
 						
 						<div><label style="margin-bottom:10px;" class="property1"><strong>{$tr->youtube|escape}</strong></label>
 						<a class="hideBtn" href="javascript://" onclick="hideShow(this);return false;">{$tr->more|escape}</a><div id="hideCont" style="clear:both;">
@@ -194,15 +214,19 @@
 				
 				<!-- Параметры -->
 				<div id="manageyandex" class="block layer">
-					<h2>{$tr->y_market|escape}:</h2>
+					<h2>{$tr->y_market|escape} ({$tr->export} YML):</h2>
 					<p style="margin:12px 0;"><span class="helper"><a target="_blank" href="https://5cms.ru/blog/upravlenie-vygruzkoj-v-yandeksmarket" class="bluelink">{$tr->instruction|capitalize|escape}</a></span></p>
 					<ul class="stars" style="margin-bottom:10px;">
 						<li>{$tr->ym_dynamic|escape}: <strong>{$config->root_url}/yandex.xml</strong></li>
 					</ul>
+					
+					<div style="border:1px dashed #dadada;background-color:#f2f2f2;padding:10px 10px 3px 10px;border-radius:10px;">
 					<p style="margin:0px 0 10px 0;">{$tr->ym_cron}: <strong>{$config->root_url}/create_ym.php</strong></p> 
-					<ul class="stars">
+					<ul class="stars" style="margin-bottom:0;">
 						<li>{$tr->ym_static|escape}: <strong>{$config->root_url}/files/yandex.xml</strong></li>
 					</ul>
+					</div>
+					
 					<ul style="margin-top:12px;">
 						
 						<li><label class=property>{$tr->vendor_model|escape}</label>

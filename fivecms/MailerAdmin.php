@@ -19,7 +19,7 @@ class MailerAdmin extends Fivecms
                 {
                    $this->mailer->save_spam($mail, $title, $body);
                 }  
-                $error = 1;
+                $this->design->assign('message_success', 1);
 			}
             if($this->request->post('settings'))
             {
@@ -30,20 +30,22 @@ class MailerAdmin extends Fivecms
                 $this->settings->mails_pause = $this->request->post('mails_pause');
                 $this->settings->subscribe_form = $this->request->post('subscribe_form');
                 $this->settings->auto_subscribe = $this->request->post('auto_subscribe');
+                $this->design->assign('message_success', 'updated');
           	}
 			if($this->request->post('delete_mailing'))
 			{
 				if($this->mailer->clear_spam()){
 					usleep(50000);
-					$error = 2;
+					$this->design->assign('message_success', 2);
 				} else {
-					$error = 'clear_error';
+					$this->design->assign('message_error', 'clear_error');
 				}
 			}
         }
-		$this->design->assign('count_added', count($mails));
+        if(!empty($mails))
+			$this->design->assign('count_added', count($mails));
         $this->design->assign('count_total', $this->mailer->count_spam());
-		$this->design->assign('error', $error);
+
 		return $this->design->fetch('mailer.tpl');
 	}
 }

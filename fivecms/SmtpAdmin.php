@@ -5,15 +5,8 @@ class SmtpAdmin extends Fivecms
 {	
 	public function fetch()
 	{	
-		$this->passwd_file = $this->config->root_dir.'/fivecms/.passwd';
-		$this->htaccess_file = $this->config->root_dir.'/fivecms/.htaccess';
-		
-		$managers = $this->managers->get_managers();
-		$this->design->assign('managers', $managers);
-
 		if($this->request->method('POST'))
 		{
-
 			$this->settings->order_email = $this->request->post('order_email');
 			$this->settings->comment_email = $this->request->post('comment_email');
 			$this->settings->notify_from_email = $this->request->post('notify_from_email');
@@ -27,9 +20,6 @@ class SmtpAdmin extends Fivecms
 
 			$this->design->assign('message_success', 'saved');
 		}
-
-
-		//if (!empty($error)) $this->design->assign('message_success', $error);
 
  	  	return $this->design->fetch('smtp.tpl');
 	}

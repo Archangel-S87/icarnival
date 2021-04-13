@@ -200,14 +200,24 @@
 	</tr>
 	{/if}
 	
-	<tr>
+	{*<tr>
 		<td style="padding:6px; background-color:#f4f4f4; border:1px solid #e0e0e0;font-family:arial;font-weight:bold;">
 			Итого
 		</td>
 		<td style="padding:6px; background-color:#ffffff; border:1px solid #e0e0e0;font-family:arial;font-weight:bold;">
 			{$order->total_price|convert:$currency->id}&nbsp;{$currency->sign}
 		</td>
+	</tr>*}
+	
+	<tr>
+		<td style="padding:6px; background-color:#f4f4f4; border:1px solid #e0e0e0;font-family:arial;font-weight:bold;">
+			{if empty($order->paid)}Итого к оплате{else}Итого{/if}
+		</td>
+		<td style="padding:6px; background-color:#ffffff; border:1px solid #e0e0e0;font-family:arial;font-weight:bold;">
+			{$order->total_price|convert:$payment_method->currency_id}&nbsp;{if isset($all_currencies[$payment_method->currency_id]->sign)}{$all_currencies[$payment_method->currency_id]->sign}{/if}
+		</td>
 	</tr>
+	
 </table>
 
 <br>

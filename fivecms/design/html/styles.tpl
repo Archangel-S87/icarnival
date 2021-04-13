@@ -1,8 +1,9 @@
 {capture name=tabs}
-	<li><a href="index.php?module=ThemeAdmin">{$tr->theme|escape}</a></li>
-	<li><a href="index.php?module=TemplatesAdmin">{$tr->templates|escape}</a></li>		
-	<li class="active"><a href="index.php?module=StylesAdmin">{$tr->styles|escape}</a></li>		
-	<li><a href="index.php?module=ImagesAdmin">{$tr->images|escape}</a></li>
+	{if in_array('design', $manager->permissions)}<li><a href="index.php?module=ThemeAdmin">{$tr->theme|escape}</a></li>{/if}
+	{if in_array('design', $manager->permissions)}<li><a href="index.php?module=TemplatesAdmin">{$tr->templates|escape}</a></li>{/if}		
+	<li class="active"><a href="index.php?module=StylesAdmin">{$tr->styles|escape}</a></li>	
+	{if in_array('design', $manager->permissions)}<li><a href="index.php?module=ScriptsAdmin">JS</a></li>{/if}
+	{if in_array('design', $manager->permissions)}<li><a href="index.php?module=ImagesAdmin">{$tr->images|escape}</a></li>{/if}
 	{if in_array('design', $manager->permissions)}<li><a href="index.php?module=ColorAdmin">{$tr->gamma|escape}</a></li>{/if}
 	{if in_array('slides', $manager->permissions)}<li><a href="index.php?module=SlidesAdmin">{$tr->slider|escape}</a></li>{/if}		
 {/capture}

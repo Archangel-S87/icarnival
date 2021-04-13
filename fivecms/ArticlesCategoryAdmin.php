@@ -8,6 +8,7 @@ class ArticlesCategoryAdmin extends Fivecms
   
   function fetch()
   {
+  		$category = new \stdClass();
 		if($this->request->method('post'))
 		{
 			$category->id = $this->request->post('id', 'integer');

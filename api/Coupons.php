@@ -1,14 +1,5 @@
 <?php
 
-/**
- *
- *
- * @copyright	2012 5CMS
- * @link		http://5cms.ru
- *
- *
- */
-
 require_once('Fivecms.php');
 
 class Coupons extends Fivecms
@@ -28,7 +19,7 @@ class Coupons extends Fivecms
 		else
 			$where = $this->db->placehold('WHERE c.id=? ', $id);
 		
-		$query = $this->db->placehold("SELECT c.id, c.code, c.value, c.type, c.expire, min_order_price, c.single, c.usages,
+		$query = $this->db->placehold("SELECT c.id, c.code, c.value, c.type, c.expire, c.min_order_price, c.single, c.usages,
 										((DATE(NOW()) <= DATE(c.expire) OR c.expire IS NULL) AND (c.usages=0 OR NOT c.single)) AS valid
 		                               FROM __coupons c $where LIMIT 1");
 		if($this->db->query($query))
@@ -70,14 +61,14 @@ class Coupons extends Fivecms
 		if(isset($filter['keyword']))
 		{
 			$keywords = explode(' ', $filter['keyword']);
-			foreach($keywords as $keyword)
-				//$keyword_filter .= $this->db->placehold('AND (b.name LIKE "%'.mysql_real_escape_string(trim($keyword)).'%" OR b.meta_keywords LIKE "%'.mysql_real_escape_string(trim($keyword)).'%") ');
-				$keyword_filter .= $this->db->placehold('AND (b.name LIKE "%'.$this->db->escape(trim($keyword)).'%" OR b.meta_keywords LIKE "%'.$this->db->escape(trim($keyword)).'%") ');
+			foreach($keywords as $keyword){
+				$keyword_filter .= $this->db->placehold('AND (c.code LIKE "%'.$this->db->escape(trim($keyword)).'%") ');
+			}
 		}
 
 		$sql_limit = $this->db->placehold(' LIMIT ?, ? ', ($page-1)*$limit, $limit);
 
-		$query = $this->db->placehold("SELECT c.id, c.code, c.value, c.type, c.expire, min_order_price, c.single, c.usages,
+		$query = $this->db->placehold("SELECT c.id, c.code, c.value, c.type, c.expire, c.min_order_price, c.single, c.usages,
 										((DATE(NOW()) <= DATE(c.expire) OR c.expire IS NULL) AND (c.usages=0 OR NOT c.single)) AS valid
 		                                      FROM __coupons c WHERE 1 $coupon_id_filter $valid_filter $keyword_filter
 		                                      ORDER BY valid DESC, id DESC $sql_limit",
@@ -90,7 +81,7 @@ class Coupons extends Fivecms
 	
 	/*
 	*
-	* Функция вычисляет количество постов, удовлетворяющих фильтру
+	* Функция вычисляет количество записей, удовлетворяющих фильтру
 	* @param $filter
 	*
 	*/
@@ -98,6 +89,7 @@ class Coupons extends Fivecms
 	{	
 		$coupon_id_filter = '';
 		$valid_filter = '';
+		$keyword_filter = '';
 		
 		if(!empty($filter['id']))
 			$coupon_id_filter = $this->db->placehold('AND c.id in(?@)', (array)$filter['id']);
@@ -108,13 +100,12 @@ class Coupons extends Fivecms
 		if(isset($filter['keyword']))
 		{
 			$keywords = explode(' ', $filter['keyword']);
-			foreach($keywords as $keyword)
-				//$keyword_filter .= $this->db->placehold('AND (b.name LIKE "%'.mysql_real_escape_string(trim($keyword)).'%" OR b.meta_keywords LIKE "%'.mysql_real_escape_string(trim($keyword)).'%") ');
-				$keyword_filter .= $this->db->placehold('AND (b.name LIKE "%'.$this->db->escape(trim($keyword)).'%" OR b.meta_keywords LIKE "%'.$this->db->escape(trim($keyword)).'%") ');
+			foreach($keywords as $keyword){
+				$keyword_filter .= $this->db->placehold('AND (c.code LIKE "%'.$this->db->escape(trim($keyword)).'%") ');
+			}
 		}
 		
-		$query = "SELECT COUNT(distinct c.id) as count
-		          FROM __coupons c WHERE 1 $coupon_id_filter $valid_filter";
+		$query = "SELECT COUNT(distinct c.id) as count FROM __coupons c WHERE 1 $coupon_id_filter $valid_filter $keyword_filter";
 
 		if($this->db->query($query))
 			return $this->db->result('count');
@@ -132,7 +123,7 @@ class Coupons extends Fivecms
 	{	
 		if(empty($coupon->single))
 			$coupon->single = 0;
-		//$query = $this->db->placehold("INSERT INTO __coupons SET ?% $date_query", $coupon);
+
 		$query = $this->db->placehold("INSERT INTO __coupons SET ?%", $coupon);
 		
 		if(!$this->db->query($query))
@@ -140,7 +131,6 @@ class Coupons extends Fivecms
 		else
 			return $this->db->insert_id();
 	}
-	
 	
 	/*
 	*
@@ -154,7 +144,6 @@ class Coupons extends Fivecms
 		$this->db->query($query);
 		return $id;
 	}
-
 
 	/*
 	*

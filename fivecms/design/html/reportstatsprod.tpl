@@ -1,7 +1,8 @@
 {* Вкладки *}
 {capture name=tabs}
-	<li><a href="{url module=StatsAdmin}">{$tr->stats|escape}</a></li>
-    <li class="active"><a href="{url module=ReportStatsAdmin}">{$tr->sales_report|escape}</a></li>
+	<li><a href="{url module=StatsAdmin id=null return=null}">{$tr->stats|escape}</a></li>
+    <li class="active"><a href="{url module=ReportStatsAdmin id=null return=null}">{$tr->sales_report|escape}</a></li>
+    <li><a href="{url module=ReportStatsCategoriesAdmin id=null return=null}">{$tr->sales_cat_report}</a></li>
 {/capture}
 
 {* Title *}
@@ -122,7 +123,7 @@
                 {assign 'total_amount' $total_amount+$prod_report->amount}
                 <tr class="row">
                     <td class="c">{$prod_report->date|date}</td>
-                    <td><a title="{$prod_report->product_name|escape}" href="{url module=ProductAdmin id=$prod_report->product_id return=$smarty.server.REQUEST_URI}">{$prod_report->product_name}</a> {$prod_report->variant_name}</td>
+                    <td><a title="{$prod_report->product_name|escape}" href="{url module=ProductAdmin id=$prod_report->product_id return=null}">{$prod_report->product_name}</a> {$prod_report->variant_name}</td>
                     <td class="c">{$prod_report->price} {$currency->sign|escape}</td>
                     <td class="c">{$prod_report->amount} {if $prod_report->unit}{$prod_report->unit}{else}{$settings->units}{/if}</td>                                                                            
                 </tr>
@@ -131,7 +132,7 @@
             <tfoot> 
                 <td colspan="2" style="text-align: right">Итого:</td>        
                 <td class="c">{$total_summ|string_format:'%.2f'} {$currency->sign|escape}</td>        
-                <td class="c">{$total_amount} {$settings->units}</td>        
+                <td class="c">{$total_amount} {$tr->items}</td>        
             </tfoot> 
         </table>
 	</div>
@@ -203,7 +204,8 @@
 				<option value=7 {if !empty($source) && $source == 7}selected{/if}>{$tr->offline|escape}</option>
 				<option value=8 {if !empty($source) && $source == 8}selected{/if}>{$tr->another|escape}</option>
 		</select>
-			
+		
+		{if !empty($deliveries)}	
 		<h4>{$tr->delivery|escape}</h4>
 		<select name="delivery_id" style="margin:10px 0;max-width:100%;">
 			<option value="0" {if empty($delivery_id)}selected{/if}>{$tr->not_set|lower|escape}</option>
@@ -212,7 +214,18 @@
 					<option value="{$d->id}" {if !empty($delivery_id) &&  $d->id == $delivery_id}selected{/if}>{$d->name}</option>
 				{/if}
 			{/foreach}
-		</select>	
+		</select>
+		{/if}
+		
+		{if !empty($labels)}
+		<h4>{$tr->labels|escape}</h4>
+		<select name="label_id" style="margin:10px 0;max-width:100%;">
+			<option value="0" {if empty($label_id)}selected{/if}>{$tr->not_set|lower|escape}</option>
+			{foreach $labels as $l}
+				<option value="{$l->id}" {if !empty($label_id) &&  $l->id == $label_id}selected{/if}>{$l->name}</option>
+			{/foreach}
+		</select>
+		{/if}
 			
 		<h4>YCLID</h4>
 		<input placeholder="7194137021201330494" class="utm_stat" type="text" name="yclid" value="{if !empty($yclid)}{$yclid|escape}{/if}" />
@@ -222,9 +235,62 @@
 			
 		<h4>{$tr->referer|escape}</h4>
 		<input placeholder="site.com" class="utm_stat" type="text" name="referer" value="{if !empty($referer)}{$referer|escape}{/if}" />
+		
+		{* поиск по пользователю *}
+		<h4>{$tr->customer|escape} <a href="#" {if empty($user)}style="display:none;"{/if} class="delete_user"><img class="delete_user_img" src="design/images/delete.png" alt="{$tr->delete|escape}" title="{$tr->delete|escape}"></a></h4>
+		{if !empty($user)}
+			<div class="view_user"><a href="index.php?module=UserAdmin&id={$user->id}" target=_blank>{$user->name|escape}</a> ({$user->email|escape})</div>
+		{/if}
+		<div class='edit_user'>
+			<input type=hidden name='user_id' value='{if !empty($user->id)}{$user->id}{/if}'>
+			<input type=text id='user' class="input_autocomplete chooseuser" placeholder="{$tr->select_user|escape}">
+		</div>
+		<script src="design/js/autocomplete/jquery.autocomplete-min.js"></script>
+		{literal}
+		<script>
+		$('input#user').autocomplete({
+		serviceUrl:'ajax/search_users.php',
+		minChars:0,
+		noCache: false, 
+		onSelect:
+			function(suggestion){
+				$('input[name="user_id"]').val(suggestion.data.id);
+				$('.delete_user').show();
+			}
+		});
+		// Удалить пользователя
+		$("a.delete_user").click(function() {
+			deleteUser();
+		});
+		function deleteUser() {
+			$('input[name="user_id"]').val(0);
+			$('.view_user').hide();
+			$('input#user').val('');
+			$('.delete_user').hide();
+		}
+		</script>
+		<style>
+		.view_user{margin-top:8px;word-break:break-word;}
+		.chooseuser{box-sizing:border-box;margin:10px 0 20px 0;width:100% !important;max-width:100%;}
+		.delete_user_img{vertical-align:middle;margin-left:10px;}
+		</style>
+		{/literal}
+		{* поиск по пользователю @ *}
+		
 		<input style="width:100%;" class="button_green color_blue" type="submit" value="{$tr->search|escape}" />
 
-		<a style="margin-top:20px;" class="reset_filter tiny_button color_red" href="{url}">{$tr->reset|escape} {$tr->filter|lower|escape}</a>
+		<a style="margin-top:20px;" class="reset_filter tiny_button color_red" href="#">{$tr->reset|escape} {$tr->filter|lower|escape}</a>
+		{literal}
+		<script>
+		$(".reset_filter").click(function() {
+			$('form input[type=text]').val('');
+			$('form input[type=checkbox]').removeAttr('checked');
+			$('form option').removeAttr('selected');
+			deleteUser();
+			return false;
+		});
+		</script>
+		{/literal}
 	  </form>  
 </div>
 <!-- Меню  (The End) -->

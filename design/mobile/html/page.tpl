@@ -3,52 +3,48 @@
 
 {if $page->url == 'catalog' || $page->url == '404'}
 	{* categories *}
-	{if $settings->purpose == 0 || $page->url == 'catalog'}
+	{if (empty($settings->purpose) || $page->url == 'catalog') && !empty($categories)}
 		{function name=categories_treecat}
-			{if $categories}
-				<ul class="category_products separator">
-					{foreach $categories as $c}
-						{if $c->visible}
-							<li class="product" onClick="window.location='/catalog/{$c->url}'">
-								<div class="image">
-									{if $c->image}
-										<img alt="{$c->name|escape}" title="{$c->name|escape}" src="{$config->categories_images_dir}{$c->image}" />
-									{else}
-										<svg class="nophoto"><use xlink:href='#folder' /></svg>
-									{/if}
-								</div>
-								<div class="product_info">
-									<h3>{$c->name}</h3>
-								</div>
-							</li>
-						{/if}
-					{/foreach}
-				</ul>
-			{/if}
+			<ul class="category_products separator">
+				{foreach $categories as $c}
+					{if $c->visible}
+						<li class="product" onClick="window.location='/catalog/{$c->url}'">								
+							<div class="image">
+								{if $c->image}
+									<img alt="{$c->name|escape}" title="{$c->name|escape}" src="{$config->categories_images_dir}{$c->image}" />
+								{else}
+									<svg class="nophoto"><use xlink:href='#folder' /></svg>
+								{/if}
+							</div>
+							<div class="product_info">
+								<h3>{if !empty($c->menu)}{$c->menu|escape}{else}{$c->name|escape}{/if}</h3>
+							</div>
+						</li>
+					{/if}
+				{/foreach}
+			</ul>
 		{/function}
 		{categories_treecat categories=$categories}
-	{elseif $settings->purpose == 1}
+	{elseif !empty($settings->purpose) && !empty($services_categories)}
 		{function name=services_categories_tree2 level=1}
-			{if $services_categories}
-				<ul class="category_products separator">
-					{foreach $services_categories as $ac2}
-							{if $ac2->visible}
-								<li class="product" onClick="window.location='/services/{$ac2->url}'">
-									<div class="image">
-										{if $ac2->image}
-											<img alt="{$ac2->name|escape}" title="{$ac2->name|escape}" src="{$config->services_categories_images_dir}{$ac2->image}" />
-										{else}
-											<svg class="nophoto"><use xlink:href='#folder' /></svg>
-										{/if}
-									</div>
-									<div class="product_info">
-										<h3>{$ac2->menu}</h3>
-									</div>
-								</li>
-							{/if}
-					{/foreach}
-				</ul>
-			{/if}
+			<ul class="category_products separator">
+				{foreach $services_categories as $ac2}
+					{if $ac2->visible}
+						<li class="product" onClick="window.location='/services/{$ac2->url}'">
+							<div class="image">
+								{if $ac2->image}
+									<img alt="{$ac2->name|escape}" title="{$ac2->name|escape}" src="{$config->services_categories_images_dir}{$ac2->image}" />
+								{else}
+									<svg class="nophoto"><use xlink:href='#folder' /></svg>
+								{/if}
+							</div>
+							<div class="product_info">
+								<h3>{$ac2->menu|escape}</h3>
+							</div>
+						</li>
+					{/if}
+				{/foreach}
+			</ul>
 		{/function}
 		{services_categories_tree2 services_categories=$services_categories}	
 	{/if}

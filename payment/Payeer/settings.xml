@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<module>
+	<name>
+		Payeer
+	</name>
+	<settings>
+		<variable>payeer_order_status</variable>
+		<name>Статус ордера после оплаты:</name>
+		<options>
+			<name>новый</name>
+			<value>0</value>
+		</options>
+		<options>
+			<name>в обработке</name>
+			<value>4</value>
+		</options>
+		<options>
+			<name>принят</name>
+			<value>1</value>
+		</options>
+		<options>
+			<name>выполнен</name>
+			<value>2</value>
+		</options>
+		<options>
+			<name>удален</name>
+			<value>3</value>
+		</options>
+	</settings>
+	<settings>
+		<variable>payeer_merchanturl</variable>
+		<name>URL мерчанта (укажите https://payeer.com/merchant/):</name>
+	</settings>
+	<settings>
+		<variable>payeer_merchantid</variable>
+		<name>Идентификатор магазина в системе Payeer.com:</name>
+	</settings>
+	<settings>
+		<variable>payeer_secret</variable>
+		<name>Секретный ключ:</name>
+	</settings>
+	<settings>
+		<variable>payeer_ip_list</variable>
+		<name>Доверенные IP через запятую (необязат.):</name>
+	</settings>
+	<settings>
+		<variable>payeer_email</variable>
+		<name>E-mail для оповещений об ошибке платежа:</name>
+	</settings>
+	<settings>
+		<variable>payeer_log</variable>
+		<name>Путь до журнала операций (например, /payeer_orders.log)</name>
+	</settings>
+</module>

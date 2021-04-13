@@ -13,6 +13,7 @@ if(!$fivecms->request->check_session())
 $id = intval($fivecms->request->post('id'));
 $object = $fivecms->request->post('object');
 $values = $fivecms->request->post('values');
+$name = $fivecms->request->post('name');
 
 switch ($object)
 {
@@ -117,11 +118,17 @@ switch ($object)
         $result = $fivecms->links->update_link($id, $values);
         break;
     case 'discountgroup':
+    	if($fivecms->managers->access('discountgroup'))
         $result = $fivecms->discountgroup->update_discountgroup($id, $values);
         break; 
     case 'subscriber':
+    	if($fivecms->managers->access('maillist'))
         $result = $fivecms->mailer->update_mail($id, $values);
-        break; 
+        break;
+    case 'settings':
+    	if($fivecms->managers->access('settings'))
+        $result = $fivecms->settings->__set($name, $values);
+        break;     
 }
 
 header("Content-type: application/json; charset=UTF-8");

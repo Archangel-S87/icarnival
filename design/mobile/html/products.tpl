@@ -17,7 +17,7 @@
 	{$canonical="{$smarty.server.REQUEST_URI}" scope=root}
 {elseif !empty($filter_features) && $settings->filtercan == 1}
 	{$canonical="{$smarty.server.REQUEST_URI}" scope=root}
-{elseif !empty($filter_features) && $settings->filtercan == 0}
+{elseif !empty($filter_features) && $settings->filtercan == 0 && !empty($category)}
 	{$canonical="/catalog/{$category->url}" scope=root}
 {elseif !empty($category) && !empty($brand)}
 	{$canonical="/catalog/{$category->url}/{$brand->url}" scope=root}
@@ -32,7 +32,11 @@
 {/if}
 
 {if $settings->filtercan == 1 && (!empty($filter_features) || !empty($smarty.get.b))}
-	{if !empty($meta_title)}{$mt = $meta_title|escape}{/if}
+	{if !empty($meta_title)}
+		{$mt = $meta_title|escape}
+	{else}
+    	{$mt = ""}	
+	{/if}
 	
 	{if !empty($category->name) && !empty($brand->name)}
     	{$ht = $category->name|escape|cat:' | '|cat:$brand->name|escape}
@@ -40,6 +44,8 @@
 		{$ht = $brand->name|escape}
 	{elseif !empty($category->name)}
 		{$ht = $category->name|escape}
+	{else}
+		{$ht = ""}	
 	{/if}
 	
 	{$seo_description = $meta_title|cat:$settings->seo_description|cat:" ★ "|cat:$settings->site_name}
@@ -202,138 +208,10 @@
 		{/if}
 
 		<ul id="start" class="tiny_products infinite_load">
-
 			{$numdashed=0}
 			{foreach $products as $product}
-
-			<li class="product {if !empty($settings->show_cart_wishcomp)}visible_button{/if}">
-				<div class="labelsblock">
-					{if !empty($product->featured)}
-						<svg class="hit"><use xlink:href='#hit' /></svg>
-					{/if}
-					{if !empty($product->is_new)}
-						<svg class="new"><use xlink:href='#new' /></svg>
-					{/if}
-					{if !empty($product->variant->compare_price)}
-						<svg class="lowprice"><use xlink:href='#lowprice' /></svg>
-					{/if}
-				</div>
-				<div class="image qwbox" onclick="window.location='products/{$product->url}'">
-					{if !empty($product->image)}
-						<img loading="lazy" alt="{$product->name|escape}" title="{$product->name|escape}" class="lazy" src="{$product->image->filename|resize:300:300}" />
-					{else}
-						<svg class="nophoto"><use xlink:href='#no_photo' /></svg>
-					{/if}
-				</div>
-
-				<div class="product_info separator">
-					<h3><a href="products/{$product->url}">{$product->name|escape}</a></h3>
-
-					{* rating *}
-						{if isset($product->rating) && $product->rating > 0}
-							{$prod_rating = $product->rating}
-						{else}
-							{$prod_rating = $settings->prods_rating|floatval}
-						{/if}
-						<div class="ratecomp" id="product_{$product->id}">
-							<div class="statVal catrater">
-								<span class="rater_sm">
-									<span class="rater-starsOff_sm" style="width:60px;">
-										<span class="rater-starsOn_sm" style="width:{$prod_rating*60/5|string_format:"%.0f"}px"></span>
-									</span>
-								</span>
-							</div>
-						</div>
-					{* rating (The End) *}
-			
-					{if $product->variants|count > 0}
-					  <form class="variants" action="/cart">
-						{if $product->vproperties}
-							{$cntname1 = 0}	
-							<span class="pricelist" style="display:none;">
-								{foreach $product->variants as $v}
-									<span class="c{$v->id}" v_unit="{if $v->unit}{$v->unit}{else}{$settings->units}{/if}">{$v->price|convert}</span>
-									{if $v->name1}{$cntname1 = 1}{/if}
-								{/foreach}
-							</span>
-			
-							{$cntname2 = 0}
-							<span class="pricelist2" style="display:none;">
-								{foreach $product->variants as $v}
-									{if $v->compare_price > 0}<span class="c{$v->id}">{$v->compare_price|convert}</span>{/if}
-									{if $v->name2}{$cntname2 = 1}{/if}
-								{/foreach}
-							</span>
-					
-							<input id="vhidden" name="variant" value="" type="hidden"  />
-					
-							<div style="display: table; margin-bottom: 5px; height: 20px;">
-					
-								<select class="p0"{if $cntname1 == 0} style="display:none;"{/if}>
-									{foreach $product->vproperties[0] as $pname => $pclass}
-										<option value="{$pclass}" class="{$pclass}">{$pname}</option>
-									{/foreach}
-								</select>
-			
-								<select class="p1"{if $cntname2 == 0} style="display:none;"{/if}>
-											{foreach $product->vproperties[1] as $pname => $pclass}
-									<span><option value="{$pclass}" class="{$pclass}">{$pname}</option></span>
-											{/foreach}
-								</select>
-					
-							</div>
-							<div class="pricecolor">
-							{if !empty($settings->show_cart_wishcomp)}
-								<span class="amount_wrap"><input type="number" min="1" size="2" name="amount" value="1">&nbsp;x&nbsp;</span>
-							{/if}
-							<span ID="priceold" class="compare_price"></span> <span ID="price" class="price"></span> <span class="currency">{$currency->sign|escape}{if $settings->b9manage}/<span class="unit">{if $product->variant->unit}{$product->variant->unit}{else}{$settings->units}{/if}</span>{/if}</span>
-							</div>
-			
-						{else}
-							{if $product->variants|count==1  && !$product->variant->name}
-								<span style="display: block; height: 20px;"></span>
-							{/if}
-
-							<select class="b1c_option" name="variant" {if $product->variants|count==1  && !$product->variant->name}style='display:none;'{/if}>
-								{foreach $product->variants as $v}
-									<option value="{$v->id}" v_unit="{if $v->unit}{$v->unit}{else}{$settings->units}{/if}" {if $v->compare_price > 0}compare_price="{$v->compare_price|convert}"{/if} price="{$v->price|convert}" click="{$v->name}">
-										{$v->name}
-									</option>
-								{/foreach}
-							</select>
-										
-							<div class="price">
-								{if !empty($settings->show_cart_wishcomp)}
-								<span class="amount_wrap">
-									<input size="2" name="amount" min="1" type="number" value="1">&nbsp;x&nbsp;
-								</span>
-								{/if}
-								{if $product->variant->compare_price > 0}
-									<span class="compare_price">{$product->variant->compare_price|convert}</span>
-								{/if}
-								<span class="price">{$product->variant->price|convert}</span>
-								<span class="currency">{$currency->sign|escape}{if $settings->b9manage}/<span class="unit">{if $product->variant->unit}{$product->variant->unit}{else}{$settings->units}{/if}</span>{/if}</span>
-							</div>
-						{/if}
-							{if !empty($settings->show_cart_wishcomp)}
-								<div class="sub_wishcomp_wrap">
-									<input type="submit" class="buttonred" value="в корзину" data-result-text="добавлено"/>
-									{include file='wishcomp.tpl'}
-								</div>
-							{/if}
-					  </form>
-					{else}
-							<div style="display: table; margin-top: 15px; margin-bottom: 15px;">Нет в наличии</div>
-							{if !empty($settings->show_cart_wishcomp)}{include file='wishcomp.tpl'}{/if}
-					  </form>
-					{/if}
-
-				</div>
-		
-			</li>
-
+				{include file='products_item.tpl'}
 			{/foreach}
-			
 		</ul>
 
 		{if $total_pages_num >1}

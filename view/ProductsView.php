@@ -27,8 +27,6 @@ class ProductsView extends View
 			$filter['in_stock'] = 1;
 		if($mode == 'rated')
 			$filter['in_stock'] = 1;
-		if($mode == 'popular')
-			$filter['in_stock'] = 1;
 
 		// Если задан бренд, выберем его из базы
 		if ($val = $this->request->get('b')) {
@@ -45,7 +43,14 @@ class ProductsView extends View
 			$this->design->assign('brand_cat', $brand_cat);
         }
 		
+		$variants = $this->request->get('v'); 
+        if(!empty($variants)) $filter['variants'] = $variants; 
+        
+        $variants1 = $this->request->get('v1'); 
+        if(!empty($variants1)) $filter['variants1'] = $variants1; 
 
+		$variants2 = $this->request->get('v2'); 
+        if(!empty($variants2)) $filter['variants2'] = $variants2; 
 
 		// Выберем текущую категорию
 		if (!empty($category_url))
@@ -91,28 +96,10 @@ class ProductsView extends View
 		$this->design->assign('on_page', $filter['on_page']);
 		$this->design->assign('on_pages', $this->settings->products_num);
 		
-	
-		$pmm = $this->products->count_products($filter, 'all');
-		$pmm->minCost=floor($pmm->minCost);
-		$pmm->maxCost=ceil($pmm->maxCost);
-
-		$pmm->minCost = floor($this->money->noFormat($pmm->minCost,'convert'));
-		$pmm->maxCost = ceil($this->money->noFormat($pmm->maxCost,'convert'));
-
-		$this->design->assign('minCost', (int)$pmm->minCost);
-		$this->design->assign('maxCost', (int)$pmm->maxCost);
-		
-		$variants = $this->request->get('v'); 
-        if(!empty($variants)) $filter['variants'] = $variants; 
-        
-        $variants1 = $this->request->get('v1'); 
-        if(!empty($variants1)) $filter['variants1'] = $variants1; 
-
-		$variants2 = $this->request->get('v2'); 
-        if(!empty($variants2)) $filter['variants2'] = $variants2; 				
-		
 		// Свойства товаров
-		if(!empty($category))
+		// Выводим свойства если не страница поиска, хитов, новинок и т.п.
+		// Будет работать и на странице products
+		if(empty($keyword) && empty($mode))
 		{
 			$features = array();
 			$filter['features'] = array();
@@ -120,28 +107,40 @@ class ProductsView extends View
 			$min=$this->request->get('min');
 		    $max=$this->request->get('max');
 
-			foreach($this->features->get_features(array('category_id'=>$category->id, 'in_filter'=>1)) as $feature)
+			if(!empty($category))
+				$get_features_array = array('category_id'=> $category->id, 'in_filter'=>1);
+			else
+				$get_features_array = array('in_filter'=>1);
+
+			foreach($this->features->get_features($get_features_array) as $feature)
 			{ 
 				$features[$feature->id] = $feature;
 				if(($val = $this->request->get($feature->id))!='')
 					$filter['features'][$feature->id] = $val;
-				if($min[$feature->id] !='')
+				if(isset($min[$feature->id]) && $min[$feature->id] !='')
 					$filter['min'][$feature->id] = $min[$feature->id];
-        			if($max[$feature->id] !='')
-					$filter['max'][$feature->id] = $max[$feature->id];	
-        			if($min[$feature->id] !='' && $max[$feature->id] !='' && $min[$feature->id] > $max[$feature->id]){
-					$temp = $filter['max'][$feature->id];	
-					$filter['max'][$feature->id] = $filter['min'][$feature->id];
-					$filter['min'][$feature->id] = $temp;
+					if(isset($max[$feature->id])){
+						if($max[$feature->id] !='')
+							$filter['max'][$feature->id] = $max[$feature->id];	
+						if($min[$feature->id] !='' && $max[$feature->id] !='' && $min[$feature->id] > $max[$feature->id]){
+							$temp = $filter['max'][$feature->id];	
+			
+						$filter['max'][$feature->id] = $filter['min'][$feature->id];
+						$filter['min'][$feature->id] = $temp;
+					}
 				}
 			}
 
 			$options_filter['visible'] = 1;
 			
 			$features_ids = array_keys($features);
+			
 			if(!empty($features_ids))
 				$options_filter['feature_id'] = $features_ids;
-			$options_filter['category_id'] = $category->children;
+			
+			if(!empty($category))
+				$options_filter['category_id'] = $category->children;
+				
 			if(isset($filter['features']))
 				$options_filter['features'] = $filter['features'];
 
@@ -168,18 +167,23 @@ class ProductsView extends View
 			}
 
 			$this->design->assign('features', $features);
+			
+			if(isset($filter['features']))
+				$this->design->assign('filter_features', $filter['features']);
  		}
-		//if(isset($filter['features']))
-		//	$this->design->assign('ff', $filter['features']);
-		if(isset($filter['features']))
-			$this->design->assign('filter_features', $filter['features']);
 		
+		$pmm = $this->products->count_products($filter, 'all');
 
+		$pmm->minCost = floor($this->money->noFormat($pmm->minCost,'no_precision'));
+		$pmm->maxCost = ceil($this->money->noFormat($pmm->maxCost,'no_precision'));
+
+		$this->design->assign('minCost', (int)$pmm->minCost);
+		$this->design->assign('maxCost', (int)$pmm->maxCost);
 
 		$minCurr = (int)$this->request->get('minCurr');
 		if(empty($minCurr)) 
 			$minCurr=(int)$pmm->minCost;
-		if(!empty($minCurr))
+		if(isset($minCurr))
 		{
 			$this->design->assign('minCurr', $minCurr);
 			$filter['minCurr'] = $minCurr;
@@ -190,14 +194,16 @@ class ProductsView extends View
 			$maxCurr=(int)$pmm->maxCost;
 		if($maxCurr < $pmm->minCost) 
 			$maxCurr=ceil($pmm->minCost);
-		if(!empty($maxCurr))
+		if(isset($maxCurr))
 		{
 			$this->design->assign('maxCurr', $maxCurr);
 			$filter['maxCurr'] = $maxCurr;
 		}
 
-		$filter['minCurr'] = $this->money->noFormat($filter['minCurr'],'deconvert');
-		$filter['maxCurr'] = $this->money->noFormat($filter['maxCurr'],'deconvert');
+		if(isset($filter['minCurr']))
+			$filter['minCurr'] = $this->money->noFormat($filter['minCurr'],'deconvert');
+		if(isset($filter['maxCurr']))
+			$filter['maxCurr'] = $this->money->noFormat($filter['maxCurr'],'deconvert');
 
 		// Постраничная навигация
 		
@@ -236,9 +242,9 @@ class ProductsView extends View
 		{
 			$products_ids = array_keys($products);
 
-			$categories = $this->categories->get_product_categories($products_ids);
+			/*$categories = $this->categories->get_product_categories($products_ids);
 			foreach($categories as $cat)
-				$products[$cat->product_id]->category = $this->categories->get_category((int)$cat->category_id);
+				$products[$cat->product_id]->category = $this->categories->get_category((int)$cat->category_id);*/
 
 			/*foreach($products as &$product)
 			{
@@ -258,29 +264,35 @@ class ProductsView extends View
 				$products[$image->product_id]->images[] = $image;
 				
 			// Проверка загрузки всех изображений из интернета
-			/*foreach($images as $url){
-				if(!empty($url->filename) && (substr($url->filename,0,7) == 'http://' || substr($url->filename,0,8) == 'https://')){
-					$new_name=$this->image->download_image($url->filename);
+			if(!empty($this->settings->check_download)){
+				foreach($images as $url){
+					if(!empty($url->filename) && (substr($url->filename,0,7) == 'http://' || substr($url->filename,0,8) == 'https://')){
+						$new_name=$this->image->download_image($url->filename);
+					}
 				}
-			}
-			$images = $this->products->get_images(array('product_id'=>$products_ids));
-			foreach($images as $image)
-				$products[$image->product_id]->images[] = $image;*/
+				$images = $this->products->get_images(array('product_id'=>$products_ids));
+				foreach($images as $image)
+					$products[$image->product_id]->images[] = $image;
+			}		
 			//	Проверка загрузки всех изображений из интернета @	
 
 			foreach($products as &$product)
 			{
-				$product->category = reset($this->categories->get_categories(array('product_id'=>$product->id)));
+				/* Категория данного товара */
+				/*$get_categories = $this->categories->get_categories(array('product_id'=>$product->id));
+				$product->category = reset($get_categories);*/
 				if(isset($product->variants[0]))
 					$product->variant = $product->variants[0];
 				if(isset($product->images[0]))
 					$product->image = $product->images[0];
 
 				$ids=array();	
-				if(is_array($product->variants))foreach ($product->variants as $k => $v) {
-					if(!empty($v->name1) or !empty($v->name2)){
-						$ids[0][$v->name1][] = $v->id;
-						$ids[1][$v->name2][] = $v->id;
+				if(isset($product->variants) && is_array($product->variants)){
+					foreach ($product->variants as $k => $v) {
+						if(!empty($v->name1) or !empty($v->name2)){
+							$ids[0][$v->name1][] = $v->id;
+							$ids[1][$v->name2][] = $v->id;
+						}
 					}
 				}
 				$classes=array();
@@ -294,7 +306,13 @@ class ProductsView extends View
 			// Фильтр по вариантам (должен быть ниже всех $filter)
 			if($this->settings->b10manage==1 || $this->settings->sizemanage==1 || $this->settings->colormanage==1){
 				$filter['page'] = '';
-				// Выбираем id товаров без привязки к странице пагинации
+				$filter['variants'] = ''; 
+        		$filter['variants1'] = ''; 
+				$filter['variants2'] = ''; 
+				
+				$products_count_var = $this->products->count_products($filter);
+				$filter['limit'] = $products_count_var;
+				// Выбираем id всех товаров, соответствующих фильтру без привязки к странице пагинации
 				$products_all = array();
 				foreach($this->products->get_products($filter) as $p)
 					$products_all[$p->id] = $p;
@@ -395,6 +413,10 @@ class ProductsView extends View
 		{
 			$this->design->assign('meta_title', $keyword);
 		}
+		else
+		{
+			$this->design->assign('meta_title', 'Товары');
+		}
 		
 		// Метаданные страниц
 		$currentURL=$_SERVER['REQUEST_URI'];
@@ -414,6 +436,7 @@ class ProductsView extends View
 		// ajax filter
         if ($this->request->get('aj_c') == 'true') {
             $content = '';
+            unset($product);
             foreach ($products as $product) {
                 $this->design->assign('product', $product);
                 $content .= '<div class="product_wrap">';

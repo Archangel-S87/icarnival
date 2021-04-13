@@ -45,10 +45,6 @@ class ExportAjax extends Fivecms
 		$filter = array();
 		$filter['page'] = $page;
 		$filter['limit'] = $this->users_count;
-		/*if($this->request->get('group_id'))
-			$filter['group_id'] = intval($this->request->get('group_id'));
-		$filter['sort'] = $this->request->get('sort');
-		$filter['keyword'] = $this->request->get('keyword');*/
 		
 		// Выбираем пользователей
 		$users = array();

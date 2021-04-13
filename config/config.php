@@ -1,6 +1,6 @@
 ;<? exit(); ?>
 
-license = oJapX5uUk6OgmqiSnl-kplVb;
+license = m5STo6CaqJKeXqCWqV-eoJVUY2djZmtlZ2hjYw;
 active_license = true
 
 [database]
@@ -15,7 +15,7 @@ db_user = "root";
 db_password = "root";
 
 ;Имя базы
-db_name = "icarnival";
+db_name = "icarnival_new";
 
 ;Префикс для таблиц
 db_prefix = f_;
@@ -36,7 +36,7 @@ locale = 'en_US.utf8';
 
 [smarty]
 smarty_compile_check = true;
-smarty_caching = 0;
+smarty_caching = false;
 smarty_cache_lifetime = 0;
 smarty_debugging = true;
 smarty_html_minify = true;
@@ -121,4 +121,4 @@ debug = true;
 is_localhost = true;
 
 ;Переключиться в мобильную версию
-is_mobile = false;
+;is_mobile = true;

@@ -7,12 +7,13 @@
 	{if isset($error)}
 	<div class="message_error">
 		{if $error == 'empty_name'}Введите имя
-		{elseif $error == 'empty_email'}Введите email
+		{elseif $error == 'empty_email'}Введите Email
 		{elseif $error == 'empty_password'}Введите пароль
-		{elseif $error == 'user_exists'}Пользователь с таким email уже зарегистрирован
+		{elseif $error == 'user_exists'}Пользователь с таким Email уже зарегистрирован
 		{elseif $error == 'captcha'}Не пройдена проверка на бота
 		{elseif $error == 'ip'}Вы уже регистрировались. Если забыли пароль - воспользуйтесь его востановлением.
-		{elseif $error == 'wrong_name'}В поле 'ФИО' может использоваться только кириллица		
+		{elseif $error == 'wrong_name'}В поле 'ФИО' может использоваться только кириллица
+		{elseif $error == 'wrong_email'}Некорректный Email	
 		{else}{$error}{/if}
 	</div>
 	{/if}

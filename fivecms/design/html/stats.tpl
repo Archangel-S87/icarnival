@@ -1,6 +1,7 @@
 {capture name=tabs}
     <li class="active"><a href="{url module=StatsAdmin}">{$tr->stats}</a></li>
     <li><a href="{url module=ReportStatsAdmin}">{$tr->sales_report}</a></li>
+    <li><a href="{url module=ReportStatsCategoriesAdmin}">{$tr->sales_cat_report}</a></li>
 {/capture}
 {$meta_title=$tr->stats scope=root}
 
@@ -58,7 +59,7 @@
 			{$newtwo_orders = $newtwo_orders + $s.newtwo}
 			{$confirm_orders = $confirm_orders + $s.confirm}
 			{$complite_orders = $complite_orders + $s.complite}
-			{$delete_orders_orders = $delete_orders_orders + $s.delete_orders}
+			{$delete_orders = $delete_orders + $s.delete}
 			{/foreach}],
 			datasets: [{
 				label: '{$tr->new_pl}',
@@ -107,7 +108,7 @@
 			{$count_newtwo_orders = $count_newtwo_orders + $s.newtwo}
 			{$count_confirm_orders = $count_confirm_orders + $s.confirm}
 			{$count_complite_orders = $count_complite_orders + $s.complite}
-			{$count_delete_orders_orders = $count_delete_orders_orders + $s.delete_orders}
+			{$count_delete_orders = $count_delete_orders + $s.delete}
 			{/foreach}],
 			datasets: [{
 				label: '{$tr->new_pl}',
@@ -248,18 +249,18 @@
 	    
 	    <h4>{$tr->period|escape}</h4>
 	    <select class="date_filter" name="date_filter" style="margin:10px 0;">
-	    	<option value="all" {if $date_filter == all}selected{/if}>{$tr->all_time|escape}</option> 
-	        <option value="today" {if $date_filter == today}selected{/if}>{$tr->today|escape}</option>
-	        <option value="this_week" {if $date_filter == this_week}selected{/if}>{$tr->current_sh} {$tr->week}</option>
-	        <option value="this_month" {if $date_filter == this_month}selected{/if}>{$tr->current_sh} {$tr->month}</option>
-	        <option value="this_year" {if $date_filter == this_year}selected{/if}>{$tr->current_sh} {$tr->year}</option>
-	        <option value="yesterday" {if $date_filter == yesterday}selected{/if}>{$tr->yesterday|escape}</option>
-	        <option value="last_week" {if $date_filter == last_week}selected{/if}>{$tr->prev} {$tr->week}</option>
-	        <option value="last_month" {if $date_filter == last_month}selected{/if}>{$tr->prev} {$tr->month}</option>   
-	        <option value="last_year" {if $date_filter == last_year}selected{/if}>{$tr->prev} {$tr->year}</option>
-	        <option value="last_24hour" {if $date_filter == last_24hour}selected{/if}>{$tr->last_pl} 24 {$tr->hours}</option>
-	        <option value="last_7day" {if $date_filter == last_7day}selected{/if}>{$tr->last_pl} 7 {$tr->days}</option>
-	        <option value="last_30day" {if $date_filter == last_30day}selected{/if}>{$tr->last_pl} 30 {$tr->days}</option>  
+	    	<option value="all" {if empty($date_filter) || (!empty($date_filter) && $date_filter == all)}selected{/if}>{$tr->all_time|escape}</option> 
+	        <option value="today" {if !empty($date_filter) && $date_filter == today}selected{/if}>{$tr->today|escape}</option>
+	        <option value="this_week" {if !empty($date_filter) && $date_filter == this_week}selected{/if}>{$tr->current_sh} {$tr->week}</option>
+	        <option value="this_month" {if !empty($date_filter) && $date_filter == this_month}selected{/if}>{$tr->current_sh} {$tr->month}</option>
+	        <option value="this_year" {if !empty($date_filter) && $date_filter == this_year}selected{/if}>{$tr->current_sh} {$tr->year}</option>
+	        <option value="yesterday" {if !empty($date_filter) && $date_filter == yesterday}selected{/if}>{$tr->yesterday|escape}</option>
+	        <option value="last_week" {if !empty($date_filter) && $date_filter == last_week}selected{/if}>{$tr->prev} {$tr->week}</option>
+	        <option value="last_month" {if !empty($date_filter) && $date_filter == last_month}selected{/if}>{$tr->prev} {$tr->month}</option>   
+	        <option value="last_year" {if !empty($date_filter) && $date_filter == last_year}selected{/if}>{$tr->prev} {$tr->year}</option>
+	        <option value="last_24hour" {if !empty($date_filter) && $date_filter == last_24hour}selected{/if}>{$tr->last_pl} 24 {$tr->hours}</option>
+	        <option value="last_7day" {if !empty($date_filter) && $date_filter == last_7day}selected{/if}>{$tr->last_pl} 7 {$tr->days}</option>
+	        <option value="last_30day" {if !empty($date_filter) && $date_filter == last_30day}selected{/if}>{$tr->last_pl} 30 {$tr->days}</option>  
 	    </select>
 	    
 	     <div class="periodchooser">
@@ -301,6 +302,24 @@
 		</select>
 		{/if}
 		
+		{* Метки чекбоксами *}
+		{*{if !empty($labels)}
+		<h4>{$tr->labels|escape}</h4>
+		<ul id="labels">
+			{foreach $labels as $l}
+			<li>
+				<label>
+					<span class="chbox">
+						<input type="checkbox" name="label_id[]" value="{$l->id}" {if !empty($label_id) && in_array($l->id, $label_id)}checked{/if} />
+					</span>
+					<span style="background-color:#{$l->color};" class="order_label"></span>
+					<span>{$l->name|escape}</span>
+				</label>
+			</li>
+			{/foreach}
+		</ul>
+		{/if}*}
+		
 		{if !empty($labels)}
 		<h4>{$tr->labels|escape}</h4>
 		<select name="label_id" style="margin:10px 0;max-width:100%;">
@@ -311,16 +330,6 @@
 		</select>
 		{/if}
 		
-		{*<h4>Метки заказов</h4>
-		<ul id="labels">
-			<li {if !$label}class="selected"{/if}><span class="label"></span> <a href="{url label=null}">Все заказы</a></li>
-			{foreach $labels as $l}
-			<li data-label-id="{$l->id}" {if $label->id==$l->id}class="selected"{/if}>
-			<span style="background-color:#{$l->color};" class="order_label"></span>
-			<a href="{url label=$l->id}">{$l->name}</a></li>
-			{/foreach}
-		</ul>*}
-		
 		<h4>YCLID</h4>
 		<input placeholder="7194137021201330494" class="utm_stat" type="text" name="yclid" value="{if !empty($yclid)}{$yclid|escape}{/if}" />
 			
@@ -329,9 +338,62 @@
 			
 		<h4>{$tr->referer|escape}</h4>
 		<input placeholder="site.com" class="utm_stat" type="text" name="referer" value="{if !empty($referer)}{$referer|escape}{/if}" />
+		
+		{* поиск по пользователю *}
+		<h4>{$tr->customer|escape} <a href="#" {if empty($user)}style="display:none;"{/if} class="delete_user"><img class="delete_user_img" src="design/images/delete.png" alt="{$tr->delete|escape}" title="{$tr->delete|escape}"></a></h4>
+		{if !empty($user)}
+			<div class="view_user"><a href="index.php?module=UserAdmin&id={$user->id}" target=_blank>{$user->name|escape}</a> ({$user->email|escape})</div>
+		{/if}
+		<div class='edit_user'>
+			<input type=hidden name='user_id' value='{if !empty($user->id)}{$user->id}{/if}'>
+			<input type=text id='user' class="input_autocomplete chooseuser" placeholder="{$tr->select_user|escape}">
+		</div>
+		<script src="design/js/autocomplete/jquery.autocomplete-min.js"></script>
+		{literal}
+		<script>
+		$('input#user').autocomplete({
+		serviceUrl:'ajax/search_users.php',
+		minChars:0,
+		noCache: false, 
+		onSelect:
+			function(suggestion){
+				$('input[name="user_id"]').val(suggestion.data.id);
+				$('.delete_user').show();
+			}
+		});
+		// Удалить пользователя
+		$("a.delete_user").click(function() {
+			deleteUser();
+		});
+		function deleteUser() {
+			$('input[name="user_id"]').val(0);
+			$('.view_user').hide();
+			$('input#user').val('');
+			$('.delete_user').hide();
+		}
+		</script>
+		<style>
+		.view_user{margin-top:8px;word-break:break-word;}
+		.chooseuser{box-sizing:border-box;margin:10px 0 20px 0;width:100% !important;max-width:100%;}
+		.delete_user_img{vertical-align:middle;margin-left:10px;}
+		</style>
+		{/literal}
+		{* поиск по пользователю @ *}
+		
 		<input style="width:100%;" class="button_green color_blue" type="submit" value="{$tr->search|escape}" />
 
-		<a style="margin-top:20px;" class="reset_filter tiny_button color_red" href="index.php?module=StatsAdmin">{$tr->reset|escape} {$tr->filter|lower|escape}</a>
+		<a style="margin-top:20px;" class="reset_filter tiny_button color_red" href="#">{$tr->reset|escape} {$tr->filter|lower|escape}</a>
+		{literal}
+		<script>
+		$(".reset_filter").click(function() {
+			$('form input[type=text]').val('');
+			$('form input[type=checkbox]').removeAttr('checked');
+			$('form option').removeAttr('selected');
+			deleteUser();
+			return false;
+		});
+		</script>
+		{/literal}
 	  </form>  
 	</div>
 	<!-- Меню  (The End) -->

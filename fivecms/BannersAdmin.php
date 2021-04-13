@@ -2,13 +2,10 @@
 
 require_once('api/Fivecms.php');
 
-//error_reporting(7);
-
 class BannersAdmin extends Fivecms
 {	
 	private $BannerOfPage = 10; //Количество выводимых по умолчанию баннеров
-	private $allowed_image_extentions = array('png', 'gif', 'jpg', 'jpeg', 'ico');//Разрешенные расширения файлов для загрузки
-	
+	private $allowed_image_extentions = array('png', 'gif', 'jpg', 'jpeg', 'ico', 'webp', 'jp2', 'jxr');//Разрешенные расширения файлов для загрузки
 	
 	function fetch()
 	{
@@ -48,10 +45,8 @@ class BannersAdmin extends Fivecms
 				
 				$this->design->assign('group', $group);
 				$this->design->assign('action', $this->request->get('action'));
-				return $this->body = $this->design->fetch('banners.groups.add.edit.tpl');
+				return $this->design->fetch('banners.groups.add.edit.tpl');
 			}
-			
-			
 			
 			if($this->request->post('session_id')) $this->post_update(); //Если отправили данные с действием "удалить"
 			
@@ -60,12 +55,13 @@ class BannersAdmin extends Fivecms
 				foreach($groups as $key=>$value)
 				{
 					list($banner,$banner_count) = $this->banners->get_banners(ARRAY("BannerOfPage"=>10000,"group"=>$groups[$key]->id));
-					$groups[$key]->banner = $banner[0];
+					if(!empty($banner[0]))
+						$groups[$key]->banner = $banner[0];
 					$groups[$key]->banner_count = $banner_count;
 				}
 			}
 			$this->design->assign('groups',$groups);
-			return $this->body = $this->design->fetch('banners.groups.tpl');
+			return $this->design->fetch('banners.groups.tpl');
 		}
 		
 		/*******
@@ -107,7 +103,7 @@ class BannersAdmin extends Fivecms
 					{
 						//Если данные успешно добавлены и успешно загружено изображение баннера, выводим сообщение
 						$this->design->assign('message_success', 'added');
-						return $this->body = $this->design->fetch('banners.add.edit.tpl');
+						return $this->design->fetch('banners.add.edit.tpl');
 						
 					}elseif(!$error  //Если реактирование баннера
 							AND $this->request->get('action') == "edit"
@@ -127,7 +123,7 @@ class BannersAdmin extends Fivecms
 						//Если данные успешно обновлены, и успешно загружено изображение баннера, выводим сообщение
 						$this->design->assign('banners_group', $this->banners->get_group($this->request->get('group')));
 						$this->design->assign('message_success', 'updated');
-						return $this->body = $this->design->fetch('banners.add.edit.tpl');
+						return $this->design->fetch('banners.add.edit.tpl');
 					}
 					
 					$banner->category_selected = $this->request->post('categories');
@@ -149,7 +145,7 @@ class BannersAdmin extends Fivecms
 				$this->design->assign('brands',     $brands);
 				$this->design->assign('pages',      $pages);
 				
-				return $this->body = $this->design->fetch('banners.add.edit.tpl');
+				return $this->design->fetch('banners.add.edit.tpl');
 			}
 		
 			/*******
@@ -175,7 +171,7 @@ class BannersAdmin extends Fivecms
 			$this->design->assign('current_page', $current_page);		
 			$this->design->assign('banners', $banners);
 			
-			return $this->body = $this->design->fetch('banners.show.list.tpl');
+			return $this->design->fetch('banners.show.list.tpl');
 		}
 	}
 	
@@ -194,7 +190,7 @@ class BannersAdmin extends Fivecms
 		$this->db->query($query);
 		
 		if($this->request->files('image'))
-			return $this->upload_image($this->db->insert_id())?true:false;
+			return $this->upload_image($id)?true:false;
 		else
 			return true;
 	}

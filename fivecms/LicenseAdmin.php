@@ -28,15 +28,17 @@ class LicenseAdmin extends Fivecms
 				$res .= $char;
 		}
 		$r = $res;
-
+		
 		@list($l->domain, $l->expiration) = explode('#', $r, 2);
 		
-		$h = getenv("HTTP_HOST");
+		$h = mb_strtolower(getenv("HTTP_HOST"));
+		$h = strtok($h, ':');
+		$d = mb_strtolower($l->domain);
 		if(substr($h, 0, 4) == 'www.') 
 			$h = substr($h, 4);
 			
 		$l->valid = true;
-		if(empty($r) || $h != $l->domain)
+		if(empty($r) || $h != $d)
 			$l->valid = false;
 		if($l->expiration<time() && $l->expiration!='*')
 			$l->valid = false;

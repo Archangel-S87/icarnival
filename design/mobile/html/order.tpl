@@ -1,11 +1,4 @@
-{if $order->status == 0}{$order_status = "ждет обработки"}
-{elseif $order->status == 4}{$order_status = "в обработке"}
-{elseif $order->status == 1}{$order_status = "выполняется"}
-{elseif $order->status == 2}{$order_status = "выполнен"}
-{elseif $order->status == 3}{$order_status = "отменен"}
-{elseif $order->status == 5}{$order_status = "в пути"}
-{/if}
-{if $order->paid == 1}{$order_paid = ", оплачен"}{else}{$order_paid = ""}{/if}
+{if $order->status == 0}{$order_status = "ждет обработки"}{elseif $order->status == 4}{$order_status = "в обработке"}{elseif $order->status == 1}{$order_status = "выполняется"}{elseif $order->status == 2}{$order_status = "выполнен"}{elseif $order->status == 3}{$order_status = "отменен"}{/if}{if $order->paid == 1}{$order_paid = ", оплачен"}{else}{$order_paid = ""}{/if}
 {$meta_title = "Ваш заказ №`$order->id` `$order_status``$order_paid`" scope=root}
 {$page_name = "Заказ №`$order->id` `$order_status``$order_paid`" scope=root}
 
@@ -98,6 +91,9 @@
 				<div class="product_info separator">
 					<h3 class="purchasestitle"><a href="products/{$purchase->product->url}">{$purchase->product->name|escape}</a>
 					{$purchase->variant->name|escape}</h3>
+					{if $order->paid && $purchase->variant->attachment}
+					<a class="download_attachment" href="order/{$order->url}/{$purchase->variant->attachment}">скачать файл</a>
+					{/if}
 					<div class="price">
 						<span class="purprice">{($purchase->price)|convert}</span> <span class="purcurr">{$currency->sign}</span> <span class="purx">&nbsp;x&nbsp;</span>
 					</div>
@@ -208,3 +204,4 @@
 	</div>
 
 
+ 

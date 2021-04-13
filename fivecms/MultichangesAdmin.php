@@ -67,7 +67,7 @@ class MultichangesAdmin extends Fivecms
 			// Формируем набор параметров для выборки из БД @
 			
 			// Изменение цены и старой цены
-			if($percent){
+			if(!empty($percent)){
 				$q="UPDATE __variants SET price=price*(1+$percent/100) ".$w;
 				$o="UPDATE __variants SET compare_price=compare_price*(1+$percent/100) ".$w;
 			
@@ -87,20 +87,20 @@ class MultichangesAdmin extends Fivecms
 					$q="UPDATE __variants SET price=price*(1+$percent/100) ".$w;
 					$o="UPDATE __variants SET compare_price=compare_price*(1+$percent/100) ".$w;
 				}
-			}
+				
+				if($old_price_mode != 1){
+					if($old_price_mode == 2)
+						$o="UPDATE __variants SET compare_price=price ".$w;
+					elseif($old_price_mode == 3)
+						$o="UPDATE __variants SET compare_price=0 ".$w;
+				}
 			
-			if($old_price_mode != 1){
-				if($old_price_mode == 2)
-					$o="UPDATE __variants SET compare_price=price ".$w;
-				elseif($old_price_mode == 3)
-					$o="UPDATE __variants SET compare_price=0 ".$w;
-					
 				$o = $this->db->placehold($o, $brand_id);
 				$this->db->query($o);
-			}
 			
-			$q = $this->db->placehold($q, $brand_id);
-			$this->db->query($q);
+				$q = $this->db->placehold($q, $brand_id);
+				$this->db->query($q);
+			}
 			// Изменение цены и старой цены @	
 			
 			// Изменение скидкм в варианте товара
@@ -147,17 +147,28 @@ class MultichangesAdmin extends Fivecms
 			$this->design->assign('message_success',  'Выполнено');
 		}
 
-		$this->design->assign('brand_id', $brand_id);
-		$this->design->assign('category_id', $category_id);
-		$this->design->assign('percent', $percent);
-		$this->design->assign('round', $round);
-		$this->design->assign('old_price_mode', $old_price_mode);
-		$this->design->assign('allow_children', $allow_children);
-		$this->design->assign('discount', $discount);
-		$this->design->assign('discount_date', $discount_date);
-		$this->design->assign('stock_case', $stock_case);
-		$this->design->assign('change_stock', $change_stock);
-		$this->design->assign('stock', $stock);
+		if(isset($brand_id))
+			$this->design->assign('brand_id', $brand_id);
+		if(isset($category_id))	
+			$this->design->assign('category_id', $category_id);
+		if(isset($percent))		
+			$this->design->assign('percent', $percent);
+		if(isset($round))			
+			$this->design->assign('round', $round);
+		if(isset($old_price_mode))			
+			$this->design->assign('old_price_mode', $old_price_mode);
+		if(isset($allow_children))		
+			$this->design->assign('allow_children', $allow_children);
+		if(isset($discount))		
+			$this->design->assign('discount', $discount);
+		if(isset($discount_date))		
+			$this->design->assign('discount_date', $discount_date);
+		if(isset($stock_case))		
+			$this->design->assign('stock_case', $stock_case);
+		if(isset($change_stock))			
+			$this->design->assign('change_stock', $change_stock);
+		if(isset($stock))		
+			$this->design->assign('stock', $stock);
 
 		$categories = $this->categories->get_categories_tree();
 		$this->design->assign('categories', $categories);

@@ -20,10 +20,8 @@ class Request extends Fivecms
 	public function __construct()
 	{		
 		parent::__construct();
-		/*
-		$_POST = $this->stripslashes_recursive($_POST);
-		$_GET = $this->stripslashes_recursive($_GET);*/
-		if (get_magic_quotes_gpc()) {
+		//if(function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
+		if(phpversion() < '7.4' && function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
             $_POST = $this->stripslashes_recursive($_POST);
             $_GET = $this->stripslashes_recursive($_GET);
             $_COOKIE = $this->stripslashes_recursive($_COOKIE);
@@ -65,13 +63,13 @@ class Request extends Fivecms
     	if($type == 'string')
     		return strval(preg_replace('/[^\p{L}\p{Nd}\d\s_\-\.\%\s]/ui', '', $val));
     		
-    	if ($type == 'integer' || $type == 'int')
+    	if($type == 'integer' || $type == 'int')
     		return intval($val);
 
-		if ($type == 'float' || $type == 'floatval')
+		if($type == 'float' || $type == 'floatval')
 			return floatval($val);	
 
-    	if ($type == 'boolean' || $type == 'bool')
+    	if($type == 'boolean' || $type == 'bool')
     		return !empty($val);
     		
     	return $val;
@@ -122,15 +120,19 @@ class Request extends Fivecms
 	 */
 	private function stripslashes_recursive($var)
 	{
-        if (is_array($var)) {
-            $res = array();
-            foreach ($var as $k => $v) {
-                $res[$this->stripslashes_recursive($k)] = $this->stripslashes_recursive($v);
+        if(get_magic_quotes_gpc()) {
+            $res = null;
+            if(is_array($var)) {
+                foreach($var as $k=>$v) {
+                    $res[stripcslashes($k)] = $this->stripslashes_recursive($v);
+                }
+            } else {
+                $res = stripcslashes($var);
             }
-            return $res;
         } else {
-            return stripslashes($var);
+            $res = $var;
         }
+        return $res;
     }
     
     	
@@ -161,7 +163,7 @@ class Request extends Fivecms
         if (isset($url['query'])) {
             parse_str($url['query'], $query);
         }
-        if (get_magic_quotes_gpc()) {
+        if(phpversion() < '7.4' && function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
             foreach ($query as &$v) {
                 if (!is_array($v)) {
                     $v = stripslashes(urldecode($v));
@@ -310,5 +312,4 @@ if (!function_exists('http_build_query')) {
         return    implode($sep, $ret);
     };
 };
-
 

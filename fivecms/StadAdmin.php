@@ -5,12 +5,6 @@ class StadAdmin extends Fivecms
 {	
 	public function fetch()
 	{	
-		$this->passwd_file = $this->config->root_dir.'/fivecms/.passwd';
-		$this->htaccess_file = $this->config->root_dir.'/fivecms/.htaccess';
-		
-		$managers = $this->managers->get_managers();
-		$this->design->assign('managers', $managers);
-
 		if($this->request->method('POST'))
 		{
 			$this->settings->stad = $this->request->post('stad');

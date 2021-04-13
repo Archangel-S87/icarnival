@@ -9,9 +9,9 @@ class StylesAdmin extends Fivecms
 		$styles = array();
 		
 		// Порядок файлов в меню
-		$sort = array('style.css', 'reset.css');
+		$sort = array('style.css', 'main.css', 'survey.css');
 		
-		// Чтаем все css-файлы
+		// Читаем все css-файлы
 		if($handle = opendir($styles_dir)) {
 			$i = count($sort);
 			while(false !== ($file = readdir($handle)))
@@ -28,7 +28,7 @@ class StylesAdmin extends Fivecms
 		}
 		ksort($styles);
 		
-		// Текущий шаблон
+		// Текущий файл
 		$style_file = $this->request->get('file');
 		
 		if(!empty($style_file) && pathinfo($style_file, PATHINFO_EXTENSION) != 'css')
@@ -36,13 +36,13 @@ class StylesAdmin extends Fivecms
 		
 
 		// Если не указан - вспоминаем его из сессии
-		if(empty($style_file) && isset($_SESSION['last_edited_style']))
+		if(empty($style_file) && !empty($_SESSION['last_edited_style']))
 			$style_file = $_SESSION['last_edited_style'];
 		// Иначе берем первый файл из списка
 		elseif(empty($style_file))
 			$style_file = reset($styles);
 		
-		// Передаем имя шаблона в дизайн
+		// Передаем имя файла в дизайн
 		$this->design->assign('style_file', $style_file);		
 		
 		// Если можем прочитать файл - передаем содержимое в дизайн
@@ -63,7 +63,7 @@ class StylesAdmin extends Fivecms
 		}
 		else
 		{
-			// Запоминаем в сессии имя редактируемого шаблона
+			// Запоминаем в сессии имя редактируемого файла
 			$_SESSION['last_edited_style'] = $style_file;		
 		}
 		

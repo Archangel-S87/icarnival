@@ -14,6 +14,7 @@ class CategoryAdmin extends Fivecms
 			$category->id = $this->request->post('id', 'integer');
 			$category->parent_id = $this->request->post('parent_id', 'integer');
 			$category->name = $this->request->post('name');
+			$category->menu = $this->request->post('menu');
 			$category->visible = $this->request->post('visible', 'boolean');
 
 			$category->url = $this->request->post('url', 'string');
@@ -38,7 +39,6 @@ class CategoryAdmin extends Fivecms
 			{
 				if(empty($category->id))
 				{
-	  				//$category->id = $this->categories->add_category($category);
 					$category->id = $this->categories->add_category($category, $copy_features);
 					$this->design->assign('message_success', 'added');
 	  			}

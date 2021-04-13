@@ -150,7 +150,8 @@ class SurveysView extends View
         }
 
 		//is actual sort
-		$filter['sort_is_actual_for'] = $this->user->id;
+		if(isset($this->user->id))
+			$filter['sort_is_actual_for'] = $this->user->id;
 		//is actual end
 
         // Сортировка товаров, сохраняем в сесси, чтобы текущая сортировка оставалась для всего сайта
@@ -201,9 +202,11 @@ class SurveysView extends View
         $posts = $this->surveys->get_surveys($filter);
 		
 		//is actual 
-		foreach ($posts as $post) {
-        	$this->db->query("SELECT count(*)=0 as is_actual FROM __surveys_results WHERE user_id=? AND survey_id=? LIMIT 1", $this->user->id, $post->id);
-        	$post->is_actual = $this->db->result('is_actual');
+		if(isset($this->user->id)){
+			foreach ($posts as $post) {
+				$this->db->query("SELECT count(*)=0 as is_actual FROM __surveys_results WHERE user_id=? AND survey_id=? LIMIT 1", $this->user->id, $post->id);
+				$post->is_actual = $this->db->result('is_actual');
+			}
 		}
 		//is actual end
 
@@ -211,7 +214,7 @@ class SurveysView extends View
         $this->design->assign('posts', $posts);
 
         // Устанавливаем мета-теги в зависимости от запроса
-        if ($this->page->url == 'surveys') 
+        if (isset($this->page->url) && $this->page->url == 'surveys') 
         {
             $this->design->assign('meta_title', $this->page->meta_title);
             $this->design->assign('meta_keywords', $this->page->meta_keywords);

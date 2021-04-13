@@ -80,7 +80,7 @@
 			<div class="image cell">
 				{$image = $product->images|@first}
 				{if $image}
-				<a href="{$image->filename|escape|resize:800:600:w}?{$random}" class="zoom"><img class="expando" onmouseover="style.zIndex='100';" onmouseout="style.zIndex='1';" style="position: relative; z-index: 1;" src="{$image->filename|escape|resize:100:100}?{$random}" /></a>
+				<a href="{$image->filename|escape|resize:1024:768:w}?{$random}" class="zoom"><img class="expando" onmouseover="style.zIndex='100';" onmouseout="style.zIndex='1';" style="position: relative; z-index: 1;" src="{$image->filename|escape|resize:100:100}?{$random}" /></a>
 				{/if}
 			</div>
 			<div class="name product_name cell">
@@ -98,7 +98,8 @@
 								{/if}
 							</i>
 							<span class="price-stock">
-								<input class="price {if $variant->compare_oprice>0}compare_price{/if}" type="text" name="price[{$variant->id}]" value="{$variant->oprice}" {if $variant->compare_oprice>0}title="{$tr->old_price|escape} - {$variant->compare_oprice} {if $variant->currency_id > 0}{$currencies[$variant->currency_id]->sign}{else}{$currency->sign}{/if}"{/if} />{if $variant->currency_id > 0}{$currencies[$variant->currency_id]->sign}{else}{$currency->sign}{/if}  
+								{if !empty($variant->currency_id) && !empty($currencies[$variant->currency_id])}{$sign = $currencies[$variant->currency_id]->sign}{else}{$sign = $currency->sign}{/if}
+								<input class="price {if $variant->compare_oprice>0}compare_price{/if}" type="text" name="price[{$variant->id}]" value="{$variant->oprice}" {if $variant->compare_oprice>0}title="{$tr->old_price|escape} - {$variant->compare_oprice} {$sign}"{/if} />{$sign} 
 								<input class="stock" type="text" name="stock[{$variant->id}]" value="{if $variant->infinity}∞{else}{$variant->stock}{/if}" />
 								{if $variant->unit}{$variant->unit}{else}{$settings->units}{/if}
 							</span>
@@ -153,14 +154,6 @@
 				<option value="set_yandex">{$tr->export_to_yandex|escape}</option>
 				<option value="unset_yandex">{$tr->dont_export_to_yandex|escape}</option>
 				<option value="duplicate">{$tr->copy|escape}</option>
-				<option value="set_relateds">Связать товары между собой</option>
-				<option value="set_podzakaz">Отметить как "Под заказ"</option>
-				<option value="unset_podzakaz">Снять отметку "Под заказ"</option>
-				<option value="set_out_of">Отметить как "Снято с производства"</option>
-				<option value="unset_out_of">Снять отметку "Снято с производства"</option>
-				<option value="up_price">$ Увеличить цену на ...</option>
-				<option value="down_price">$ Уменьшить цену на ...</option>	
-				<option value="retrieve_price">$ Вернуть прежнюю цену</option>
 				{if $pages_count>1}
 				<option value="move_to_page">{$tr->move_to_page|escape}</option>
 				{/if}
@@ -238,14 +231,13 @@
 	<div class="product_sort">
 		<p>{$tr->sort_by|escape}:</p>
 		<select onchange="location.href = this.value;">
-			<option value="{url sort=position}" {if $sort=='position'}selected{/if}>{$tr->by_position|escape}</option>
-			<option value="{url sort=priceup}" {if $sort=='priceup'}selected{/if}>{$tr->by_price|escape} &#8593;</option>
-			<option value="{url sort=pricedown}" {if $sort=='pricedown'}selected{/if}>{$tr->by_price|escape} &#8595;</option>
-			<option value="{url sort=name}" {if $sort=='name'}selected{/if}>{$tr->by_name|escape}</option>
-			<option value="{url sort=date}" {if $sort=='date'}selected{/if}>{$tr->by_date|escape}</option>
-			<option value="{url sort=stock}" {if $sort=='stock'}selected{/if}>{$tr->by_stock|escape}</option>
-			<option value="{url sort=views}" {if $sort=='views'}selected{/if}>{$tr->by_popularity|escape}</option>
-			<option value="{url sort=rating}" {if $sort=='rating'}selected{/if}>{$tr->by_rating|escape}</option>
+			<option value="{url sort=position}" {if !empty($sort) && $sort=='position'}selected{/if}>{$tr->by_position|escape}</option>
+			<option value="{url sort=priceup}" {if !empty($sort) && $sort=='priceup'}selected{/if}>{$tr->by_price|escape} &#8593;</option>
+			<option value="{url sort=pricedown}" {if !empty($sort) && $sort=='pricedown'}selected{/if}>{$tr->by_price|escape} &#8595;</option>
+			<option value="{url sort=name}" {if !empty($sort) && $sort=='name'}selected{/if}>{$tr->by_name|escape}</option>
+			<option value="{url sort=date}" {if !empty($sort) && $sort=='date'}selected{/if}>{$tr->by_date|escape}</option>
+			<option value="{url sort=stock}" {if !empty($sort) && $sort=='stock'}selected{/if}>{$tr->by_stock|escape}</option>
+			<option value="{url sort=rating}" {if !empty($sort) && $sort=='rating'}selected{/if}>{$tr->by_rating|escape}</option>
 		</select>	
 	</div>
 	

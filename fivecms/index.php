@@ -1,5 +1,6 @@
 <?PHP
-
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
 chdir('..');
 
 // Засекаем время
@@ -17,6 +18,8 @@ Header("Cache-Control: no-cache, must-revalidate");
 header("Expires: -1");
 Header("Pragma: no-cache");
 
+header("Content-type: text/html; charset=UTF-8");
+
 // Установим переменную сессии, чтоб фронтенд нас узнал как админа
 $_SESSION['admin'] = 'admin';
 
@@ -31,7 +34,6 @@ if(!$backend->request->check_session())
 	exit;
 }
 
-header("Content-type: text/html; charset=UTF-8");
 print $backend->fetch();
 
 print "<!--\r\n";

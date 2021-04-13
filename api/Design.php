@@ -34,7 +34,7 @@ class Design extends Fivecms
 		} else {
 			$theme = $this->settings->theme;
 		}
-
+		
 		$this->smarty->compile_dir = $this->config->root_dir.'/compiled/'.$theme;
 		$this->smarty->template_dir = $this->config->root_dir.'/design/'.$theme.'/html';		
 
@@ -64,15 +64,19 @@ class Design extends Fivecms
 
 	public function is_android_browser()
 	{
-		$user_agent = $_SERVER['HTTP_USER_AGENT']; 
-		if(preg_match('#5cms#', $user_agent)) {
-			if(preg_match('/iphone|ipad|ipod/i', $user_agent)) {
-				$this->smarty->assign('uagent', 'ios');
-			} elseif(preg_match('/android/i', $user_agent)) {
-				$this->smarty->assign('uagent', 'android');
+		if(!empty($_SERVER['HTTP_USER_AGENT'])){
+			$user_agent = $_SERVER['HTTP_USER_AGENT']; 
+			if(preg_match('#5cms#', $user_agent)) {
+				if(preg_match('/iphone|ipad|ipod/i', $user_agent)) {
+					$this->smarty->assign('uagent', 'ios');
+				} elseif(preg_match('/android/i', $user_agent)) {
+					$this->smarty->assign('uagent', 'android');
+				}
+				return true;
 			}
-			return true;
 		}
+		
+		return false;
 	}	
 	
 	public function assign($var, $value)
@@ -110,123 +114,129 @@ class Design extends Fivecms
 
 	public function is_mobile_browser()
 	{
-        if ($this->config->is_mobile) return true;
+        if ($this->config->is_mobile) {
+            $this->smarty->assign('uagent', 'local');
+            return true;
+        }
 
-		$user_agent = $_SERVER['HTTP_USER_AGENT']; 
-		$http_accept = isset($_SERVER['HTTP_ACCEPT'])?$_SERVER['HTTP_ACCEPT']:'';
+		if(!empty($_SERVER['HTTP_USER_AGENT'])){
+			$user_agent = $_SERVER['HTTP_USER_AGENT']; 
 		
-		if(preg_match('#5cms#', $user_agent))
-			$this->smarty->assign('mobile_app', '5cms');
+			if(preg_match('#5cms#', $user_agent))
+				$this->smarty->assign('mobile_app', '5cms');
 
-		if(stristr($user_agent, 'windows') && !stristr($user_agent, 'windows ce'))
-			return false;
+			if(stristr($user_agent, 'windows') && !stristr($user_agent, 'windows ce'))
+				return false;
 			
-		if(preg_match('/ipod|iphone|ipad/i', $user_agent)) {
-			$this->smarty->assign('uagent', 'ios');
-			return true;
-		}
+			if(preg_match('/ipod|iphone|ipad/i', $user_agent)) {
+				$this->smarty->assign('uagent', 'ios');
+				return true;
+			}
 		
-		if(preg_match('/android/i', $user_agent)) {
-			$this->smarty->assign('uagent', 'android');
-			return true;
-		}
+			if(preg_match('/android/i', $user_agent)) {
+				$this->smarty->assign('uagent', 'android');
+				return true;
+			}
 		
-		if(preg_match('/windows ce|iemobile|mobile|symbian|mini|wap|pda|psp|up.browser|up.link|mmp|midp|phone|pocket/i', $user_agent)) {
-			return true;
-		}
+			if(preg_match('/windows ce|iemobile|mobile|symbian|mini|wap|pda|psp|up.browser|up.link|mmp|midp|phone|pocket/i', $user_agent)) {
+				return true;
+			}
 		
-		if(!empty($_SERVER['X-OperaMini-Features']) || !empty($_SERVER['UA-pixels']))
-			return true;
+			if(!empty($_SERVER['X-OperaMini-Features']) || !empty($_SERVER['UA-pixels']))
+				return true;
 	
-		$agents = array(
-		'acs-'=>'acs-',
-		'alav'=>'alav',
-		'alca'=>'alca',
-		'amoi'=>'amoi',
-		'audi'=>'audi',
-		'aste'=>'aste',
-		'avan'=>'avan',
-		'benq'=>'benq',
-		'bird'=>'bird',
-		'blac'=>'blac',
-		'blaz'=>'blaz',
-		'brew'=>'brew',
-		'cell'=>'cell',
-		'cldc'=>'cldc',
-		'cmd-'=>'cmd-',
-		'dang'=>'dang',
-		'doco'=>'doco',
-		'eric'=>'eric',
-		'hipt'=>'hipt',
-		'inno'=>'inno',
-		'ipaq'=>'ipaq',
-		'java'=>'java',
-		'jigs'=>'jigs',
-		'kddi'=>'kddi',
-		'keji'=>'keji',
-		'leno'=>'leno',
-		'lg-c'=>'lg-c',
-		'lg-d'=>'lg-d',
-		'lg-g'=>'lg-g',
-		'lge-'=>'lge-',
-		'maui'=>'maui',
-		'maxo'=>'maxo',
-		'midp'=>'midp',
-		'mits'=>'mits',
-		'mmef'=>'mmef',
-		'mobi'=>'mobi',
-		'mot-'=>'mot-',
-		'moto'=>'moto',
-		'mwbp'=>'mwbp',
-		'nec-'=>'nec-',
-		'newt'=>'newt',
-		'noki'=>'noki',
-		'opwv'=>'opwv',
-		'palm'=>'palm',
-		'pana'=>'pana',
-		'pant'=>'pant',
-		'pdxg'=>'pdxg',
-		'phil'=>'phil',
-		'play'=>'play',
-		'pluc'=>'pluc',
-		'port'=>'port',
-		'prox'=>'prox',
-		'qtek'=>'qtek',
-		'qwap'=>'qwap',
-		'sage'=>'sage',
-		'sams'=>'sams',
-		'sany'=>'sany',
-		'sch-'=>'sch-',
-		'sec-'=>'sec-',
-		'send'=>'send',
-		'seri'=>'seri',
-		'sgh-'=>'sgh-',
-		'shar'=>'shar',
-		'sie-'=>'sie-',
-		'siem'=>'siem',
-		'smal'=>'smal',
-		'smar'=>'smar',
-		'sony'=>'sony',
-		'sph-'=>'sph-',
-		'symb'=>'symb',
-		't-mo'=>'t-mo',
-		'teli'=>'teli',
-		'tim-'=>'tim-',
-		'tosh'=>'tosh',
-		'treo'=>'treo',
-		'tsm-'=>'tsm-',
-		'upg1'=>'upg1',
-		'upsi'=>'upsi',
-		'vk-v'=>'vk-v',
-		'voda'=>'voda',
-		'webc'=>'webc',
-		'winw'=>'winw',
-		'winw'=>'winw',
-		'xda-'=>'xda-'
-		);
+			$agents = array(
+			'acs-'=>'acs-',
+			'alav'=>'alav',
+			'alca'=>'alca',
+			'amoi'=>'amoi',
+			'audi'=>'audi',
+			'aste'=>'aste',
+			'avan'=>'avan',
+			'benq'=>'benq',
+			'bird'=>'bird',
+			'blac'=>'blac',
+			'blaz'=>'blaz',
+			'brew'=>'brew',
+			'cell'=>'cell',
+			'cldc'=>'cldc',
+			'cmd-'=>'cmd-',
+			'dang'=>'dang',
+			'doco'=>'doco',
+			'eric'=>'eric',
+			'hipt'=>'hipt',
+			'inno'=>'inno',
+			'ipaq'=>'ipaq',
+			'java'=>'java',
+			'jigs'=>'jigs',
+			'kddi'=>'kddi',
+			'keji'=>'keji',
+			'leno'=>'leno',
+			'lg-c'=>'lg-c',
+			'lg-d'=>'lg-d',
+			'lg-g'=>'lg-g',
+			'lge-'=>'lge-',
+			'maui'=>'maui',
+			'maxo'=>'maxo',
+			'midp'=>'midp',
+			'mits'=>'mits',
+			'mmef'=>'mmef',
+			'mobi'=>'mobi',
+			'mot-'=>'mot-',
+			'moto'=>'moto',
+			'mwbp'=>'mwbp',
+			'nec-'=>'nec-',
+			'newt'=>'newt',
+			'noki'=>'noki',
+			'opwv'=>'opwv',
+			'palm'=>'palm',
+			'pana'=>'pana',
+			'pant'=>'pant',
+			'pdxg'=>'pdxg',
+			'phil'=>'phil',
+			'play'=>'play',
+			'pluc'=>'pluc',
+			'port'=>'port',
+			'prox'=>'prox',
+			'qtek'=>'qtek',
+			'qwap'=>'qwap',
+			'sage'=>'sage',
+			'sams'=>'sams',
+			'sany'=>'sany',
+			'sch-'=>'sch-',
+			'sec-'=>'sec-',
+			'send'=>'send',
+			'seri'=>'seri',
+			'sgh-'=>'sgh-',
+			'shar'=>'shar',
+			'sie-'=>'sie-',
+			'siem'=>'siem',
+			'smal'=>'smal',
+			'smar'=>'smar',
+			'sony'=>'sony',
+			'sph-'=>'sph-',
+			'symb'=>'symb',
+			't-mo'=>'t-mo',
+			'teli'=>'teli',
+			'tim-'=>'tim-',
+			'tosh'=>'tosh',
+			'treo'=>'treo',
+			'tsm-'=>'tsm-',
+			'upg1'=>'upg1',
+			'upsi'=>'upsi',
+			'vk-v'=>'vk-v',
+			'voda'=>'voda',
+			'webc'=>'webc',
+			'winw'=>'winw',
+			'winw'=>'winw',
+			'xda-'=>'xda-'
+			);
 		
-		if(!empty($agents[substr($_SERVER['HTTP_USER_AGENT'], 0, 4)]))
-	    	return true;
+			if(!empty($agents[substr($_SERVER['HTTP_USER_AGENT'], 0, 4)]))
+				return true;
+	    } 
+	    	
+	    return false;
 	}	
 
 	public function resize_modifier($filename, $width=0, $height=0, $set_watermark=false, $resized_dir = null)
@@ -418,9 +428,9 @@ class Design extends Fivecms
 			$ip = $real_ip;
 		elseif(filter_var($client_ip, FILTER_VALIDATE_IP))
 			$ip = $client_ip;
-		elseif(!empty($forwarded_ip) && array_key_exists($forwarded_ip, '$_SERVER')) 
+		elseif(!empty($forwarded_ip)) 
 		{
-			if(strpos($forwarded_ip, ',')>0){
+			if(is_array($forwarded_ip) && array_key_exists($forwarded_ip, '$_SERVER') && strpos($forwarded_ip, ',')>0){
 				$ip = explode(',',$forwarded_ip);
 				$ip = trim($ip[0]);
 			} elseif(filter_var($forwarded_ip, FILTER_VALIDATE_IP)) {

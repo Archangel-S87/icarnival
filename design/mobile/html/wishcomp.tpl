@@ -13,7 +13,7 @@
 	</div>
 	<div class="wishprod">
 		<div class="wishlist towish">
-			{if $product->id|in_array:$wished_products}
+			{if !empty($wished_products) && $product->id|in_array:$wished_products}
 				<span onclick="window.location='/wishlist'" class="inwish activewc">
 					<svg><use xlink:href='#activew' /></svg>
 				</span>

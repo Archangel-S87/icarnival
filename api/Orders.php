@@ -83,9 +83,9 @@ class Orders extends Fivecms
 		
 		if(isset($filter['modified_since']))
 			$modified_since_filter = $this->db->placehold('AND o.modified > ?', $filter['modified_since']);
-		
+
 		if(!empty($filter['label']))
-			$label_filter = $this->db->placehold('AND ol.label_id = ?', $filter['label']);
+			$label_filter = $this->db->placehold('AND ol.label_id in(?@)', (array)$filter['label']); 	
 		
 		if(!empty($filter['keyword']))
 		{
@@ -126,7 +126,7 @@ class Orders extends Fivecms
 			$user_filter = $this->db->placehold('AND o.user_id = ?', intval($filter['user_id']));
 
 		if(!empty($filter['label']))
-			$label_filter = $this->db->placehold('AND ol.label_id = ?', $filter['label']);
+			$label_filter = $this->db->placehold('AND ol.label_id in(?@)', (array)$filter['label']); 	
 			
 		/* Фильтр по дате */
 		// Заказа
@@ -440,8 +440,12 @@ class Orders extends Fivecms
 		if(!isset($purchase->sku) && !empty($variant))
 			$purchase->sku = $variant->sku;
 			
-		if(!isset($purchase->unit) && !empty($variant))
-			$purchase->unit = $variant->unit;
+		if(!isset($purchase->unit)){
+			if(!empty($variant->unit))
+				$purchase->unit = $variant->unit;
+			else
+				$purchase->unit = $this->settings->units;
+		}	
 			
 		if(!isset($purchase->variant_name) && !empty($variant))
 			$purchase->variant_name = $variant->name;
@@ -558,7 +562,37 @@ class Orders extends Fivecms
 		return $order->id;
 	}
 	
-	/* не используется */
+	/* Закрытие заказа для 1С(без списания со склада) */
+	public function close_for_1c($order_id)
+	{
+		$order = $this->get_order(intval($order_id));
+		if(empty($order))
+			return false;
+		
+		if(!$order->closed)
+		{
+			$query = $this->db->placehold("UPDATE __orders SET closed=1, modified=NOW() WHERE id=? LIMIT 1", $order->id);
+			$this->db->query($query);
+		}
+		return $order->id;
+	}
+	
+	/* Открытие заказа для 1С(без возвращения на склад) */
+	public function open_for_1c($order_id)
+	{
+		$order = $this->get_order(intval($order_id));
+		if(empty($order))
+			return false;
+		
+		if($order->closed)
+		{	
+			$query = $this->db->placehold("UPDATE __orders SET closed=0, modified=NOW() WHERE id=? LIMIT 1", $order->id);
+			$this->db->query($query);
+		}
+		return $order->id;
+	}
+	
+	/* может использоваться в старых платежных модулях*/
 	public function pay($order_id)
 	{
 		$order = $this->get_order(intval($order_id));
@@ -566,12 +600,13 @@ class Orders extends Fivecms
 			return false;
 		
 		if(!$this->close($order->id))
-		{
 			return false;
-		}
 		
-		$query = $this->db->placehold("UPDATE __orders SET payment_status=1, payment_date=NOW(), modified=NOW() WHERE id=? LIMIT 1", $order->id);
+		$query = $this->db->placehold("UPDATE __orders SET paid=1, payment_date=NOW(), modified=NOW() WHERE id=? LIMIT 1", $order->id);
 		$this->db->query($query);
+		
+		$this->bonus_add($order);
+		
 		return $order->id;
 	}
 	
@@ -583,11 +618,34 @@ class Orders extends Fivecms
 			return false;
 		if($order->paid == 1 && $order->bonused == 1)
 			return false;
-		// set paid and payment_date
+
 		$query = $this->db->placehold("UPDATE __orders SET paid=1, payment_date=NOW(), modified=NOW() WHERE id=? LIMIT 1", $order->id);
 		$this->db->query($query);
-		// bonus add start
-		if ($order->user_id && $order->bonused != 1) {
+		
+		$this->bonus_add($order);
+
+		return $order->id;
+	}
+	
+	public function unset_pay($order_id)
+	{
+		$order = $this->get_order(intval($order_id));
+		if(empty($order))
+			return false;
+		if($order->paid == 0 && $order->bonused != 1)
+			return false;
+
+		$query = $this->db->placehold("UPDATE __orders SET paid=0, modified=NOW() WHERE id=? LIMIT 1", $order->id);
+		$this->db->query($query);
+
+		$this->bonus_remove($order);
+
+		return $order->id;
+	}
+	
+	/* Операции с бонусными баллами и обновление суммы оплаченных заказов */
+	function bonus_add($order){
+		if (isset($order->user_id) && $order->bonused != 1) {
 			$query = $this->db->placehold("UPDATE __orders SET bonused=1 WHERE id=? LIMIT 1", $order->id);
 			$this->db->query($query);
 			$user = $this->users->get_user(intval($order->user_id));
@@ -604,22 +662,10 @@ class Orders extends Fivecms
 				}
 			}
 		}
-		// bonus add end
-		return $order->id;
 	}
 	
-	public function unset_pay($order_id)
-	{
-		$order = $this->get_order(intval($order_id));
-		if(empty($order))
-			return false;
-		if($order->paid == 0 && $order->bonused != 1)
-			return false;
-		// paid remove
-		$query = $this->db->placehold("UPDATE __orders SET paid=0, modified=NOW() WHERE id=? LIMIT 1", $order->id);
-		$this->db->query($query);
-		// bonus remove start
-		if ($order->user_id && $order->bonused == 1) {
+	function bonus_remove($order){
+		if(isset($order->user_id) && $order->bonused == 1) {
 			$query = $this->db->placehold("UPDATE __orders SET bonused=0 WHERE id=? LIMIT 1", $order->id);
 			$this->db->query($query);
 			$user = $this->users->get_user(intval($order->user_id));
@@ -636,8 +682,6 @@ class Orders extends Fivecms
 				}
 			}
 		}
-		// bonus remove end
-		return $order->id;
 	}
 	
 	/* Обновление итого заказа */

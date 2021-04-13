@@ -21,6 +21,10 @@ if(!empty($variant_id)){
 }
 
 // сохраним структуру из api/Cart.php, заменив this на fivecms и cart-> на cart_
+
+if(isset($_SESSION['user_id']))
+	$user = $fivecms->users->get_user(intval($_SESSION['user_id']));
+
 if($fivecms->design->is_android_browser() && !empty($fivecms->settings->mob_discount)) {                      
     $mob_discount = $fivecms->settings->mob_discount;     
 } else {$mob_discount = 0;}
@@ -28,7 +32,7 @@ if($fivecms->design->is_android_browser() && !empty($fivecms->settings->mob_disc
 $enable_discountgroup = $fivecms->discountgroup->get_config_discount('enable_groupdiscount');
 switch ($enable_discountgroup){
 	case 1:
-        if(isset($_SESSION['user_id']) && $user = $fivecms->users->get_user(intval($_SESSION['user_id']))){
+        if(!empty($user)){
             $cart_discount2 = $user->discount;
         }else{
             $cart_discount2 = 0; 	
@@ -47,7 +51,7 @@ switch ($enable_discountgroup){
     break;
 	case 3:
         $discount = 0;
-        if(isset($_SESSION['user_id']) && $user = $fivecms->users->get_user(intval($_SESSION['user_id']))){
+        if(!empty($user)){
             $cart_discount2 = $user->discount;
         }else{
             $cart_discount2 = 0; 	
@@ -66,7 +70,7 @@ switch ($enable_discountgroup){
     break;
 	case 4:
         $discount = 0;
-        if(isset($_SESSION['user_id']) && $user = $fivecms->users->get_user(intval($_SESSION['user_id']))){
+        if(!empty($user)){
             $cart_discount2 = $user->discount + $user->tdiscount;
         }else{
             $cart_discount2 = 0; 	
@@ -84,7 +88,7 @@ switch ($enable_discountgroup){
         $cart_full_discount = $cart_discount2 + $value_discountgroup + $mob_discount;
     break; 
 	case 5:
-        if(isset($_SESSION['user_id']) && $user = $fivecms->users->get_user(intval($_SESSION['user_id']))){
+        if(!empty($user)){
             $cart_discount2 = $user->tdiscount;
         }else{
             $cart_discount2 = 0; 	
@@ -113,14 +117,14 @@ switch ($enable_discountgroup){
 // Система скидок @
 
 // Пишем реферера
-if(!empty($sess_referer = $_SESSION['referer']))
-	$order->referer = $sess_referer;
+if(!empty($_SESSION['referer']))
+	$order->referer = $_SESSION['referer'];
 // Пишем UTM
-if(!empty($sess_utm = $_SESSION['utm']))
-	$order->utm = $sess_utm;
+if(!empty($_SESSION['utm']))
+	$order->utm = $_SESSION['utm'];
 // Пишем yclid
-if(!empty($yclid = $_COOKIE['yclid']))
-	$order->yclid = $yclid;		
+if(!empty($_COOKIE['yclid']))
+	$order->yclid = $_COOKIE['yclid'];		
 			
 // Источник заказа 
 //(в десктопе)
@@ -144,46 +148,81 @@ if($fivecms->design->is_android_browser()) {
 }
 // Источник заказа @
 
-if(!empty($variant_id)) $order_id = $fivecms->orders->add_order($order);
+if($fivecms->settings->spam_cyr == 1 && !empty($order->name) && !preg_match('/^[а-яё \t]+$/iu', $order->name)){
+	echo "wrong_name";
+} elseif(!empty($fivecms->settings->spam_symbols) && !empty($order->name) && mb_strlen($order->name,'UTF-8') > $fivecms->settings->spam_symbols) {
+	echo "captcha";
+} elseif(!empty($order->email) && filter_var($order->email, FILTER_VALIDATE_EMAIL) === false) {
+	echo "wrong_email";
+} elseif(!empty($order->phone) && (!preg_match('/^[0-9 \-\+\(\)\t]+$/iu', $order->phone) || mb_strlen($order->phone,'UTF-8') < 7)){
+	echo "wrong_phone";		
+} elseif(!empty($variant_id)) {
+	$order_id = $fivecms->orders->add_order($order);
+	$fivecms->orders->add_purchase(array('order_id'=>$order_id, 'variant_id'=>intval($variant_id), 'amount'=>intval($amount)));
+	$order = $fivecms->orders->get_order($order_id);
+
+	if(!empty($user)){
+		$user_id = $user->id;
+	} elseif(!empty($order->email)){
 	
-$fivecms->orders->add_purchase(array('order_id'=>$order_id, 'variant_id'=>intval($variant_id), 'amount'=>intval($amount)));
-
-$order = $fivecms->orders->get_order($order_id);
-
-$fivecms->notify->email_order_admin($order_id);
-
-if (!empty($order->email)) {
-
-	if(isset($_SESSION['user_id']))
-		$user_id = $_SESSION['user_id'];
-	else {
 		$fivecms->db->query('SELECT id FROM __users WHERE email=? LIMIT 1', $order->email);
 		$user_id = $fivecms->db->result('id');
-	}
+	
+		if(empty($user_id)){
+			$user           = new \stdClass();
+			$user->email    = $order->email;
+			$user->password = generate_rand_password();
+			$user->name     = $order->name;
+			$user->phone    = $order->phone;
+			$user->enabled  = 1;
+			$user_id        = $fivecms->users->add_user($user);
 
-	if (!empty($user_id)) {
-	    $fivecms->orders->update_order($order_id, array('user_id' => intval($user_id)));
-	} else {
-	    $user           = new \stdClass();
-	    $user->email    = $order->email;
-	    $user->password = generate_rand_password();
-	    $user->name     = $order->name;
-		$user->phone    = $order->phone;
-	    $user->enabled  = 1;
-	    $user_id        = $fivecms->users->add_user($user);
-
-	    if (!empty($user_id)) {
-	        $fivecms->orders->update_order($order_id, array('user_id' => $user_id));
-	        $fivecms->notify->email_user_registration($user_id, $user->password);
-	    }
+			if(!empty($user_id)){
+				$fivecms->notify->email_user_registration($user_id, $user->password);
+				$_SESSION['user_id'] = $user_id;
+				$user = $fivecms->users->get_user(intval($user_id));
+			}	
+		}
+		
+		if($fivecms->settings->auto_subscribe == 1 && !empty($order->email))
+			$fivecms->mailer->add_mail($order->name, $order->email);
+	}		
+		
+	if(!empty($user_id))
+		$fivecms->orders->update_order($order_id, array('user_id' => $user_id));
+	
+	// add partner_id to user
+	if(!empty($user)){	
+		if(isset($_COOKIE['partner_id']) && intval($user->id) != intval($_COOKIE['partner_id']) && empty($user->partner_id)) {
+			$partner = $fivecms->users->get_user(intval($_COOKIE['partner_id']));
+			if(!empty($partner) && $partner->enabled)
+				$fivecms->users->update_user(intval($user->id), array('partner_id'=>$partner->id));
+		}/*elseif(empty($user->partner_id)) {
+				// не даем делать рефералами уже имеющихся клиентов
+				// пользователь с id=1 должен быть системным
+				$fivecms->users->update_user(intval($user->id), array('partner_id'=>'1'));
+		}*/
 	}
 	
-	$fivecms->notify->email_order_user($order_id);
-	if($fivecms->settings->auto_subscribe == 1)
-		$fivecms->mailer->add_mail($order->name, $order->email);
-}
+	if(!empty($order->email))
+		$fivecms->notify->email_order_user($order_id);
+	
+	$fivecms->notify->email_order_admin($order_id);
+	
+	// add partner_id to user
+	/*if(isset($_COOKIE['partner_id'])){
+		if(!empty($this->user->id)) 
+			$user_id = $this->user->id;
+	
+		if(!empty($user_id) && intval($user_id) != intval($_COOKIE['partner_id']) && empty($this->user->partner_id)) {
+			$partner = $this->users->get_user(intval($_COOKIE['partner_id']));
+			if(!empty($partner) && $partner->enabled)
+				$this->users->update_user(intval($user_id), array('partner_id'=>$partner->id));
+		}
+	}*/
 
-echo $order_id;
+	echo $order_id;
+}	
 
 function generate_rand_password()
 {

@@ -3,35 +3,8 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
 	<base href="{$config->root_url}/"/>
-	{if $module == "ProductView"}
-		{* product seo title *}
-			{if !empty($category->name)}{$ctg = " | "|cat:$category->name}{else}{$ctg = ''}{/if}
-			{if !empty($brand->name)}{$brnd = " | "|cat:$brand->name}{else}{$brnd = ''}{/if}
-			{if empty($meta_title) && !empty($product->name)}
-				{$seo_title=$product->name|cat:$ctg|cat:$brnd}
-			{/if}
-		{* product seo description *}
-			{$first_category = $category->path|first}
-			{if !empty($category->seo_one)}
-				{$seo_one = $category->seo_one}
-			{elseif !empty($first_category->seo_one)}
-				{$seo_one = $first_category->seo_one}
-			{else}
-				{$seo_one = ''}
-			{/if}
-			{if !empty($category->seo_two)}
-				{$seo_two = $category->seo_two}
-			{elseif !empty($first_category->seo_two)}
-				{$seo_two = $first_category->seo_two}
-			{else}
-				{$seo_two = ''}
-			{/if}
-			{if $category->seo_type == 1 && !empty($product->variant->price)}
-				{$seo_description = $seo_one|cat:$product->name|cat:" ✩ за "|cat:($product->variant->price|convert|strip:'')|cat:" "|cat:$currency->sign|cat:$seo_two}
-			{else}
-				{$seo_description = $seo_one|cat:$product->name|cat:$seo_two}
-			{/if}
-	{else}
+	{if $module != "ProductView"}
+		{* product seo title и seo description находятся в product.tpl *}
 		{* page seo description *}
 		{if !empty($meta_title)}
 			{$seo_description = $meta_title|cat:$settings->seo_description|cat:" ✩ "|cat:$settings->site_name|cat:" ✩"}
@@ -97,8 +70,8 @@
 		<meta name="twitter:title" property="og:title" content="{$product->name|escape}">
 		<meta name="twitter:description" property="og:description" content='{if !empty($product->annotation)}{$product->annotation|strip_tags|escape}{elseif !empty($meta_description)}{$meta_description|escape}{/if}'>
 		{if !empty($product->image->filename)}
-			<meta name="twitter:image" property="og:image" content="{$product->image->filename|resize:800:600:w}">
-			<link rel="image_src" href="{$product->image->filename|resize:800:600:w}">
+			<meta name="twitter:image" property="og:image" content="{$product->image->filename|resize:1024:768:w}">
+			<link rel="image_src" href="{$product->image->filename|resize:1024:768:w}">
 		{else}
 			<meta name="twitter:image" property="og:image" content="{$config->root_url}/js/nophoto.png">
 			<link rel="image_src" href="{$config->root_url}/js/nophoto.png">
@@ -123,8 +96,8 @@
 			<meta name="twitter:image" property="og:image" content="{$post->image->filename|resize:400:400}">
 			<link rel="image_src" href="{$post->image->filename|resize:400:400}">
 		{elseif !empty($post->images[1])}
-			<meta name="twitter:image" property="og:image" content="{$post->images[1]->filename|resize:800:600:w}">
-			<link rel="image_src" href="{$post->images[1]->filename|resize:800:600:w}">	
+			<meta name="twitter:image" property="og:image" content="{$post->images[1]->filename|resize:1024:768:w}">
+			<link rel="image_src" href="{$post->images[1]->filename|resize:1024:768:w}">	
 		{else}
 			<meta name="twitter:image" property="og:image" content="{$config->root_url}/files/logo/logo.png">
 			<link rel="image_src" href="{$config->root_url}/files/logo/logo.png">
@@ -143,9 +116,19 @@
 	{* social end *}
 	{if !empty($settings->script_header)}{$settings->script_header}{/if}
 	<script src="js/jquery/jquery-1.12.4.min.js"></script>
+	{if $settings->analytics}
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id={$settings->analytics}"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){ dataLayer.push(arguments);}
+		  gtag('js', new Date());
+		  gtag('config', '{$settings->analytics}');
+		</script>
+	{/if}
 </head>
 
-<body id="body" {if in_array($module, array('MainView', 'ProductsView', 'WishlistView')) || (!empty($page->url) && $page->url == 'catalog')}class="nonwhitebg"{/if}>
+<body id="body" class="{$module|lower}{if in_array($module, array('MainView', 'ProductsView', 'WishlistView')) || (!empty($page->url) && $page->url == 'catalog')} nonwhitebg{/if}">
 
 	{if empty($mobile_app)}
 		{include file='toolbar.tpl'}
@@ -188,18 +171,17 @@
 			{$content}
 		</div>
 	</div>
-	{if $module == 'CartView'}
-		<script src="androidcore/baloon/js/baloon.js" type="text/javascript"></script>
+	{if $uagent == 'ios' && $module != 'MainView'}
+	<a href="javascript:history.go(-1)" class="history_back">&lang;</a>
 	{/if}
-	<script type="text/javascript" src="androidcore/core2.js?v={filemtime('androidcore/core2.js')}"></script>
+	{if $module == 'CartView'}
+		<script src="js/mobile/baloon/js/baloon.js" type="text/javascript"></script>
+	{/if}
+	<script type="text/javascript" src="design/mobile/js/core.js?v={filemtime('design/mobile/js/core.js')}"></script>
 	<script>
 		$(function() {
-			$(".zoom").fancybox({ 'hideOnContentClick' : true });
+			$(".zoom").fancybox({ 'hideOnContentClick' : true, 'margin' : 0 });
 		});
-		// .image_half_width open in modal
-		$("img.image-half-width, .image-half-width img").click(function(){
-			$.fancybox({ 'href' : $(this).attr('src') , 'hideOnContentClick' : true });
-		})
 	</script>
 
 	{if $module == 'MainView'}
@@ -242,20 +224,11 @@
 	{/if}
 
 	{if in_array($module, array('BlogView', 'FeedbackView', 'LoginView', 'RegisterView', 'UserView', 'ProductView'))}
-		<script defer src="androidcore/baloon/js/baloon.js" type="text/javascript"></script>
+		<script defer src="js/mobile/baloon/js/baloon.js" type="text/javascript"></script>
 	{/if}
 
 	{if $module == 'ProductsView'}
-		{*<script type="text/javascript" src="androidcore/lazyload.js"></script>
-		<script>
-			{literal}
-				$(document).ready(function () {
-					$(window).load(function() {$('img.lazy').lazyload();});
-				});
-			{/literal}
-		</script>*}
-
-		<script src="androidcore/priceslider.js" type="text/javascript"></script>
+		<script src="design/mobile/js/priceslider.js" type="text/javascript"></script>
 		{if !empty($keyword) || (!empty($category->brands) && $category->brands|count>1) || !empty($features) || (isset($minCost) && isset($maxCost) && $minCost<$maxCost)}
 			<div class="hidefeaturesbtn" onclick="hideFeatures(this);return false;">
 				<svg viewBox="0 0 24 24">
@@ -313,18 +286,12 @@
 				var scroll_timeout = 100; // window scroll throttle setTimeout
 				{if $module == 'ProductsView'}var update_products = 1;{/if}
 			</script>
-			<script type="text/javascript" src="androidcore/infinite_ajax.js"></script>
+			<script type="text/javascript" src="js/mobile/infinite_ajax.js"></script>
 		{* infinite ajax pagination end *}
 	{/if}
 	
 	{if $module == 'ProductView'}
-		<script type="text/javascript" src="androidcore/product.js"></script>
-		<script src="js/rating/project.js"></script>
-		<script type="text/javascript">
-			$(function() { 
-				$('.testRater').rater({ postHref: 'ajax/rating.php' }); 
-			});
-		</script>
+		<script type="text/javascript" src="design/mobile/js/product.js"></script>
 		<script>
 		// Amount change
 		$(window).load(function() {
@@ -382,6 +349,7 @@
 				$(".various").fancybox({
 					'hideOnContentClick' : false,
 					'hideOnOverlayClick' : false,
+					'margin' : 10,
 					'onComplete': function() { $('body').css('overflow','hidden');},
 					'onClosed': function() { $('body').css('overflow','visible');}
                 });
@@ -391,16 +359,12 @@
 		<script type="text/javascript">$('#tab1 iframe').addClass('superembed-force')</script>
 	{/if}
 	
-	{if in_array($module, array('ArticlesView', 'BlogView', 'ServicesView')) && (!empty($post->images) || !empty($service->images))}
-		{*<script src="js/swipebox/ios-orientationchange-fix.js"></script>*}
-		<script src="js/swipebox/jquery.swipebox.min.js"></script>
-		<link type="text/css" rel="stylesheet" href="js/swipebox/swipebox.css"/>
-		<script>
+	{*<script src="js/swipebox/ios-orientationchange-fix.js"></script>*}
+	<script>
 		$(function() { 
-			$(".swipebox").swipebox({ hideBarsDelay : 0 });
+			$(".swipebox").swipebox({ hideBarsDelay : 3000 });
 		});
-		</script>
-	{/if}
+	</script>
 
 	<div class="mainloader" style="display:none;">
 	    <div class="loaderspinner">
@@ -440,7 +404,6 @@
 	{* user forms end *}	
 
 	{* Поддержка свайпа *}
-	<script src="design/mobile/js/custom.js" type="text/javascript"></script>
 	{if !empty($mobile_app)}
 		{* Android *}
 		{*<script type="text/javascript">
@@ -480,9 +443,9 @@
 			});
 		</script>
 	{/if}
-	{if $uagent == 'ios'}
+	{*{if $uagent == 'ios'}
 	<script>
-		// Загружаем пред. страницу
+		// Загружаем пред. страницу свайпом
 		$(window).load(function() { 
 			var swipem = new MobiSwipe("body");
 			swipem.direction = swipem.HORIZONTAL;
@@ -493,13 +456,13 @@
 				return!1};
 		});
 	</script>
-	{/if}
+	{/if}*}
 	
 	<div style="display:none;">
 		{if $settings->counters}
 			<!-- Yandex.Metrika counter --> <script type="text/javascript" > (function(m,e,t,r,i,k,a){ m[i]=m[i]||function(){ (m[i].a=m[i].a||[]).push(arguments)}; m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)}) (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym"); ym({$settings->counters}, "init", { clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true, ecommerce:"dataLayer" }); </script> <noscript><div><img src="https://mc.yandex.ru/watch/{$settings->counters}" style="position:absolute; left:-9999px;" alt="" /></div></noscript> <!-- /Yandex.Metrika counter -->
 		{/if}
-		{if $settings->analytics}
+		{*{if $settings->analytics}
 		<script>
 			  (function(i,s,o,g,r,a,m){ i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 			  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -508,7 +471,7 @@
 			  ga('create', '{$settings->analytics}', 'auto');
 			  ga('send', 'pageview');
 		</script>
-		{/if}
+		{/if}*}
 	</div>
 	<script type="text/javascript">
 	{literal}
@@ -580,7 +543,7 @@
 			<path d="M9,22A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22V22H9M10,16V19.08L13.08,16H20V4H4V16H10M17,11H15V9H17V11M13,11H11V9H13V11M9,11H7V9H9V11Z" />
 		</symbol>
 		{/if}
-		{if in_array($module, array('ProductsView', 'ProductView', 'MainView', 'PageView'))}
+		{if in_array($module, array('ProductsView', 'ProductView', 'MainView', 'PageView', 'ArticlesView'))}
 		<symbol id="activec" viewBox='0 0 24 24'>
 			<path d='M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z'/>
 			<path d='M0 0h24v24H0z' fill='none'/>
@@ -615,6 +578,12 @@
 		</script> 
 	{/if}
 	{* OnlineChat end *}
+	
+	{if !empty($settings->mob_phone)}
+	<div class="call {$uagent}" onClick="window.location='{$settings->mob_phone|escape|regex_replace:'/[() -]/' :''}'">
+		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+	</div>
+	{/if}
 	
 </body>
 </html>

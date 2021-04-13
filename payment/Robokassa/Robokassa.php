@@ -50,8 +50,11 @@ class Robokassa extends Fivecms {
             $full_total_price += (float)$p->price * (int)$p->amount;
         }
 
-        $discount = $total_price / $full_total_price;
-
+		if(!empty($full_total_price))
+        	$discount = $total_price / $full_total_price;
+        else	
+			$discount = 1;
+			
         $receipt = array('sno' => $payment_settings['sno']);
 
         $receipt['items'] = array();

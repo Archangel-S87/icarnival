@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+	<name>
+		Сбербанк Эквайринг v1.5.1
+	</name>
+	<settings>
+		<variable>sbr_login</variable>
+		<name>Логин API</name>
+	</settings>
+	<settings>
+		<variable>sbr_password</variable>
+		<name>Пароль</name>
+	</settings>
+    <settings>
+        <variable>sbr_mode</variable>
+        <name>Режим оплаты</name>
+        <options>
+            <name>Тестовый режим</name>
+            <value>1</value>
+        </options>
+        <options>
+            <name>Рабочий сервер</name>
+            <value>0</value>
+        </options>
+    </settings>
+    <settings>
+        <variable>sbr_orderBundle</variable>
+        <name>Передавать данные для печати чека (54-ФЗ)</name>
+        <options>
+            <name>да</name>
+            <value>1</value>
+        </options>
+        <options>
+            <name>нет</name>
+            <value>0</value>
+        </options>
+    </settings>
+    <settings>
+        <variable>sbr_delivery</variable>
+        <name>Включить доставку</name>
+        <options>
+            <name>в стоимость товаров</name>
+            <value>include_item</value>
+        </options>
+        <options>
+            <name>как отдельную позицию в чеке</name>
+            <value>item</value>
+        </options>
+    </settings>
+    <settings>
+        <variable>sbr_taxSystem</variable>
+        <name>Система налогообложения</name>
+        <options>
+            <name>общая</name>
+            <value>0</value>
+        </options>
+        <options>
+            <name>упрощённая, доход</name>
+            <value>1</value>
+        </options>
+        <options>
+            <name>упрощённая, доход минус расход</name>
+            <value>2</value>
+        </options>
+        <options>
+            <name>единый налог на вменённый доход</name>
+            <value>3</value>
+        </options>
+        <options>
+            <name>единый сельскохозяйственный налог</name>
+            <value>4</value>
+        </options>
+        <options>
+            <name>патентная система налогообложения</name>
+            <value>5</value>
+        </options>
+    </settings>
+    <settings>
+        <variable>sbr_taxType</variable>
+        <name>Ставка НДС</name>
+        <options>
+            <name>без НДС</name>
+            <value>0</value>
+        </options>
+        <options>
+            <name>НДС по ставке 0%</name>
+            <value>1</value>
+        </options>
+        <options>
+            <name>НДС чека по ставке 10%</name>
+            <value>2</value>
+        </options>
+        <options>
+            <name>НДС чека по ставке 18%</name>
+            <value>3</value>
+        </options>
+        <options>
+            <name>НДС чека по расчетной ставке 10/110</name>
+            <value>4</value>
+        </options>
+        <options>
+            <name>НДС чека по расчетной ставке 18/118</name>
+            <value>5</value>
+        </options>
+        <options>
+            <name>НДС чека по ставке 20%</name>
+            <value>6</value>
+        </options>
+        <options>
+            <name>НДС чека по расчётной ставке 20/120</name>
+            <value>7</value>
+        </options>
+    </settings>
+    <!--<settings>
+        <variable>sbr_taxProduct</variable>
+        <name>Разный НДС у товаров? (инструкция см. README.md)</name>
+        <options>
+            <name>Нет</name>
+            <value>0</value>
+        </options>
+        <options>
+            <name>Да</name>
+            <value>1</value>
+        </options>
+    </settings>-->
+    <settings>
+        <variable>sbr_paymentMethod</variable>
+        <name>(ФФД 1.05) Тип оплаты</name>
+        <options>
+            <name>полная предварительная оплата до момента передачи предмета расчёта</name>
+            <value>1</value>
+        </options>
+        <options>
+            <name>частичная предварительная оплата до момента передачи предмета расчёта</name>
+            <value>2</value>
+        </options>
+        <options>
+            <name>аванс</name>
+            <value>3</value>
+        </options>
+        <options>
+            <name>полная оплата в момент передачи предмета расчёта</name>
+            <value>4</value>
+        </options>
+        <options>
+            <name>частичная оплата предмета расчёта в момент его передачи с последующей оплатой в кредит</name>
+            <value>5</value>
+        </options>
+        <options>
+            <name>передача предмета расчёта без его оплаты в момент его передачи с последующей оплатой в кредит</name>
+            <value>6</value>
+        </options>
+        <options>
+            <name>оплата предмета расчёта после его передачи с оплатой в кредит</name>
+            <value>7</value>
+        </options>
+    </settings>
+    <settings>
+        <variable>sbr_paymentObject</variable>
+        <name>(ФФД 1.05) Тип оплачиваемой позиции</name>
+        <options>
+            <name>товар</name>
+            <value>1</value>
+        </options>
+        <options>
+            <name>подакцизный товар</name>
+            <value>2</value>
+        </options>
+        <options>
+            <name>работа</name>
+            <value>3</value>
+        </options>
+        <options>
+            <name>услуга</name>
+            <value>4</value>
+        </options>
+        <options>
+            <name>ставка азартной игры</name>
+            <value>5</value>
+        </options>
+        <options>
+            <name>выигрыш азартной игры</name>
+            <value>6</value>
+        </options>
+        <options>
+            <name>лотерейный билет</name>
+            <value>7</value>
+        </options>
+        <options>
+            <name>выигрыш лотереи</name>
+            <value>8</value>
+        </options>
+        <options>
+            <name>предоставление РИД</name>
+            <value>9</value>
+        </options>
+        <options>
+            <name>платёж</name>
+            <value>10</value>
+        </options>
+        <options>
+            <name>агентское вознаграждение</name>
+            <value>11</value>
+        </options>
+        <options>
+            <name>составной предмет расчёта</name>
+            <value>12</value>
+        </options>
+        <options>
+            <name>иной предмет расчёта</name>
+            <value>13</value>
+        </options>
+    </settings>
+    <settings>
+        <variable>sbr_debug</variable>
+        <name>Информация об отладке (видно админу)</name>
+        <options>
+            <name>нет</name>
+            <value>0</value>
+        </options>
+        <options>
+            <name>да</name>
+            <value>1</value>
+        </options>
+    </settings>
+</module>

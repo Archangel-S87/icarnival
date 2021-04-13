@@ -239,7 +239,7 @@ function translit(str)
 					{foreach from=$post_images item=image}
 					<li>
 						<a href='#' class="deletes"><img src='design/images/cross-circle-frame.png'></a>
-						<a href="{$image->filename|resize:800:600:w:$config->resized_services_images_dir}?{$random}" class="zoom" data-rel="group"><img src="{$image->filename|resize:400:400:false:$config->resized_services_images_dir}?{$random}" alt="" /></a>
+						<a href="{$image->filename|resize:1024:768:w:$config->resized_services_images_dir}?{$random}" class="zoom" data-rel="group"><img src="{$image->filename|resize:400:400:false:$config->resized_services_images_dir}?{$random}" alt="" /></a>
 						<input type=hidden name='images[]' value='{$image->id}'>
 					</li>
 					{/foreach}

@@ -99,6 +99,7 @@ $banknote = stripslashes($_POST['banknote']);
 $pence = stripslashes($_POST['pence']);
 $order_id = stripslashes($_POST['order_id']);
 $amount = stripslashes($_POST['amount']);
+$deliver = stripslashes($_POST['delivery_price']);
 $phone_seller = stripslashes($_POST['phone_seller']);
 $index_seller = stripslashes($_POST['index_seller']);
 $address_seller = stripslashes($_POST['address_seller']);
@@ -112,7 +113,6 @@ $amount_str = num2str($amount);
 
 $html_purchase = <<<EOD
 <table width="540" border="1" cellpadding="2" cellspacing="0">
-<thead>
  <tr>
   <td width="20" align="center"><b>№</b></td>
   <td width="330" align="center"><b>Товары(работы, услуги)</b></td>  
@@ -121,23 +121,30 @@ $html_purchase = <<<EOD
   <td width="60" align="center"><b>Цена</b></td>  
   <td width="60" align="center"><b>Сумма</b></td>
  </tr>
-</thead>
 EOD;
 $summa_zakaza = 0;
 foreach($purchases as $purchase){
-			if($purchase){
+	if($purchase){
 				$count = $count+1;				
-				
 				$html_purchase .= "<tr><td width='20' align='center'>".$count."</td>";
-				
 				$html_purchase .= "<td width='330'>".$purchase->product_name."</td>";
 				$html_purchase .= "<td width='40' align='right'>".$purchase->amount."</td>";
 				$html_purchase .= "<td width='30'>шт.</td>";
 				$html_purchase .= "<td width='60' align='right'>".$purchase->price."</td>";				
 				$html_purchase .= "<td width='60' align='right'>".$purchase->price*$purchase->amount."</td></tr>";
 				$summa_zakaza = $summa_zakaza + $purchase->price*$purchase->amount;				
-			}					
-		}
+	}					
+}
+if(!empty($deliver)){		
+				$count = $count+1;				
+				$html_purchase .= "<tr><td width='20' align='center'>".$count."</td>";
+				$html_purchase .= "<td width='330'>Доставка</td>";
+				$html_purchase .= "<td width='40' align='right'>1</td>";
+				$html_purchase .= "<td width='30'>шт.</td>";
+				$html_purchase .= "<td width='60' align='right'>".$deliver."</td>";				
+				$html_purchase .= "<td width='60' align='right'>".$deliver."</td></tr>";		
+}			
+
 $html_purchase .= "</table>";
 
 $html_header_warning = <<<EOD
@@ -275,8 +282,17 @@ $pdf->SetXY($x,$y);
 $pdf->SetFontSize(9);
 $pdf->writeHTML($html_purchase, true, false, false, false, '');
 
-
-$deliver = $amount - $summa_zakaza;
+/* count discount */
+$total_price = $amount;
+if(!empty($deliver))
+	$total_price -= (float)$deliver; //Скидка не применяется к доставке
+	
+if($total_price != $summa_zakaza){
+	$discount_text = " (со скидкой)";
+} else {
+	$discount_text = "";
+}
+/* count discount@ */
 
 $amount_vat = $amount*$vat/(100+$vat);
 
@@ -284,14 +300,14 @@ $koopeiki = round(($amount*100-floor($amount)*100));
 if($koopeiki==0)
 	$koopeiki = '00';
 	
-$koopeiki_del = round(($deliver*100-floor($deliver)*100));
-if($koopeiki_del==0)
-	$koopeiki_del = '00';
-	
 $koopeiki_vat = round(($amount_vat*100-floor($amount_vat)*100));
 if($koopeiki_vat==0)
 	$koopeiki_vat = '00';	
 
+/*$koopeiki_del = round(($deliver*100-floor($deliver)*100));
+if($koopeiki_del==0)
+	$koopeiki_del = '00';
+	
 if($deliver > 0){
 // Доставка
 $y = $pdf->GetY();
@@ -300,14 +316,14 @@ $pdf->SetXY($x+110, $y);
 $pdf->SetFont('dejavusanscondensed','B',10);
 $pdf->Write(5, 'Доставка:  ');
 $pdf->SetFont('dejavusanscondensed','',10);
-$pdf->Write(5, floor($deliver).' '.$banknote.' '.$koopeiki_del.' '.$pence);}
+$pdf->Write(5, floor($deliver).' '.$banknote.' '.$koopeiki_del.' '.$pence);}*/
 
 // Сумма платежа
 $y = $pdf->GetY();
 $y += 5; 
 $pdf->SetXY($x+110, $y);
 $pdf->SetFont('dejavusanscondensed','B',10);
-$pdf->Write(5, 'Итого:  ');
+$pdf->Write(5, 'Итого'.$discount_text.': ');
 $pdf->SetFont('dejavusanscondensed','',10);
 $pdf->Write(5, floor($amount).' '.$banknote.' '.$koopeiki.' '.$pence);
 

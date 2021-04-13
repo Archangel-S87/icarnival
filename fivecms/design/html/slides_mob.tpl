@@ -5,6 +5,7 @@
 	{if in_array('design', $manager->permissions)}<li><a href="index.php?module=MobsetAdmin">{$tr->settings_mob|escape}</a></li>{/if}
 	{if in_array('design', $manager->permissions)}<li><a href="index.php?module=MobileTemplatesAdmin">{$tr->templates} ({$tr->mob})</a></li>{/if}
 	{if in_array('design', $manager->permissions)}<li><a href="index.php?module=MobileStylesAdmin">{$tr->styles_mob|escape}</a></li>{/if}
+	{if in_array('design', $manager->permissions)}<li><a href="index.php?module=MobileScriptsAdmin">JS</a></li>{/if}
 {/capture}
 
 {$meta_title = $tr->slider_mob scope=root}

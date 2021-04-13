@@ -89,7 +89,9 @@
 <!-- Системное сообщение -->
 <div class="message message_success">
 	<span class="text">
-	{if $message_success == 'saved'}{$tr->added|escape}{/if}
+	{if $message_success == 'saved'}{$tr->added|escape}
+	{elseif $message_success == 'updated'}{$tr->updated|escape}
+	{/if}
 	</span>
 </div>
 <!-- Системное сообщение (The End)-->
@@ -122,6 +124,7 @@
 		
 		<div id="product" style="margin-top:15px;">
 			<div class="block layer">
+				<a class="button_green green" href="index.php?module=ImportImagesAdmin" style="text-decoration:none;font-size:14px;display:table;margin-bottom:20px;padding:6px 15px;">{$tr->check_images}</a>
 				<form method=post id=product enctype="multipart/form-data">
 					<input type=hidden name="session_id" value="{$smarty.session.id}">
 					<h2>{$tr->common_import_settings|escape}:</h2>
@@ -157,9 +160,9 @@
 						<li><label class=property>{$tr->brand|escape}</label><input name="d_brand" class="fivecms_inp" type="text" value="{$settings->d_brand|escape}" /></li>
 						<li><label class=property>{$tr->price|escape}</label><input name="d_price" class="fivecms_inp" type="text" value="{$settings->d_price|escape}" /></li>
 						<li><label class=property>{$tr->sku|capitalize|escape}</label><input name="d_sku" class="fivecms_inp" type="text" value="{$settings->d_sku|escape}" /></li>
-						<li><label class=property>{$tr->product_short_description|escape}</label><input name="d_annotation" class="fivecms_inp" type="text" value="{$settings->d_annotation|escape}" /></li>
-						<li><label class=property>{$tr->product_full_description|escape}</label><input name="d_description" class="fivecms_inp" type="text" value="{$settings->d_description|escape}" /></li>
-						<li><label class=property>{$tr->product_images|escape}</label><input name="d_images" class="fivecms_inp" type="text" value="{$settings->d_images|escape}" /></li>
+						<li><label class=property>{$tr->product_short_description|escape} ({$tr->optionally|escape})</label><input name="d_annotation" class="fivecms_inp" type="text" value="{$settings->d_annotation|escape}" /></li>
+						<li><label class=property>{$tr->product_full_description|escape} ({$tr->optionally|escape})</label><input name="d_description" class="fivecms_inp" type="text" value="{$settings->d_description|escape}" /></li>
+						<li><label class=property>{$tr->product_images|escape} ({$tr->optionally|escape})</label><input name="d_images" class="fivecms_inp" type="text" value="{$settings->d_images|escape}" /></li>
 						<li><label class=property>{$tr->product_variant|escape} ({$tr->optionally|escape})</label><input name="d_variant" class="fivecms_inp" type="text" value="{$settings->d_variant|escape}" /></li>
 						<li><label class=property>{$tr->size|escape} ({$tr->optionally|escape}) {$tr->only_for_clothes|escape}</label><input name="d_variant1" class="fivecms_inp" type="text" value="{$settings->d_variant1|escape}" /></li>
 						<li><label class=property>{$tr->color|escape} ({$tr->optionally|escape}) {$tr->only_for_clothes|escape}</label><input name="d_variant2" class="fivecms_inp" type="text" value="{$settings->d_variant2|escape}" /></li>
@@ -176,9 +179,9 @@
 		
 		<div id="list" class="block block_help">
 			{$tr->help_import_csv}
-			<p class="helper">
-				{$tr->delete_all_products}
-			</p>
+
+			<ul class="stars"><li style="border:0;">{$tr->delete_all_products}</li></ul>
+			<ul class="stars"><li style="border:0;"><a class="bluelink" href="index.php?module=ImportImagesAdmin">{$tr->check_images}</a></li></ul>
 		</div>		
 	
 	{/if}

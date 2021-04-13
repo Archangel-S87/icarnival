@@ -1,6 +1,6 @@
 {$subject="Администратор магазина оставил ответ на Ваш комментарий" scope=root}
 
-<h3 style="font-weight:normal;font-family:arial;">Ваш комментарий получил ответ администратора магазина</h3>
+<h3 style="font-weight:normal;font-family:arial;">Ваш комментарий получил ответ администратора</h3>
 
 <br />На ваш комментарий
 {if $comment->type == 'product'}
