@@ -54,17 +54,32 @@
 								<option value='0' {if $settings->mainhits == '0'}selected{/if}>{$tr->hide|lower}</option>
 								<option value='1' {if $settings->mainhits == '1'}selected{/if}>{$tr->show|lower}</option>
 							</select>
+							<select name="position_carousel[mainhits]" class="fivecms_inp" style="width: 100px;">
+								<option value='1' {if $settings->position_carousel['mainhits'] == 1}selected{/if}>1</option>
+								<option value='2' {if $settings->position_carousel['mainhits'] == 2}selected{/if}>2</option>
+								<option value='3' {if $settings->position_carousel['mainhits'] == 3}selected{/if}>3</option>
+							</select>
 						</li>
 						<li><label style="width:300px;" class="property">{$tr->carousel|escape} "{$tr->novelties|escape}"</label>
 							<select name="mainnew" class="fivecms_inp" style="width: 100px;">
 								<option value='0' {if $settings->mainnew == '0'}selected{/if}>{$tr->hide|lower}</option>
 								<option value='1' {if $settings->mainnew == '1'}selected{/if}>{$tr->show|lower}</option>
 							</select>
+							<select name="position_carousel[mainnew]" class="fivecms_inp" style="width: 100px;">
+								<option value='1' {if $settings->position_carousel['mainnew'] == 1}selected{/if}>1</option>
+								<option value='2' {if $settings->position_carousel['mainnew'] == 2}selected{/if}>2</option>
+								<option value='3' {if $settings->position_carousel['mainnew'] == 3}selected{/if}>3</option>
+							</select>
 						</li>
 						<li><label style="width:300px;" class="property">{$tr->carousel|escape} "{$tr->with_old_price|escape}"</label>
 							<select name="mainsale" class="fivecms_inp" style="width: 100px;">
 								<option value='0' {if $settings->mainsale == '0'}selected{/if}>{$tr->hide|lower}</option>
 								<option value='1' {if $settings->mainsale == '1'}selected{/if}>{$tr->show|lower}</option>
+							</select>
+							<select name="position_carousel[mainsale]" class="fivecms_inp" style="width: 100px;">
+								<option value='1' {if $settings->position_carousel['mainsale'] == 1}selected{/if}>1</option>
+								<option value='2' {if $settings->position_carousel['mainsale'] == 2}selected{/if}>2</option>
+								<option value='3' {if $settings->position_carousel['mainsale'] == 3}selected{/if}>3</option>
 							</select>
 						</li>						
 					</ul>
@@ -285,6 +300,21 @@
 							<select name="cart_tabs" class="fivecms_inp">
 								<option value='0' {if $settings->cart_tabs == '0'}selected{/if}>{$tr->yes}</option>
 								<option value='1' {if $settings->cart_tabs == '1'}selected{/if}>{$tr->no}</option>
+							</select>
+						</li>
+						<li><label class="property">{$tr->allow_comment_tags}</label>
+							<select name="allow_comment_tags" class="fivecms_inp">
+								<option value='0' {if $settings->allow_comment_tags == '0'}selected{/if}>{$tr->no}</option>
+								<option value='1' {if $settings->allow_comment_tags == '1'}selected{/if}>{$tr->yes}</option>
+							</select>
+						</li>
+						<li><label class="property"">{$tr->comment_tags}:</label>
+							<input placeholder="{$tr->example}: [b][/b],[i][/i],[u][/u],[s][/s],[img]url[/img],[color=#dadada]text[/color]" style="max-width:450px;font-size:14px;" name="comment_tags" class="fivecms_inp" type="text" value="{$settings->comment_tags|escape}" />
+						</li>
+						<li><label class="property">{$tr->allow_views}</label>
+							<select name="allow_views" class="fivecms_inp">
+								<option value='0' {if $settings->allow_views == '0'}selected{/if}>{$tr->no}</option>
+								<option value='1' {if $settings->allow_views == '1'}selected{/if}>{$tr->yes}</option>
 							</select>
 						</li>
 					</ul>

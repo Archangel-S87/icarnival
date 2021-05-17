@@ -68,7 +68,7 @@ class ImportJson extends Fivecms
 
         $reader->close();
 
-        return 0;
+        return 0 . PHP_EOL;
     }
 
     private function import_category($json)
@@ -99,7 +99,7 @@ class ImportJson extends Fivecms
 
         $reader->close();
 
-        return 0;
+        return 0 . PHP_EOL;
     }
 
     private function import_brand($json)
@@ -137,7 +137,7 @@ class ImportJson extends Fivecms
 
         $reader->close();
 
-        return 0;
+        return 0 . PHP_EOL;
     }
 
     private function import_product($json)
@@ -274,7 +274,7 @@ class ImportJson extends Fivecms
 
         $reader->close();
 
-        return 0;
+        return 0 . PHP_EOL;
     }
 
     private function import_order($json)

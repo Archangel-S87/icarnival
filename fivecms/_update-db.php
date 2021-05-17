@@ -18,14 +18,14 @@ class UpdateDB extends Fivecms
         // Обновление таблицы __users
         $this->update_table_users();
 
-        // Создание таблицы оплаты в сбере
-        //$this->create_table_payments_sber();
-
         // Обновление таблицы __users
         $this->update_table_orders();
 
         // Обновление таблицы __products
         $this->update_table_products();
+
+        // Обновление таблицы __variants
+        $this->update_table_variants();
 
         // Обновление таблицы __delivery
         $this->update_table_delivery();
@@ -35,11 +35,27 @@ class UpdateDB extends Fivecms
         print 0;
     }
 
+    private function update_table_variants()
+    {
+        $table_mame = 'variants';
+        if (!$this->check_column('old_price', $table_mame)) {
+            $this->db->query("ALTER TABLE __{$table_mame} ADD old_price FLOAT NULL DEFAULT NULL COMMENT 'Сюда помещается цена, которая изменяется при пакетном изменении цен (для отката)'");
+        }
+    }
+
     private function update_table_products()
     {
         $table_mame = 'products';
         if (!$this->check_column('video', $table_mame)) {
             $this->db->query("ALTER TABLE __{$table_mame} ADD video TEXT DEFAULT NULL");
+        }
+
+        if (!$this->check_column('on_request', $table_mame)) {
+            $this->db->query("ALTER TABLE __{$table_mame} ADD on_request TINYINT(1) NOT NULL DEFAULT '0' AFTER to_yandex");
+        }
+
+        if (!$this->check_column('out_of', $table_mame)) {
+            $this->db->query("ALTER TABLE __{$table_mame} ADD out_of TINYINT(1) NOT NULL DEFAULT '0' AFTER on_request");
         }
     }
 

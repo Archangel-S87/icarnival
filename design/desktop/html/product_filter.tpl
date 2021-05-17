@@ -24,8 +24,8 @@
   
     <div class="display">
     	<div class="view">Вид:</div>
-		<div class="table_v {if isset($smarty.cookies.view) && $smarty.cookies.view == 'table'}list_b{elseif isset($smarty.cookies.view) && $smarty.cookies.view == 'gallery'}list_a{else}list_a{/if}" onclick="createCookie('view', 'table', '365');direct_pagination(document.location.href);"></div> 
-		<div class="gallery_v {if isset($smarty.cookies.view) && $smarty.cookies.view == 'gallery'}grid_b{elseif isset($smarty.cookies.view) && $smarty.cookies.view == 'table'}grid_a{else}grid_b{/if}" onclick="createCookie('view', 'gallery', '365');direct_pagination(document.location.href);"></div>
+		<div class="table_v {if isset($smarty.cookies.view) && $smarty.cookies.view == 'table'}list_b{elseif isset($smarty.cookies.view) && $smarty.cookies.view == 'gallery'}list_a{else}list_a{/if}" onclick="createCookie('view', 'table', '365');direct_pagination('{url page=null}');"></div> 
+		<div class="gallery_v {if isset($smarty.cookies.view) && $smarty.cookies.view == 'gallery'}grid_b{elseif isset($smarty.cookies.view) && $smarty.cookies.view == 'table'}grid_a{else}grid_b{/if}" onclick="createCookie('view', 'gallery', '365');direct_pagination('{url page=null}');"></div>
 	</div>
 </div>
 <!-- incl. product_filter @ -->			

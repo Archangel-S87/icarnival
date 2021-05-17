@@ -10,7 +10,7 @@ $action = $_REQUEST['isdek_action'];
 if (method_exists('ISDEKservice', $action)) {
 	ISDEKservice::$action($_REQUEST);
 }
-Postcalc
+
 class ISDEKservice
 {
 	// auth

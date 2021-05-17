@@ -17,7 +17,7 @@
 				$('#boxberry').val('0');
 			{else}
 				document.getElementById('not-null-delivery-price-121').innerHTML = (result.price*curr_convert).toFixed({$currency->cents});
-				document.getElementById('boxberry').value = result.price;
+				document.getElementById('boxberry').value = result.price.toFixed({$currency->cents});
 			{/if}
 			// calc (1) end
 			document.getElementById('city').innerHTML = ' | Город ПВЗ: ' + result.name;

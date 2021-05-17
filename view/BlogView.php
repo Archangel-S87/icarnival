@@ -52,7 +52,7 @@ class BlogView extends View
 			$this->design->assign('comment_email', $this->user->email); 
 		}
 		// Изменим кол-во просмотров	
-		if($post->visible && empty($_SESSION['admin']))
+		if(!empty($this->settings->allow_views) && $post->visible && empty($_SESSION['admin']))
 			$this->blog->update_views($post->id); 
 		
 		// Принимаем комментарий
@@ -61,6 +61,7 @@ class BlogView extends View
 			$comment = new stdClass;
 			$comment->name = $this->request->post('name');
 			$comment->text = $this->request->post('text');
+				
 			$comment->email = $this->request->post('email');
 			// antibot
 			if($this->request->post('bttrue')) {

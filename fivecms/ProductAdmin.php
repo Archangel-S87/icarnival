@@ -24,6 +24,8 @@ class ProductAdmin extends Fivecms
 			$product->featured = $this->request->post('featured', 'boolean');
 			$product->is_new = $this->request->post('is_new', 'boolean');
 			$product->to_yandex = $this->request->post('to_yandex', 'boolean');
+			$product->on_request = $this->request->post('on_request', 'boolean');
+			$product->out_of = $this->request->post('out_of', 'boolean');
 			$product->brand_id = $this->request->post('brand_id', 'integer');
 
 			$product->url = $this->request->post('url', 'string');

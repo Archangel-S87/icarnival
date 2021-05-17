@@ -24,6 +24,8 @@ class Products extends Fivecms
 		$is_featured_filter = '';
 		$is_new_filter = '';
 		$to_yandex_filter = '';
+		$is_on_request_filter = '';
+		$is_out_of_filter = '';
 		$discounted_filter = '';
 		$in_stock_filter = '';
 		$group_by = '';
@@ -33,6 +35,7 @@ class Products extends Fivecms
 		$variant_filter2 = '';
         $variant_join = '';
         $products_stock_null_sort = '';
+        $video_filter = '';
 
 		if(isset($filter['limit']))
 			$limit = max(1, intval($filter['limit']));
@@ -76,11 +79,25 @@ class Products extends Fivecms
 		if(isset($filter['to_yandex']))
 		    $to_yandex_filter = $this->db->placehold('AND p.to_yandex=?', intval($filter['to_yandex']));
 
+        if(isset($filter['on_request']))
+            $is_on_request_filter = $this->db->placehold('AND p.on_request=?', intval($filter['on_request']));
+
+        if(isset($filter['out_of']))
+            $is_out_of_filter = $this->db->placehold('AND p.out_of=?', intval($filter['out_of']));
+
 		if(isset($filter['in_stock']))
 			$in_stock_filter = $this->db->placehold('AND (SELECT count(*)>0 FROM __variants pv WHERE pv.product_id=p.id AND pv.price>0 AND (pv.stock IS NULL OR pv.stock>0) LIMIT 1) = ?', intval($filter['in_stock']));
 
 		if(isset($filter['visible']))
 			$visible_filter = $this->db->placehold('AND p.visible=?', intval($filter['visible']));
+
+        if(isset($filter['video'])) {
+            if ($filter['video']) {
+                $video_filter = $this->db->placehold('AND (p.video IS NOT NULL AND p.video != "")');
+            } else {
+                $video_filter = $this->db->placehold('AND (p.video IS NULL OR p.video = "")');
+            }
+        }
 
  		if(!empty($filter['sort']))
 			switch ($filter['sort'])
@@ -201,7 +218,7 @@ class Products extends Fivecms
 		if(!empty($filter['max']))
 			foreach($filter['max'] as $feature=>$value)
 				$features_filter .= $this->db->placehold('AND p.id in (SELECT product_id FROM __options WHERE feature_id=? AND -value >=? ) ', $feature, -$value);
-		
+
 		$currency_tmp = $this->money->get_currencies();		
 		$currency = reset($currency_tmp);	
 		$price_curr_temp = "IF((v.currency_id !='.$currency->id.' AND v.currency_id > 0),(v.price*(SELECT rate_to FROM __currencies AS c WHERE c.id =v.currency_id)/(SELECT rate_from FROM __currencies AS c WHERE c.id = v.currency_id)),v.price)";
@@ -224,6 +241,8 @@ class Products extends Fivecms
 					p.featured, 
 					p.is_new,
 					p.to_yandex,
+                    p.on_request,
+                    p.out_of,
 					p.ref_url,
                     p.video,
 					b.name as brand,
@@ -246,9 +265,12 @@ class Products extends Fivecms
 					$is_featured_filter
 					$is_new_filter
 					$to_yandex_filter
+                    $is_on_request_filter
+                    $is_out_of_filter
 					$discounted_filter
 					$in_stock_filter
 					$visible_filter
+                    $video_filter
 					".(isset($filter['minCurr']) ? "AND (SELECT 1 FROM __variants v WHERE v.product_id=p.id AND ".$price_curr_temp.">='".$filter['minCurr']."' LIMIT 1) = 1" : '')."
 					".(isset($filter['maxCurr']) ? "AND (SELECT 1 FROM __variants v WHERE v.product_id=p.id AND ".$price_curr_temp."<='".$filter['maxCurr']."' LIMIT 1) = 1" : '')."
 				$group_by
@@ -287,6 +309,8 @@ class Products extends Fivecms
 		$is_featured_filter = '';
 		$is_new_filter = '';
 		$to_yandex_filter = '';
+        $is_on_request_filter = '';
+        $is_out_of_filter = '';
 		$in_stock_filter = '';
 		$discounted_filter = '';
 		$features_filter = '';
@@ -294,6 +318,7 @@ class Products extends Fivecms
 		$variant_filter1 = '';
 		$variant_filter2 = '';
         $variant_join = '';
+        $video_filter = '';
 		
 		if(!empty($filter['category_id']))
 			$category_id_filter = $this->db->placehold('INNER JOIN __products_categories pc ON pc.product_id = p.id AND pc.category_id in(?@)', (array)$filter['category_id']);
@@ -348,6 +373,12 @@ class Products extends Fivecms
 		if(isset($filter['to_yandex']))
 			$to_yandex_filter = $this->db->placehold('AND p.to_yandex=?', intval($filter['to_yandex']));
 
+        if(isset($filter['on_request']))
+            $is_on_request_filter = $this->db->placehold('AND p.on_request=?', intval($filter['on_request']));
+
+        if(isset($filter['out_of']))
+            $is_out_of_filter = $this->db->placehold('AND p.out_of=?', intval($filter['out_of']));
+
 		if(isset($filter['in_stock']))
 			$in_stock_filter = $this->db->placehold('AND (SELECT count(*)>0 FROM __variants pv WHERE pv.product_id=p.id AND pv.price>0 AND (pv.stock IS NULL OR pv.stock>0) LIMIT 1) = ?', intval($filter['in_stock']));
 
@@ -356,6 +387,14 @@ class Products extends Fivecms
 
 		if(isset($filter['visible']))
 			$visible_filter = $this->db->placehold('AND p.visible=?', intval($filter['visible']));
+
+        if(isset($filter['video'])) {
+            if ($filter['video']) {
+                $video_filter = $this->db->placehold('AND (p.video IS NOT NULL AND p.video != "")');
+            } else {
+                $video_filter = $this->db->placehold('AND (p.video IS NULL OR p.video = "")');
+            }
+        }
 		
 		if(!empty($filter['features']))
 			foreach($filter['features'] as $feature=>$value)
@@ -388,10 +427,13 @@ class Products extends Fivecms
 					$is_featured_filter
 					$is_new_filter
 					$to_yandex_filter
+					$is_on_request_filter
+                    $is_out_of_filter
 					$discounted_filter
 					$in_stock_filter
 					$visible_filter
 					$features_filter
+					$video_filter
 					".(isset($filter['minCurr']) ? "AND (SELECT 1 FROM __variants v WHERE v.product_id=p.id AND ".$price_curr_temp.">='".$filter['minCurr']."' LIMIT 1) = 1" : '')."
 					".(isset($filter['maxCurr']) ? "AND (SELECT 1 FROM __variants v WHERE v.product_id=p.id AND ".$price_curr_temp."<='".$filter['maxCurr']."' LIMIT 1) = 1" : '')."
 		";
@@ -450,7 +492,9 @@ class Products extends Fivecms
 					p.created as created,
 					p.featured, 
             		p.is_new, 
-            		p.to_yandex, 
+            		p.to_yandex,
+                    p.on_request,
+                    p.out_of,
 					p.external_id,
 					p.ref_url,
                     p.video

@@ -69,7 +69,7 @@ $('select[name=module]').change(function(){
 		<!-- Левая колонка -->
 		<div id="column_left">
 		
-			<ul class="widget_choose" style="margin-bottom:20px;{if $delivery->id == 3 || $delivery->id == 114 || $delivery->id == 121}display:none;{/if}">
+			<ul class="widget_choose" style="margin-bottom:20px;{if $delivery->id == 3 || $delivery->id == 4 || $delivery->id == 114 || $delivery->id == 121}display:none;{/if}">
 				<li><label class=property style="font-weight:700;font-size:16px; margin-right:10px;">Используется виджет доставки:</label>
 					<select name="widget" class="fivecms_inp" style="width: 50px;" onChange="Selected(this)">
 						<option value='0' {if !empty($delivery->widget) && $delivery->widget == '0'}selected{/if}>Нет</option>
@@ -95,7 +95,7 @@ $('select[name=module]').change(function(){
 			<!-- Параметры страницы -->
 			<div class="block layer nowidget" {if !empty($delivery->widget) && $delivery->widget == 1}style="display:none;"{/if}>
 				<h2>{$tr->delivery_price|escape}:</h2>
-				<ul {if $delivery->id == 3 || $delivery->id == 114 || $delivery->id == 121}style="display:none;"{/if}>
+				<ul {if $delivery->id == 3 || $delivery->id == 4 || $delivery->id == 114 || $delivery->id == 121}style="display:none;"{/if}>
 					<li><label class=property>{$tr->fixed|escape}</label><input style="width:100px;" name="price" class="fivecms_small_inp" type="text" value="{if !empty($delivery->price)}{$delivery->price}{/if}" /> {$currency->sign}</li>
 					<li><label class=property>+ {$tr->per_kg|escape} более 3-х</label><input style="width:100px;" name="price2" class="fivecms_small_inp" type="text" value="{if !empty($delivery->price2)}{$delivery->price2}{/if}" /> {$currency->sign}</li>
 				</ul>
@@ -103,8 +103,7 @@ $('select[name=module]').change(function(){
 			<div class="block layer">
 				<ul>
 					<li><label class=property>{$tr->free_from|escape}</label><input style="width:100px;" name="free_from" class="fivecms_small_inp" type="text" value="{if !empty($delivery->free_from)}{$delivery->free_from}{/if}" /> {$currency->sign}</li>
-					<li {if $delivery->id == 3 || $delivery->id == 114 || $delivery->id == 121}style="display:none;"{/if}><label class=property for="separate_payment">{$tr->separate_payment|escape} <br /><span style="font-weight:400;font-size:12px;">({$tr->about_separate|escape})</span></label><input id="separate_payment" name="separate_payment" type="checkbox" value="1" {if !empty($delivery->separate_payment)}checked{/if} /></li>
-					<li><label class=property>Доплнительная стоимость</label><input style="width:100px;" name="additional_cost" class="fivecms_small_inp" type="text" value="{if !empty($delivery->additional_cost)}{$delivery->additional_cost}{/if}" /> {$currency->sign}</li>
+					<li><label class=property for="separate_payment">{$tr->separate_payment|escape} <br /><span style="font-weight:400;font-size:12px;">({$tr->about_separate|escape})</span></label><input id="separate_payment" name="separate_payment" type="checkbox" value="1" {if !empty($delivery->separate_payment)}checked{/if} /></li>
 				</ul>
 			</div>
 			<!-- Параметры страницы (The End)-->
@@ -157,10 +156,17 @@ $('select[name=module]').change(function(){
 				<li>** полученные при регистрации (аккаунт к интеграции и ключ), а также выбранные тарифы необходимо указать в файле /service.php в корневой директории (правится через файловый менеджер)</li>
 			</ul>		
 		</div>
+		{elseif $delivery->id == 4}
+		<div class="block layer widget" id="cdek">
+			<p style="margin-bottom:15px;"><a class="bluelink" href="http://5cms.ru/blog/postrf" target="_blank">{$tr->instruction|capitalize}</a></p>
+			<ul>
+				<li><label class="property">ID виджета *</label><input placeholder="Напр.: 6935" name="option1" class="fivecms_inp" type="text" value="{if !empty($delivery->option1)}{$delivery->option1|escape}{/if}" /></li>
+			</ul>		
+		</div>
 		{elseif $delivery->id == 3}
 		<div class="block layer widget" id="shiptor">
+			<p style="margin-bottom:15px;"><a class="bluelink" href="http://5cms.ru/blog/shiptor" target="_blank">{$tr->instruction|capitalize}</a></p>
 			<ul>
-				<li>Для начала работы необходимо зарегистрироваться на сайте <a href="https://shiptor.ru" target="_blank">Shiptor</a> и получить "Публичный ключ API" (<a href="https://shiptor.ru/help/integration/e-shop-widgets/calculation-widget-settings" target="_blank">описание виджета</a>)</li>
 				<li><label class="property" style="margin-right:10px;"><a href="https://shiptor.ru/help/integration/e-shop-widgets/calculation-widget-settings#article_7" target="_blank">КЛАДР код</a> города отправки (если Москва, то ничего не указывать)</label><input placeholder="напр.: 7800000000000" name="option1" class="fivecms_inp" type="text" value="{if !empty($delivery->option1)}{$delivery->option1|escape}{/if}" /></li>
 				<li><label class="property" style="margin-right:10px;">Публичный ключ API Shiptor</label><input name="option2" class="fivecms_inp" type="text" value="{if !empty($delivery->option2)}{$delivery->option2|escape}{/if}" /></li>
 				<p style="margin-bottom:10px;">* скопировать в ЛК Шиптора в Настройки > API > API токен для https://api.shiptor.ru/public/v1</p>
@@ -171,44 +177,7 @@ $('select[name=module]').change(function(){
 					</select>
 				</li>
 				<li><label class="property" style="margin-right:10px;">API-ключ Яндекс.Карт (<a  href="http://5cms.ru/blog/yandex-maps-api" target="_blank">получить</a>)</label><input name="option5" class="fivecms_inp" type="text" value="{if !empty($delivery->option5)}{$delivery->option5|escape}{/if}" /></li>
-				<li><label class="property" style="margin-right:10px;">Транспортные компании</label><input placeholder="напр.: shiptor_today,dpd_auto" name="option4" class="fivecms_inp" type="text" value="{if !empty($delivery->option4)}{$delivery->option4|escape}{/if}" /></li>
-				<p style="margin-bottom:10px;">** через запятую из списка ниже (если ничего не указано, то выводятся все):</p>
-				<p>Фильтр для отображения информации по конкретному перевозчику (ТК). Возможное значение:&nbsp;<strong>shiptor</strong>,&nbsp;<strong>boxberry</strong>,&nbsp;<strong>dpd</strong>,<strong>&nbsp;iml</strong>,<strong>&nbsp;russian-post</strong>,<strong>&nbsp;pickpoint</strong>,<strong>&nbsp;cdek</strong>,<strong>&nbsp;shiptor-one-day,&nbsp;sberlogistics </strong>или&nbsp;<strong>sber_courier</strong>.</p>
-			<p style="margin-top:20px;">Чтобы задать составной фильтр из способов доставки, укажите их через запятую, пользуясь списком ниже:</p>
-
-			<p style="margin-top:10px;"><strong>shiptor_today&nbsp;</strong>—&nbsp;Shiptor Today<br>
-			<strong>shiptor_courier&nbsp;</strong>—&nbsp;Shiptor Курьер<br>
-			<strong>shiptor_courier_za_mkad </strong>— Shiptor Курьер за МКАД<br>
-			<strong>shiptor_pvz&nbsp;</strong>— Shiptor Самовывоз<br>
-			<strong>dpd_auto&nbsp;</strong>— DPD Курьер (Авто)<br>
-			<strong>dpd_avia&nbsp;</strong>— DPD Курьер (Авиа)<br>
-			<strong>dpd_pvz&nbsp;</strong>— DPD Самовывоз<br>
-			<strong>dpd_pvz_c&nbsp;</strong>— DPD Самовывоз<br>
-			<strong>cdek_courier&nbsp;</strong>—&nbsp;СДЭК Курьер<br>
-			<strong>cdek_pvz&nbsp;</strong>— СДЭК Самовывоз<br>
-			<strong>cdek_pvz_e </strong>—<strong>&nbsp;</strong>CDEK ПВЗ Эконом<br>
-			<strong>iml_courier&nbsp;</strong>— IML Курьер<br>
-			<strong>iml_pvz&nbsp;</strong>— IML Самовывоз<br>
-			<strong>pickpoint&nbsp;</strong>— Pickpoint<br>
-			<strong>boxberry_courier&nbsp;</strong>—&nbsp;BoxBerry Курьер<br>
-			<strong>boxberry_pvz&nbsp;</strong>— BoxBerry Самовывоз<br>
-			<strong>dpd_courier_dd</strong> — Сквозной DPD Дверь-Дверь<br>
-			<strong>dpd_courier_td</strong> — Сквозной DPD ПВЗ-Дверь<br>
-			<strong>dpd_pvz_dt</strong> — Сквозной DPD Дверь-ПВЗ<br>
-			<strong>dpd_pvz_tt</strong> — Сквозной DPD ПВЗ-ПВЗ<br>
-			<strong>cdek_courier_dd</strong> — Сквозной СДЭК Дверь-Дверь<br>
-			<strong>cdek_courier_td</strong> — Сквозной СДЭК ПВЗ-Дверь<br>
-			<strong>cdek_pvz_dt</strong> — Сквозной СДЭК Дверь-ПВЗ<br>
-			<strong>cdek_pvz_tt</strong> — Сквозной СДЭК ПВЗ-ПВЗ<br>
-			<strong>sberlogistics_pvz</strong> — Сберпосылка<br>
-			<strong>sberlogistics_dd </strong>— Сберкурьер Дверь-Дверь<br>
-			<strong>sberlogistics_td </strong>— Сберкурьер ПВЗ-Дверь<br>
-			<strong>sberlogistics_pvz_dp</strong> — Сберпосылка Дверь-ПВЗ<br>
-			<strong>sber_courier</strong> — Сберкурьер<br>
-			<strong>post&nbsp;</strong>— Shiptor Почта<br>
-			<strong>russian_post_main</strong> — Shiptor Почта<br>
-			<strong>russian_post_courier_online</strong> — Почта «Курьер онлайн»<br>
-			<strong>russian_post_parcel_online</strong> — Почта «Посылка онлайн»</p>
+				<li><label class="property" style="margin-right:10px;">Транспортные компании (если не указано, то все доступные)</label><input placeholder="напр.: shiptor_today,dpd_auto" name="option4" class="fivecms_inp" type="text" value="{if !empty($delivery->option4)}{$delivery->option4|escape}{/if}" /></li>
 			</ul>		
 		</div>
 		{elseif $delivery->id == 122}

@@ -80,7 +80,7 @@ $(function() {
 
 	<ul class="themes">
 	{foreach $themes as $t}
-		{if $t->name != "mobile" && $t->name != "mail"}
+		{if $t->name != "mobile" && $t->name != "mobile_mod" && $t->name != "mail"}
 			<li theme='{$t->name|escape}'>
 				{if $theme->name == $t->name}<img class="tick" src='design/images/tick.png'> {/if}
 				{if $t->locked}<img class="tick" src='design/images/lock_small.png'> {/if}

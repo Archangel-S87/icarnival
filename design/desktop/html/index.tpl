@@ -474,9 +474,9 @@
 					{if !empty($category)}
 						{foreach from=$category->path item=cat}
 						{if !$cat@last || !empty($brand)}
-						» <span itemscope itemprop="itemListElement" itemtype="http://schema.org/ListItem"><a itemprop="item" href="catalog/{$cat->url}" title="{$cat->name|escape}"><span itemprop="name">{$cat->name|escape}</span></a><meta itemprop="position" content="{$bread_pos++}"></span>
+						» <span itemscope itemprop="itemListElement" itemtype="http://schema.org/ListItem"><a itemprop="item" href="catalog/{$cat->url}" title="{$cat->name|escape}"><span itemprop="name">{if !empty($cat->menu)}{$cat->menu|escape}{else}{$cat->name|escape}{/if}</span></a><meta itemprop="position" content="{$bread_pos++}"></span>
 						{else}
-							»  <span itemscope itemprop="itemListElement" itemtype="http://schema.org/ListItem"><link itemprop="item" href="catalog/{$cat->url}" /><span itemprop="name">{$cat->name|escape}</a><meta itemprop="position" content="{$bread_pos++}"></span>
+							»  <span itemscope itemprop="itemListElement" itemtype="http://schema.org/ListItem"><link itemprop="item" href="catalog/{$cat->url}" /><span itemprop="name">{if !empty($cat->menu)}{$cat->menu|escape}{else}{$cat->name|escape}{/if}</a><meta itemprop="position" content="{$bread_pos++}"></span>
 						{/if}
 						{/foreach}  
 						{if !empty($brand)}
@@ -490,7 +490,7 @@
 					{/if}
 				{elseif $module == 'ProductView'}
 					{if !empty($category)}{foreach from=$category->path item=cat}
-					» <span itemscope itemprop="itemListElement" itemtype="http://schema.org/ListItem"><a itemprop="item" href="catalog/{$cat->url}" title="{$cat->name|escape}"><span itemprop="name">{$cat->name|escape}</span></a><meta itemprop="position" content="{$bread_pos++}"></span>
+					» <span itemscope itemprop="itemListElement" itemtype="http://schema.org/ListItem"><a itemprop="item" href="catalog/{$cat->url}" title="{$cat->name|escape}"><span itemprop="name">{if !empty($cat->menu)}{$cat->menu|escape}{else}{$cat->name|escape}{/if}</span></a><meta itemprop="position" content="{$bread_pos++}"></span>
 					{/foreach}{/if}
 					{if !empty($brand)}
 					» <span itemscope itemprop="itemListElement" itemtype="http://schema.org/ListItem"><a itemprop="item" href="catalog/{$cat->url}/{$brand->url}" title="{$brand->name|escape}"><span itemprop="name">{$brand->name|escape}</span></a><meta itemprop="position" content="{$bread_pos++}"></span>

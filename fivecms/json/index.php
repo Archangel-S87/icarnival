@@ -15,12 +15,12 @@ require_once 'ImportJson.php';
 
 $Export = new ImportJson();
 
-//echo $Export->import_categories(0);
+//echo $Export->import_categories();
 
 //echo $Export->import_brands();
 
-echo $Export->import_products(0);
+//echo $Export->import_products(0);
 
 //echo $Export->import_users();
 
-//echo $Export->import_orders();
+echo $Export->import_orders();

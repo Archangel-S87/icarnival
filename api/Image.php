@@ -357,7 +357,21 @@ class Image extends Fivecms
 		// Читаем изображение
 		if(!$thumb->readImage($src_file))
 			return false;
-		
+
+		// Что бы фотки не переворачивались
+        $orientation = $thumb->getImageOrientation();
+        switch($orientation) {
+            case imagick::ORIENTATION_BOTTOMRIGHT:
+                $thumb->rotateimage("#000", 180); // rotate 180 degrees
+                break;
+            case imagick::ORIENTATION_RIGHTTOP:
+                $thumb->rotateimage("#000", 90); // rotate 90 degrees CW
+                break;
+            case imagick::ORIENTATION_LEFTBOTTOM:
+                $thumb->rotateimage("#000", -90); // rotate 90 degrees CCW
+                break;
+        }
+
 		// Размеры исходного изображения
 		$src_w = $thumb->getImageWidth();
 		$src_h = $thumb->getImageHeight();

@@ -21,6 +21,7 @@ class Cart extends Fivecms
 		$cart->coupon = null;
 		$cart->discount = 0;
 		$cart->coupon_discount = 0;
+        $cart->products_variants = [];
 		
 		// Берем из сессии список variant_id=>amount
 		if($this->settings->cart_storage == 0) {
@@ -49,8 +50,8 @@ class Cart extends Fivecms
 		{
 			if($this->settings->cart_storage == 1 || $this->settings->cart_storage == 2)
 				$session_items = $_SESSION['ct'];
-			
-			$variants = $this->variants->get_variants(array('id'=>array_keys($session_items)));
+
+            $variants = $this->variants->get_variants(['id' => array_keys($session_items), 'sort' => 'product_id']);
 			if(!empty($variants))
 			{
 				$items = array();
@@ -78,10 +79,16 @@ class Cart extends Fivecms
 				
 				// Если нужна категория товара в корзине и информере корзины
 				// Пример в шаблоне {$purchase->product->category->id}	
-                foreach($products as &$product){
+                /*foreach($products as &$product){
 					$product->categories = $this->categories->get_categories(array('product_id'=>$product->id));
 					$product->category = reset($product->categories);        
-				}
+				}*/
+
+                // Варианты товаров для всплывашки
+                $all_variants = $this->variants->get_variants(['product_id' => $products_ids]);
+                foreach ($all_variants as $v) {
+                    $cart->products_variants[$v->product_id][$v->id] = $v->name1;
+                }
 			
 				foreach($items as $variant_id=>$item)
 				{	

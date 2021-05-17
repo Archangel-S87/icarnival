@@ -25,6 +25,7 @@ class BannersAdmin extends Fivecms
 				{
 					if($this->request->post('name') && trim($this->request->post('name')) != '')
 					{
+						$group = new stdClass();
 						$group->name = $this->request->post('name');
 						if($this->request->get('action') == 'edit' && $this->request->get('id'))
 						{
@@ -43,7 +44,8 @@ class BannersAdmin extends Fivecms
 					}
 				}
 				
-				$this->design->assign('group', $group);
+				if(!empty($group))
+					$this->design->assign('group', $group);
 				$this->design->assign('action', $this->request->get('action'));
 				return $this->design->fetch('banners.groups.add.edit.tpl');
 			}
@@ -78,6 +80,7 @@ class BannersAdmin extends Fivecms
 				//Если была POST отправка данных формы добавления/редактирования
 				if($this->request->post('session_id'))
 				{
+					$banner = new stdClass();
 					$banner->name = $this->request->post('name');
 					$banner->url = $this->request->post('url');
 					$banner->description = $this->request->post('description');
@@ -95,17 +98,17 @@ class BannersAdmin extends Fivecms
 						//if($upload_file['name']=='' AND !$this->request->post('image_exist')) $error = 'not_image';
 						//if(empty($banner->url) AND $banner->url=="") $error = 'empty_url';
 						if(empty($banner->name) AND $banner->name=="") $error = 'empty_name';
-						if($error)$this->design->assign('message_error', $error);
+						if(!empty($error))$this->design->assign('message_error', $error);
 					}
 					
 					
-					if(!$error && $this->request->get('action') == "add" && $this->add_banner($banner))//Если добавление баннера
+					if(empty($error) && $this->request->get('action') == "add" && $this->add_banner($banner))//Если добавление баннера
 					{
 						//Если данные успешно добавлены и успешно загружено изображение баннера, выводим сообщение
 						$this->design->assign('message_success', 'added');
 						return $this->design->fetch('banners.add.edit.tpl');
 						
-					}elseif(!$error  //Если реактирование баннера
+					}elseif(empty($error)  //Если реактирование баннера
 							AND $this->request->get('action') == "edit"
 							AND $this->request->get('id')
 							AND $this->banners->update_banner($this->request->get('id'),Array(
@@ -141,7 +144,8 @@ class BannersAdmin extends Fivecms
 				
 				$this->design->assign('banners_group', $this->banners->get_group($this->request->get('group')));
 				$this->design->assign('categories', $categories);
-				$this->design->assign('banner',     $banner);
+				if(!empty($banner))
+					$this->design->assign('banner',     $banner);
 				$this->design->assign('brands',     $brands);
 				$this->design->assign('pages',      $pages);
 				

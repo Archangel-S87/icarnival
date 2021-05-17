@@ -1,4 +1,6 @@
 <?PHP
+//ini_set('error_reporting', E_ALL);
+//ini_set('display_errors', 1);
 
 // Склеиваем зеркала главной
 if($_SERVER['REQUEST_URI'] == "/index.php" || $_SERVER['REQUEST_URI'] == "/index.html") {

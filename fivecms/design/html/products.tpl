@@ -164,8 +164,17 @@
 				{if $all_brands|count>0}
 				<option value="move_to_brand">{$tr->add_brand|escape}</option>
 				{/if}
+				<option value="up_price">$ Увеличить цену на ...</option>
+				<option value="down_price">$ Уменьшить цену на ...</option>
+				<option value="retrieve_price">$ Вернуть прежнюю цену</option>
 				<option value="delete">{$tr->delete|escape}</option>
 			</select>
+			</span>
+
+			<span id="recalc_price" style="display: none">
+				<input type="text" name="percent_price" class="percent_price"/>
+				<label><input type="radio" name="type_recalc" value="percent" checked />%</label>
+				<label><input type="radio" name="type_recalc" value="rub"/>руб.</label>
 			</span>
 		
 			<span id="move_to_page">
@@ -217,7 +226,6 @@
 	<!-- Фильтры -->
 	<ul>
 		<li {if !isset($filter)}class="selected"{/if}><a href="{url brand_id=null category_id=null keyword=null page=null filter=null minCurr=null maxCurr=null}">{$tr->all|escape} {$tr->products|lower|escape}</a></li>
-		
 		<li {if !empty($filter) && $filter=='featured'}class="selected"{/if}><a href="{url page=null filter='featured'}">{$tr->hits|escape}</a></li>
 		<li {if !empty($filter) && $filter=='is_new'}class="selected"{/if}><a href="{url page=null filter='is_new'}">{$tr->novelties|escape}</a></li>
 		<li {if !empty($filter) && $filter=='to_yandex'}class="selected"{/if}><a href="{url page=null filter='to_yandex'}">{$tr->y_market|escape}</a></li>
@@ -225,6 +233,12 @@
 		<li {if !empty($filter) && $filter=='visible'}class="selected"{/if}><a href="{url page=null filter='visible'}">{$tr->enabled_pl|escape}</a></li>
 		<li {if !empty($filter) && $filter=='hidden'}class="selected"{/if}><a href="{url page=null filter='hidden'}">{$tr->disabled_pl|escape}</a></li>
 		<li {if !empty($filter) && $filter=='outofstock'}class="selected"{/if}><a href="{url page=null filter='outofstock'}">{$tr->out_stock|escape}</a></li>
+		<li {if !empty($filter) && $filter=='on_request'}class="selected"{/if}><a href="{url page=null filter='on_request'}">Под заказ</a></li>
+		<li {if !empty($filter) && $filter=='out_of'}class="selected"{/if}><a href="{url page=null filter='out_of'}">Снято с производства</a></li>
+		<li {if !empty($filter) && $filter=='video'}class="selected"{/if}><a href="{url page=null filter='video'}">С видео</a></li>
+		<li {if !empty($filter) && $filter=='not_video'}class="selected"{/if}><a href="{url page=null filter='not_video'}">Без видео</a></li>
+		<li {if !empty($filter) && $filter=='brands'}class="selected"{/if}><a href="{url page=null filter='brands'}">С брендом</a></li>
+		<li {if !empty($filter) && $filter=='not_brands'}class="selected"{/if}><a href="{url page=null filter='not_brands'}">Без бренда</a></li>
 	</ul>
 	<!-- Фильтры -->
 	
@@ -611,10 +625,23 @@ $(function() {
 		return false;   
 	});
 
-	// Подтверждение удаления
+	// Подтверждение удаления и воовда новых цен
 	$("form").submit(function() {
 		if($('select[name="action"]').val()=='delete' && !confirm('{/literal}{$tr->confirm_deletion|escape}{literal}'))
-			return false;	
+			return false;
+		// Проверяем форму перед отправкой, если действие по изменению цены, то значение изменения не может быть пустым
+		if ($(".percent_price").is(':visible') && $(".percent_price").val() == '') {
+			alert ('Введите значение в % для изменения цен выбранным товарам');
+			$(".percent_price").focus();
+			return false;
+		}
+		if ($("#action select[name=action] option:selected").val() == 'retrieve_price') {
+			retrieve = confirm("Внимание! Будет произведен откат цен выбранных товаров на те, что были установленны до выполнения пакетного изменения. Вы уверены что хотите продолжить?");
+			if (retrieve)
+				return true;
+			else
+				return false;
+		}
 	});
 	
 	// Бесконечность на складе
@@ -626,6 +653,33 @@ $(function() {
 	$("input[name*=stock]").blur(function() {
 		if($(this).val() == '')
 			$(this).val('∞');
+	});
+
+	// Изменение цены
+	$("#action select[name=action]").change(function() {
+		if($(this).val() == 'up_price' || $(this).val() == 'down_price')
+			$("span#recalc_price").show();
+		else
+			$("span#recalc_price").hide();
+	});
+
+	// Разрешаем вводить в качестве процентов только числа
+	$(".percent_price").keydown(function(event) {
+		// Allow: backspace, delete, tab, escape, enter and .
+		if ( $.inArray(event.keyCode,[46,8,9,27,13,190]) !== -1 ||
+				// Allow: Ctrl+A
+				(event.keyCode == 65 && event.ctrlKey === true) ||
+				// Allow: home, end, left, right
+				(event.keyCode >= 35 && event.keyCode <= 39)) {
+			// let it happen, don't do anything
+			return;
+		}
+		else {
+			// Ensure that it is a number and stop the keypress
+			if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105 )) {
+				event.preventDefault();
+			}
+		}
 	});
 });
 

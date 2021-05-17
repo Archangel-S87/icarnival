@@ -1,6 +1,6 @@
 <?PHP
-ini_set('error_reporting', E_ALL);
-ini_set('display_errors', 1);
+//ini_set('error_reporting', E_ALL);
+//ini_set('display_errors', 1);
 chdir('..');
 
 // Засекаем время
@@ -34,6 +34,7 @@ if(!$backend->request->check_session())
 	exit;
 }
 
+//header("Content-type: text/html; charset=UTF-8");
 print $backend->fetch();
 
 print "<!--\r\n";

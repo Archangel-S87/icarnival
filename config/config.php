@@ -115,7 +115,7 @@ downloads_dir = files/downloads/;
 cms_files_dir = files/files/;
 
 [debug]
-debug = true;
+debug = false;
 
 ;Локалка
 is_localhost = true;

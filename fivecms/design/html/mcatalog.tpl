@@ -31,7 +31,7 @@
 		<div class="menuseparator {if $mod=="OrdersAdmin" || $mod=="OrderAdmin" || $mod=="OrdersLabelsAdmin" || $mod=="OrdersLabelAdmin"} showed{/if}">
 			<div class="menutitle">{$tr->orders|escape}					
 				<div onclick="window.location='/fivecms/index.php?module=OrdersAdmin'" class="counter tooltips" id="count_new_orders" style="{if !$new_orders_counter}display:none{/if}">
-					<span>{$new_orders_counter}</span> 
+					<span title="{$tr->new_pl}">{$new_orders_counter}</span> 
 				</div>
 			</div>
 			<div class="arrow">
@@ -40,7 +40,7 @@
 			<ul id="main_menu">				
 				<li>
 					<a href="index.php?module=OrdersAdmin">{$tr->orders|escape} <div onclick="window.location='/fivecms/index.php?module=OrdersAdmin'" class="counter tooltips" id="count_new_orders" style="{if !$new_orders_counter}display:none{/if}">
-					<span>{$new_orders_counter}</span> 
+					<span title="{$tr->new_pl}">{$new_orders_counter}</span> 
 				</div></a>
 				</li>
 				<li><a href="index.php?module=OrdersLabelsAdmin">{$tr->orders_labels|escape}</a></li>
@@ -107,13 +107,13 @@
 
 		{if in_array('comments', $manager->permissions) || in_array('feedbacks', $manager->permissions) || in_array('design', $manager->permissions)}
 		<div class="menuseparator {if $mod=="CommentsAdmin" || $mod=="CommentAdmin" || $mod=="FeedbacksAdmin" || $mod=="FormsAdmin" || $mod=="FormAdmin" || $mod=="MailTemplatesAdmin"} showed{/if}">
-			<div class="menutitle">{$tr->feedback|escape} {if $new_comments_counter}<div onclick="window.location='/fivecms/index.php?module=CommentsAdmin'" style="margin-left:10px;position: relative;" class='counter'><span>{$new_comments_counter}</span></div>{/if}</div>
+			<div class="menutitle">{$tr->feedback|escape} {if $new_comments_counter}<div onclick="window.location='/fivecms/index.php?module=CommentsAdmin'" style="margin-left:10px;position: relative;" class='counter'><span title="{$tr->new_pl} {$tr->comments|lower}">{$new_comments_counter}</span></div>{/if}</div>
 			<div class="arrow">
 				<svg viewBox="0 0 20 20"><path d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"></path><path d="M0-.25h24v24H0z" fill="none"></path></svg>
 			</div>
 			<ul id="main_menu">				
 				{if in_array('comments', $manager->permissions)}
-					<li><a href="index.php?module=CommentsAdmin">{$tr->comments|escape} {if $new_comments_counter}<div onclick="window.location='/fivecms/index.php?module=CommentsAdmin'" style="margin-left:10px;position: relative;" class='counter'><span>{$new_comments_counter}</span></div>{/if}</a>
+					<li><a href="index.php?module=CommentsAdmin">{$tr->comments|escape} {if $new_comments_counter}<div onclick="window.location='/fivecms/index.php?module=CommentsAdmin'" style="margin-left:10px;position: relative;" class='counter'><span title="{$tr->new_pl} {$tr->comments|lower}">{$new_comments_counter}</span></div>{/if}</a>
 					</li>
 				{/if}					
 				{if in_array('feedbacks', $manager->permissions)}
@@ -179,7 +179,7 @@
 				{/if}
 				{if in_array('slides', $manager->permissions)}
 					<li><a href="index.php?module=SlidesAdmin">{$tr->slider|escape}</a></li>
-					<li><a href="index.php?module=BannersAdmin">{$tr->banners|escape}</a></li>
+					<li><a href="index.php?module=BannersAdmin&do=groups">{$tr->banners|escape}</a></li>
 				{/if}
 				<li><a class="menu_nonactive" name="mob-diz">- {$tr->mobile|escape} -</a></li>	
 				{if in_array('design', $manager->permissions)}

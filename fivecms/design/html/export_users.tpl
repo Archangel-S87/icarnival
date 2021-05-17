@@ -7,7 +7,7 @@
 {/capture}
 {$meta_title = $tr->buyers_export|escape scope=root}
 
-<script src="{$config->root_url}/fivecms/design/js/piecon/piecon.js"></script>
+<script src="design/js/piecon/piecon.js"></script>
 <script>
 	var in_process=false;
 	var group_id='{if isset($group_id)}{$group_id|escape}{/if}';

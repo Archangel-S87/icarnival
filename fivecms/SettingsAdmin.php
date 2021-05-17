@@ -46,8 +46,12 @@ class SettingsAdmin extends Fivecms
 				$this->settings->site_disabled = $this->request->post('site_disabled', 'integer');
 
 				$this->settings->images_quality = $this->request->post('images_quality');
-			
-				// Водяной знак
+
+                $this->settings->consignor = $this->request->post('consignor');
+                $this->settings->supplier = $this->request->post('supplier');
+                $this->settings->torg12_delivery = $this->request->post('torg12_delivery','boolean');
+
+                // Водяной знак
 				$clear_image_cache = false;
 				$watermark = $this->request->files('watermark_file', 'tmp_name');
 				if(!empty($watermark) && in_array(pathinfo($this->request->files('watermark_file', 'name'), PATHINFO_EXTENSION), $this->allowed_image_extentions))

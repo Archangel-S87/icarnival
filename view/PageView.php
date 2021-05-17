@@ -41,6 +41,10 @@ class PageView extends View
 			$this->setHeaderLastModify($page->last_modify, 604800); // expires 604800 - week
 		else
 			$this->setHeaderLastModify($page->last_modify, 2592000); // expires 2592000 - month
+
+        if ($url == '404') {
+            header("http/1.0 404 not found");
+        }
 		
 		return $this->design->fetch('page.tpl');
 	}

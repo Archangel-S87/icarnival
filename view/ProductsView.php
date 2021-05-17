@@ -242,6 +242,7 @@ class ProductsView extends View
 		{
 			$products_ids = array_keys($products);
 
+			// Вывод категории каждого товара в каталоге товаров
 			/*$categories = $this->categories->get_product_categories($products_ids);
 			foreach($categories as $cat)
 				$products[$cat->product_id]->category = $this->categories->get_category((int)$cat->category_id);*/

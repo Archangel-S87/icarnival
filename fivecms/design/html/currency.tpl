@@ -90,12 +90,14 @@ $(function() {
 	// Запоминаем id первой валюты, чтобы определить изменение базовой валюты
 	var base_currency_id = $('input[name*="currency[id]"]').val();
 	
-	$("form").submit(function() {
-		if($('input[type="hidden"][name="action"]').val()=='delete' && !confirm('{/literal}{$tr->confirm_delete|escape}{literal}'))
+	{/literal}
+	$("form").submit(function() { 
+		if($('input[type="hidden"][name="action"]').val()=='delete' && !confirm('{$tr->confirm_delete|escape}'))
 			return false;	
 		if(base_currency_id != $('input[name*="currency[id]"]:first').val() && confirm('{$tr->recalculate_prices|escape} '+$('input[name*="name"]:first').val()+' {$tr->on_current_rate|escape}', 'msgBox Title'))
 			$('input[name="recalculate"]').val(1);
 	});
+	{literal}
 	
 	// Округление
 	$(".round").click(function() {

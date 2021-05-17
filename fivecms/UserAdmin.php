@@ -19,10 +19,13 @@ class UserAdmin extends Fivecms
 			$user->group_id = $this->request->post('group_id');
 			$user->phone = $this->request->post('phone');
 			$user->comment = $this->request->post('comment');
+
+            $user->consignee = $this->request->post('consignee');
+            $user->payer = $this->request->post('payer');
 	
 			## Не допустить одинаковые email пользователей.
 			if(empty($user->name))
-			{			
+			{
 				$this->design->assign('message_error', 'empty_name');
 			}
 			elseif(empty($user->email))

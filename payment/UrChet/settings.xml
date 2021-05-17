@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+	<name>
+		Счет на оплату для юр.лица
+	</name>
+	<settings>
+		<variable>poluchatel</variable>
+		<name>Получатель</name>
+	</settings>
+	<settings>
+		<variable>inn</variable>
+		<name>ИНН</name>
+	</settings>
+	<settings>
+		<variable>kpp</variable>
+		<name>КПП</name>
+	</settings>
+	<settings>
+		<variable>bank</variable>
+		<name>Банк получателя</name>
+	</settings>
+	<settings>
+		<variable>bik</variable>
+		<name>БИК</name>
+	</settings>
+	<settings>
+		<variable>schet</variable>
+		<name>Счет №</name>
+	</settings>
+	<settings>
+		<variable>korchet</variable>
+		<name>Кор.Счет №</name>
+	</settings>
+	<settings>
+		<variable>banknote</variable>
+		<name>Реквизиты</name>
+		<textarea>1</textarea>
+	</settings>
+	<settings>
+		<variable>stamp</variable>
+		<name>Печать и подпись</name>
+		<options>
+			<name>Накладывать печать и подпись</name>
+			<value>1</value>
+		</options>
+	</settings>	
+	<settings>
+		<variable>security</variable>
+		<name>Защищать докумен</name>
+		<options>
+			<name>Защищать документ при выгрузке покупателю</name>
+			<value>1</value>
+		</options>
+	</settings>	
+	<settings>
+		<variable>pass</variable>
+		<name>Пароль защиты Excel</name>
+	</settings>
+</module>

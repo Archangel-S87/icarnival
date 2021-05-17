@@ -148,21 +148,25 @@
 			},
 			dataType: 'json'
 		});
-	}  
-	
-	$(document).ready(function(){  	
-		//Устанавливаем счетчик новых заказов в фавикон
-		var fav_count = parseInt(count_div.find("span").html());
-		if (fav_count)
-			$.faviconNotify('/favicon.ico', fav_count, 'br');
-	
-		// Как только документ загружен, начинаем по таймеру запрашивать информацию о новых заказах
-		setInterval('getNewOrdersCount()',20000);  
-	});  
+	}
  
  // New orders notify end
  {/literal}
  </script>
+
+	{if !$config->is_localhost}
+	<script type="text/javascript">
+		$(document).ready(function(){
+			//Устанавливаем счетчик новых заказов в фавикон
+			var fav_count = parseInt(count_div.find("span").html());
+			if (fav_count)
+				$.faviconNotify('/favicon.ico', fav_count, 'br');
+
+			// Как только документ загружен, начинаем по таймеру запрашивать информацию о новых заказах
+			setInterval('getNewOrdersCount()',20000);
+		});
+	</script>
+	{/if}
 {/if}
 
 <svg style="display:none;">

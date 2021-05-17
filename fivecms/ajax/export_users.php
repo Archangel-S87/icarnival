@@ -18,7 +18,6 @@ class ExportUsersAjax extends Fivecms
 			'phone'=>            'Телефон',
 			'partner_id'=>       'ID реферера',
 			'comment'=>          'Комментарий',
-			'withdrawal'=>       'Вывод баллов',
 			'ref_views'=>        'Переходов по реф-ссылке'
 			);
 			
@@ -68,8 +67,9 @@ class ExportUsersAjax extends Fivecms
  		foreach($this->users->get_users($filter) as $u)
  		{
  			$str = array();
- 			foreach($this->columns_names as $n=>$c)
+ 			foreach($this->columns_names as $n=>$c){
  				$str[] = $u->$n;
+ 			}
  				
  			fputcsv($f, $str, $this->column_delimiter);
  		}

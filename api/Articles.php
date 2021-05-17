@@ -219,7 +219,7 @@ class Articles extends Fivecms
 			// Удаляем статью из связанных
             $related = $this->get_related_objects($id);
             foreach($related as $r)
-                $this->delete_related_object($id, $r->related_id);  
+                $this->delete_related_object($id, $r->object_id);  
                 
             // Удаляем связь со статьями если есть
 			$this->delete_related_object_type($id, 'article');  
@@ -404,17 +404,17 @@ class Articles extends Fivecms
     }
     
     // Добавление связанного объекта
-    public function add_related_object($article_id, $related_id, $type)
+    public function add_related_object($article_id, $object_id, $type)
     {
-        $query = $this->db->placehold("INSERT IGNORE INTO __article_objects SET article_id=?, object_id=?, type=?", $article_id, $related_id, $type);
+        $query = $this->db->placehold("INSERT IGNORE INTO __article_objects SET article_id=?, object_id=?, type=?", $article_id, $object_id, $type);
         $this->db->query($query);
-        return $related_id;
+        return $object_id;
     }
     
     // Удаление связанного объекта по article_id и его ID
-    public function delete_related_object($article_id, $related_id)
+    public function delete_related_object($article_id, $object_id)
     {
-        $query = $this->db->placehold("DELETE FROM __article_objects WHERE article_id=? AND object_id=? LIMIT 1", intval($article_id), intval($related_id));
+        $query = $this->db->placehold("DELETE FROM __article_objects WHERE article_id=? AND object_id=? LIMIT 1", intval($article_id), intval($object_id));
         $this->db->query($query);
     }
     

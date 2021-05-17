@@ -104,7 +104,6 @@ $(function() {
 					$('.dropInput').hide();
 					$('#dropZone').append(temp_input);
 					$("#dropZone").css('border', '1px solid #d0d0d0').css('background-color', '#ffffff');
-					clone_input.show();
 		        };
 		      })(f);
 		
@@ -271,10 +270,10 @@ $(function() {
 	});
 	
 	// Автозаполнение мета-тегов
-	meta_title_touched = true;
+	meta_title_touched = false;
 	meta_keywords_touched = true;
 	meta_description_touched = true;
-	url_touched = true;
+	url_touched = false;
 
 	if($('input[name="meta_title"]').val() == generate_meta_title() || $('input[name="meta_title"]').val() == '')
 		meta_title_touched = false;
@@ -304,12 +303,8 @@ function set_meta()
 		$('input[name="meta_keywords"]').val(generate_meta_keywords());
 	if(!meta_description_touched)
 		$('textarea[name="meta_description"]').val(generate_meta_description());
-	{/literal}
-	{if empty($product->url)}
-		if(!url_touched)
-			$('input[name="url"]').val(generate_url());
-	{/if}
-	{literal}
+	if(!url_touched)
+		$('input[name="url"]').val(generate_url());
 }
 
 function generate_meta_title()
@@ -410,9 +405,18 @@ function translit(str)
 	<form method=post id=product enctype="multipart/form-data">
 	<input type=hidden name="session_id" value="{$smarty.session.id}">
 	
-	 	<div id="name">
+	 	<div id="name" style="margin-bottom: 10px;">
 			<input placeholder="{$tr->product_name_h1|escape}" class="name" name=name type="text" value="{if !empty($product->name)}{$product->name|escape}{/if}" required /> 
-			<input name=id type="hidden" value="{if !empty($product->id)}{$product->id|escape}{/if}"/> 
+			<input name=id type="hidden" value="{if !empty($product->id)}{$product->id|escape}{/if}"/>
+		</div>
+
+		<div class="" style="display: table; margin-bottom: 20px;">
+			<div class="checkbox">
+				<input name="on_request" value='1' type="checkbox" id="on_request_checkbox" {if !empty($product->on_request)}checked{/if}/><label for="on_request_checkbox">Под заказ</label>
+			</div>
+			<div class="checkbox">
+				<input name="out_of" value='1' type="checkbox" id="out_of_checkbox" {if !empty($product->out_of)}checked{/if}/><label for="out_of_checkbox">Снято с производства</label>
+			</div>
 			<div class="checkbox">
 				<input name=visible value='1' type="checkbox" id="active_checkbox" {if !empty($product->visible)}checked{/if}/><label for="active_checkbox">{$tr->active|escape}</label>
 			</div>
@@ -420,14 +424,13 @@ function translit(str)
 				<input name=featured value="1" type="checkbox" id="featured_checkbox" {if !empty($product->featured)}checked{/if} /><label title="{$tr->mark_as_hit|escape}" for="featured_checkbox">{$tr->bestseller|escape}</label>
 			</div>
 			<div class="checkbox">
-	    		<input name="is_new" value="1" type="checkbox" id="new_checkbox" {if !empty($product->is_new)}checked{/if}/><label title="{$tr->mark_as_new|escape}" for="new_checkbox">New</label>
+				<input name="is_new" value="1" type="checkbox" id="new_checkbox" {if !empty($product->is_new)}checked{/if}/><label title="{$tr->mark_as_new|escape}" for="new_checkbox">New</label>
 			</div>
 			<div class="checkbox">
-	    		<input name=to_yandex value="1" type="checkbox" id="yandex_checkbox" {if !empty($product->to_yandex)}checked{/if}/><label title="{$tr->export_to_yandex|escape}" for="yandex_checkbox">Yandex</label>
+				<input name=to_yandex value="1" type="checkbox" id="yandex_checkbox" {if !empty($product->to_yandex)}checked{/if}/><label title="{$tr->export_to_yandex|escape}" for="yandex_checkbox">Yandex</label>
 			</div>
-	
-		</div> 
-		
+		</div>
+
 		<div id="product_brand" {if empty($brands)}style='display:none;'{/if}>
 			<label>{$tr->brand|escape}</label>
 			<select name="brand_id">
@@ -450,7 +453,7 @@ function translit(str)
 							<option value="0" selected disabled category_name=''>{$tr->not_set|escape}</option>
 							{function name=category_select level=0}
 								{foreach from=$categories item=category}
-									<option value='{if !empty($category->id)}{$category->id}{/if}' {if !empty($category->id) && $category->id == $selected_id}selected{/if} category_name='{$category->name|escape}'>{section name=sp loop=$level}&nbsp;&nbsp;&nbsp;&nbsp;{/section}{$category->name|escape}</option>
+									<option value='{if !empty($category->id)}{$category->id}{/if}' {if !empty($category->id) && $category->id == $selected_id}selected{/if} category_name='{$category->name|escape}' {if $category->level > 1}data-parent="{$category->path[0]->name|escape}"{/if}>{section name=sp loop=$level}&nbsp;&nbsp;&nbsp;&nbsp;{/section}{$category->name|escape}</option>
 									{if !empty($category->subcategories)}
 										{category_select categories=$category->subcategories selected_id=$selected_id  level=$level+1}
 									{/if}
@@ -464,6 +467,27 @@ function translit(str)
 					{/foreach}		
 				</ul>
 			</div>
+			{* Установка веса и объёма по умолчанию *}
+			{literal}
+				<script>
+					$(function () {
+						$('#product_categories').on('change', 'select', function () {
+							const parent_cat = $(this).find('option:selected').attr('data-parent'),
+								input_weight = $('.prop_ul input[name="options[1]"]'),
+								input_volume = $('.prop_ul input[name="options[2]"]');
+							if (!input_weight.length || !input_volume.length || !parent_cat) return;
+							if (parent_cat === 'Костюмы для взрослых') {
+								if (!input_weight.val()) input_weight.val(1500);
+								if (!input_volume.val()) input_volume.val(0.009);
+							}
+							if (parent_cat === 'Костюмы для детей') {
+								if (!input_weight.val()) input_weight.val(800);
+								if (!input_volume.val()) input_volume.val(0.006);
+							}
+						})
+					})
+				</script>
+			{/literal}
 		</div>
 	
 	 	<!-- Варианты товара -->

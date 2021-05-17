@@ -60,7 +60,12 @@ class OrdersAdmin extends Fivecms
 			if(is_array($ids))
 			switch($this->request->post('action'))
 			{
-				case 'delete':
+                case 'journal':
+                {
+                    $this->create_journal($ids);
+                    break;
+                }
+                case 'delete':
 				{
 					foreach($ids as $id)
 					{
@@ -233,4 +238,103 @@ class OrdersAdmin extends Fivecms
 	  	
 		return $this->design->fetch('orders.tpl');
 	}
+
+    private function create_journal($ids)
+    {
+        /*
+        $test_dates = $this->orders->count_orders_other_date($ids);
+        if ($test_dates != 1) {
+            $this->design->assign('action_error', 'Выбранные заказы не имеют дату доставки или она не одинаковая');
+            break;
+        }
+        */
+
+        /** Include PHPExcel */
+        require_once 'classes/PHPExcel.php';
+        $objReader = PHPExcel_IOFactory::createReader('Excel5');
+        $objPHPExcel = $objReader->load("fivecms/design/xls/journal.xls");
+
+        $style_border = array(
+            'borders' => array(
+                'allborders' => array(
+                    'style' => PHPExcel_Style_Border::BORDER_THIN
+                )
+            ),
+            'font' => array(
+                'size' => 10
+            ),
+            'alignment' => array(
+                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                'vertical' => PHPExcel_Style_Alignment::VERTICAL_TOP,
+                'wrap' => true
+            )
+        );
+        $style_FG = array(
+            'font' => array(
+                'bold' => true
+            ),
+            'alignment' => array(
+                'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER
+            )
+        );
+
+        // Получаем перечень заказов
+        $exl_orders = $this->orders->get_orders(array('id' => $ids, 'limit' => count($ids) + 1));
+
+        //Номер строки в шаблоне, от которой будем плясать
+        $baseRow = 5;
+        $k = 0;
+
+        $objPHPExcel->getActiveSheet()->getStyle('A' . ($baseRow - 1) . ':E' . ($baseRow + count($ids)))->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+
+        // Перебираем наши заказы
+        foreach ($exl_orders as $o) {
+            $row = $baseRow + $k;
+            //$objPHPExcel->getActiveSheet()->insertNewRowBefore($row,1);
+            $objPHPExcel->getActiveSheet()->setCellValue('A' . $row, $o->id)
+                ->setCellValue('B' . $row, $o->address)
+                ->setCellValue('C' . $row, $o->name . "\n" . $o->phone)
+                ->setCellValue('E' . $row, $o->comment)
+                ->setCellValue('F' . $row, ($o->paid ? 'Оплачено' : $o->total_price))
+                ->setCellValue('G' . $row, $o->delivery_price);
+            $objPHPExcel->getActiveSheet()->getRowDimension($row)->setRowHeight(-1);
+
+            $order_sostav = $this->orders->get_purchases(array('order_id' => $o->id));
+            $zakaz = array();
+            foreach ($order_sostav as $sostav) {
+                $zakaz[] = $sostav->product_name . ' ' . $sostav->variant_name . ($sostav->sku ? ' (' . $sostav->sku . ') ' : ' ') . $sostav->amount . ' ' . $this->settings->units;
+            }
+            $objPHPExcel->getActiveSheet()->setCellValue('D' . $row, implode(",\n", $zakaz));
+            $k++;
+        }
+        $objPHPExcel->getActiveSheet()->removeRow($baseRow - 1, 1);
+
+        $objPHPExcel->getActiveSheet()->getStyle('A' . ($baseRow - 1) . ':G' . ($row - 1))->applyFromArray($style_border);
+        $objPHPExcel->getActiveSheet()->getStyle('F' . ($baseRow - 1) . ':G' . ($row - 1))->applyFromArray($style_FG);
+
+        // Получаем дату из текстового значения
+        $delivery_date = date('d-m-Y');
+        // Получаем полную дату для вставки в Ecxel
+        $excel_full_date = PHPExcel_Shared_Date::PHPToExcel(gmmktime(0, 0, 0, date('m'), date('d'), date('Y')));
+        $objPHPExcel->getActiveSheet()->setCellValue('B1', $excel_full_date);
+
+        $objPHPExcel->getActiveSheet()->setTitle('Журнал на ' . $delivery_date);
+
+        // Redirect output to a client’s web browser (Excel5)
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="Journal_' . $delivery_date . '.xls"');
+        header('Cache-Control: max-age=0');
+        // If you're serving to IE 9, then the following may be needed
+        header('Cache-Control: max-age=1');
+
+        // If you're serving to IE over SSL, then the following may be needed
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+        header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+        header('Pragma: public'); // HTTP/1.0
+
+
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+        $objWriter->save('php://output');
+    }
 }

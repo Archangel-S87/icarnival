@@ -58,7 +58,7 @@ class Users extends Fivecms
 		
 		$sql_limit = $this->db->placehold(' LIMIT ?, ? ', ($page-1)*$limit, $limit);
 		// Выбираем пользователей
-		$query = $this->db->placehold("SELECT u.id, u.email, u.password, u.name, u.balance, u.group_id, u.enabled, u.last_ip, u.created, u.order_payd, u.phone, u.partner_id, u.ref_views, g.discount, g.name as group_name FROM __users u
+		$query = $this->db->placehold("SELECT u.id, u.email, u.password, u.name, u.balance, u.group_id, u.enabled, u.last_ip, u.created, u.order_payd, u.phone, u.partner_id, u.ref_views, u.comment, g.discount, g.name as group_name FROM __users u
 		                                LEFT JOIN __groups g ON u.group_id=g.id 
 										WHERE 1 $group_id_filter $keyword_filter $partner_filter ORDER BY $order $sql_limit");
 		$this->db->query($query);
@@ -104,7 +104,7 @@ class Users extends Fivecms
 			$where = $this->db->placehold(' WHERE u.id=? ', intval($id));
 	
 		// Выбираем пользователя
-		$query = $this->db->placehold("SELECT u.id, u.email, u.password, u.name, u.balance, u.group_id, u.enabled, u.last_ip, u.created, u.order_payd, u.phone, u.partner_id, u.comment, u.withdrawal, u.ref_views, g.discount, g.name as group_name FROM __users u LEFT JOIN __groups g ON u.group_id=g.id $where LIMIT 1", $id);
+		$query = $this->db->placehold("SELECT u.id, u.email, u.password, u.name, u.balance, u.group_id, u.enabled, u.last_ip, u.created, u.order_payd, u.phone, u.partner_id, u.comment, u.withdrawal, u.ref_views, g.discount, g.name as group_name, u.consignee, u.payer FROM __users u LEFT JOIN __groups g ON u.group_id=g.id $where LIMIT 1", $id);
 		$this->db->query($query);
 		$user = $this->db->result();
 		if(empty($user))

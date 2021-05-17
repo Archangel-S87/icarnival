@@ -40,8 +40,8 @@ class CurrencyAdmin extends Fivecms
 
 				if($this->request->post('recalculate') == 1)
 				{
-					$this->db->query("UPDATE __variants SET price=price*? WHERE currency_id != $new_currency->id", $coef);   
-					$this->db->query("UPDATE __variants SET compare_price=compare_price*? WHERE currency_id != $new_currency->id", $coef);  
+					$this->db->query("UPDATE __variants SET price=price*? WHERE currency_id = 0", $coef);   
+					$this->db->query("UPDATE __variants SET compare_price=compare_price*? WHERE currency_id = 0", $coef);
 					$this->db->query("UPDATE __delivery SET price=price*?, free_from=free_from*?", $coef, $coef);        
 					$this->db->query("UPDATE __orders SET delivery_price=delivery_price*?", $coef);        
 					$this->db->query("UPDATE __orders SET total_price=total_price*?", $coef);        
@@ -97,7 +97,17 @@ class CurrencyAdmin extends Fivecms
 			    }
 			    case 'delete':
 			    {
-				    $this->money->delete_currency($id);    
+				    // пересчет удаляемой валюты в базовую
+				    $del_currency = $this->money->get_currency(intval($id));
+				    $coef = $del_currency->rate_to/$del_currency->rate_from;
+				      
+				    $this->db->query("UPDATE __variants SET price=price*? WHERE currency_id = $id", $coef);   
+					$this->db->query("UPDATE __variants SET compare_price=compare_price*? WHERE currency_id = $id", $coef);
+					$this->db->query("UPDATE __variants SET currency_id=? WHERE currency_id = $id", $new_currency->id);   
+				    // пересчет удаляемой валюты в базовую @
+				    
+				    $this->money->delete_currency($id);
+				    
 			        break;
 			    }
 			}					

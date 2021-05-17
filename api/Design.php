@@ -30,18 +30,18 @@ class Design extends Fivecms
 
 		// Берем тему
 		if ($this->is_mobile_browser()) {
-			$theme = "mobile";
+			$theme = "mobile_mod";
 		} else {
 			$theme = $this->settings->theme;
 		}
-		
-		$this->smarty->compile_dir = $this->config->root_dir.'/compiled/'.$theme;
-		$this->smarty->template_dir = $this->config->root_dir.'/design/'.$theme.'/html';		
+
+        $this->smarty->setCompileDir($this->config->root_dir.'/compiled/'.$theme);
+        $this->smarty->setTemplateDir($this->config->root_dir.'/design/'.$theme.'/html');
 
 		// Создаем папку для скомпилированных шаблонов текущей темы
-		if(!is_dir($this->smarty->compile_dir))
+		if(!is_dir($this->smarty->getCompileDir()))
 			mkdir($this->smarty->compile_dir, 0777);
-						
+
 		$this->smarty->cache_dir = 'cache';
 				
 		$this->smarty->registerPlugin('modifier', 'resize', array($this, 'resize_modifier'));		
@@ -53,6 +53,7 @@ class Design extends Fivecms
 		$this->smarty->registerPlugin('modifier', 'date', array($this, 'date_modifier'));		
 		$this->smarty->registerPlugin('modifier', 'time', array($this, 'time_modifier'));
 		$this->smarty->registerPlugin('modifier', 'hashtag', array($this, 'hashtag_modifier'));
+		$this->smarty->registerPlugin('modifier', 'bbcode', array($this, 'bbcode_modifier'));
 		$this->smarty->registerPlugin('function', 'api', array($this, 'api_plugin'));
 
 		if($this->config->smarty_html_minify) {
@@ -68,11 +69,12 @@ class Design extends Fivecms
 			$user_agent = $_SERVER['HTTP_USER_AGENT']; 
 			if(preg_match('#5cms#', $user_agent)) {
 				if(preg_match('/iphone|ipad|ipod/i', $user_agent)) {
-					$this->smarty->assign('uagent', 'ios');
-				} elseif(preg_match('/android/i', $user_agent)) {
-					$this->smarty->assign('uagent', 'android');
+					$uagent = 'iphone';
+				} else {
+					$uagent = 'android';
 				}
-				return true;
+				$this->smarty->assign('uagent', $uagent);
+				return $uagent;
 			}
 		}
 		
@@ -129,21 +131,21 @@ class Design extends Fivecms
 				return false;
 			
 			if(preg_match('/ipod|iphone|ipad/i', $user_agent)) {
-				$this->smarty->assign('uagent', 'ios');
-				return true;
+				$this->smarty->assign('uagent', 'iphone');
+				return 'iphone';
 			}
 		
 			if(preg_match('/android/i', $user_agent)) {
 				$this->smarty->assign('uagent', 'android');
-				return true;
+				return 'android';
 			}
 		
 			if(preg_match('/windows ce|iemobile|mobile|symbian|mini|wap|pda|psp|up.browser|up.link|mmp|midp|phone|pocket/i', $user_agent)) {
-				return true;
+				return 'windows';
 			}
 		
 			if(!empty($_SERVER['X-OperaMini-Features']) || !empty($_SERVER['UA-pixels']))
-				return true;
+				return 'operamini';
 	
 			$agents = array(
 			'acs-'=>'acs-',
@@ -233,7 +235,7 @@ class Design extends Fivecms
 			);
 		
 			if(!empty($agents[substr($_SERVER['HTTP_USER_AGENT'], 0, 4)]))
-				return true;
+				return 'phone';
 	    } 
 	    	
 	    return false;
@@ -333,6 +335,32 @@ class Design extends Fivecms
     {
     	/* другая реализация но без тире return preg_replace('/#([\w!%]+(?=[\s,!?.\n]|$))/u', '<a href="tags?keyword=$1">#$1</a>', $str);*/
     	return preg_replace('/#([а-яА-ЯёЁa-zA-Z0-9.*!_\-%]+)([^;\w]{1}|$)/u', '<a href="tags?keyword=$1">#$1</a>$2', $str);
+    }
+    
+    public function bbcode_modifier($str)
+    {
+    	// BBcode array
+		$find = array(
+			'~\[b\](.*?)\[/b\]~s',
+			'~\[i\](.*?)\[/i\]~s',
+			'~\[u\](.*?)\[/u\]~s',
+			'~\[s\](.*?)\[/s\]~s',
+			'~\[color=(.*?)\](.*?)\[/color\]~s',
+			//'~\[url\]((?:ftp|https?)://.*?)\[/url\]~s',
+			'~\[img\](https?://.*?\.(?:jpg|jpeg|gif|png|bmp|webp|jp2|jxr))\[/img\]~s'
+		);
+		// HTML tags to replace BBcode
+		$replace = array(
+			'<b>$1</b>',
+			'<i>$1</i>',
+			'<span style="text-decoration:underline;">$1</span>',
+			'<strike>$1</strike>',
+			'<span style="color:$1;">$2</span>',
+			//'<a href="$1">$1</a>',
+			'<img class="izoom" src="$1" alt="" />'
+		);
+		// Replacing the BBcodes with corresponding HTML tags
+		return preg_replace($find,$replace,$str);
     }
 
 	public function api_plugin($params, $smarty)

@@ -145,10 +145,12 @@
 					<svg><use xlink:href='#calendar' /></svg>
 					<span>{$post->date|date}</span>
 				</div>
+				{if !empty($settings->allow_views)}
 				<div class="right">
 					<svg><use xlink:href='#views' /></svg>
 					<span>Просмотров: {$post->views}</span>
 				</div>
+				{/if}
 			</div>
 			{if !empty($post->annotation)}<div class="blog_annotation {if !empty($post->section)}has_category{/if}">{$post->annotation}</div>{/if}
 			{if !empty($post->section)}

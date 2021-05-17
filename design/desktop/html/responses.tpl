@@ -53,7 +53,7 @@
 						{if !$comment->approved}ожидает модерации</b>{/if}
 					</div>
 			
-					<div class="comment_body">{$comment->text|escape|nl2br}</div>
+					<div class="comment_body">{if !empty($settings->allow_comment_tags)}{$comment->text|escape|nl2br|bbcode}{else}{$comment->text|escape|nl2br}{/if}</div>
 				
 					{if $comment->otvet}
 					<div class="comment_admint">Администрация:</div>
@@ -92,6 +92,8 @@
 				{/if}
 			</div>
 			{/if}
+			
+			{if !empty($settings->allow_comment_tags)}<div class="comment_help">{$settings->comment_tags}</div>{/if}
 			
 			<textarea class="comment_textarea" id="comment_text" name="text" data-format=".+" data-notice="Введите отзыв">{if !empty($comment_text)}{$comment_text}{/if}</textarea><br />
 			<div>

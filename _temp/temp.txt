@@ -1,16 +1,18 @@
-cp -a -r -u /home/admin/web/icarnival.ru/public_html/simpla/json/files /home/admin/web/test.icarnival.ru/public_html/fivecms/json/files
+cp -a -r -u /home/admin/web/icarnival.ru/public_html/simpla/json/files /home/admin/web/test.icarnival.ru/public_html/fivecms/json
 
 /home/admin/web/test.icarnival.ru/public_html/fivecms/json/files
 
-Изменить права на файл/каталог
-chown -R admin:admin имя_файла
-chown -R admin:admin  /home/admin/web/test.icarnival.ru/public_html/*
+Изменение прав
+Добавить в группу
+chgrp -R admin /home/admin/web/icarnival.ru/
+Разрешить чтение и запись админу и серверу
+chmod -R ug+rwx /home/admin/web/icarnival.ru
 
 Копирую файлы картинок
 cp -a -r -u /home/admin/web/test.icarnival.ru/public_html/fivecms/json/files/images/brands/. /home/admin/web/test.icarnival.ru/public_html/files/brands
 
-cp -a -r -u /home/admin/web/test.icarnival.ru/public_html/fivecms/json/files/images/categories/. /home/admin/web/test.icarnival.ru/public_html/files/categories
+cp -a -r -u /home/admin/web/test.icarnival.ru/public_html/fivecms/json/files/images/categories/. /home/admin/web/icarnival.ru/public_html/files/categories
 
 cp -a -r -u /home/admin/web/icarnival.ru/public_html/files/originals/. /home/admin/web/test.icarnival.ru/public_html/files/originals
 
-cp -a -r -u /home/admin/web/icarnival.ru/public_html/files/categories/. /home/admin/web/test.icarnival.ru/public_html/files/categories
+cp -a -r -u /home/admin/web/test.icarnival.ru/public_html/files/categories/. /home/admin/web/icarnival.ru/public_html/files/categories

@@ -22,12 +22,14 @@
 				<svg class="comments_icon"><use xlink:href='#comments_count' /></svg>
 				<span>{$post->comments_count}</span>
 			</div>
+			{if !empty($settings->allow_views)}
 			<div class="right">
 				<svg><use xlink:href='#views' /></svg>
 				<span><span class="views_title">Просмотров: </span>{$post->views}</span>
 			</div>
+			{/if}
 		</div>
-		{if !empty($post->annotation)}<div class="blog_annotation {if !empty($post->sections)}has_category{/if}" {if !empty($post->text)}style="cursor:pointer;" onclick="window.location='/blog/{$post->url}'"{/if}>{$post->annotation}</div>{/if}
+		{if !empty($post->annotation)}<div class="blog_annotation {if !empty($post->section)}has_category{/if}" {if !empty($post->text)}style="cursor:pointer;" onclick="window.location='/blog/{$post->url}'"{/if}>{$post->annotation}</div>{/if}
 		{if !empty($post->section)}
 			<div class="path">
 				<svg><use xlink:href='#folder' /></svg>

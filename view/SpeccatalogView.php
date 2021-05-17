@@ -11,6 +11,37 @@ class SpeccatalogView extends View
 		// Если указан адрес записи,
 		if(!empty($url))
 		{
+			/* получаем содержимое файла */
+			function file_get_contents_ex($url, $uagent = null)
+			{				
+				// Получаем куки
+				$cookie = "";
+				if(!empty($_COOKIE)){
+					foreach ($_COOKIE as $name => $value) {
+						if($name == "cookwarn" || $name == "partner_id" || $name == "view" || strpos($name, 'ct_') !== false){
+							$name = htmlspecialchars($name);
+							$value = htmlspecialchars($value);
+							$cookie .= "$name=$value;";
+						}
+					}
+				}
+
+				$opts = array(
+					'http' => array(
+						'method'    => 'GET',
+						'header'    => "Accept-language: ru-RU,ru\r\n" .
+									   (!empty($uagent) ? "User-Agent: {$uagent}" : '') . 
+									   (!empty($cookie) ? "Cookie: {$cookie}" : ''),
+					)
+					// Для SSL operation failed with code 1. OpenSSL
+					//'ssl' => array('verify_peer' => false, 'verify_peer_name' => false)
+				);
+				$context = stream_context_create($opts);
+				
+				return file_get_contents($url, false, $context);
+			}
+			/* получаем содержимое файла @ */
+			
 			// Выводим запись
 			return $this->fetch_link($url);
 		}
@@ -35,38 +66,13 @@ class SpeccatalogView extends View
 		$url=$this->config->root_url.'/'.$link->src_url;
 
 		if($this->design->is_android_browser()) {
-			$user_agent = $_SERVER['HTTP_USER_AGENT']; 
-			if(preg_match('/iPad|iPhone/i', $user_agent)) {
-				$uagent="User-Agent: 5cms iphone";
-			}
-			if(preg_match('/Android/i', $user_agent)) {
-				$uagent="User-Agent: 5cms android";
-			}
-			$opts = array(
-			  'http'=>array(
-			    'method'=>"GET",
-			    'header'=>$uagent
-			  )
-			  // Для SSL operation failed with code 1. OpenSSL
-			  //'ssl' => array('verify_peer' => false, 'verify_peer_name' => false)
-			);
-			$context = stream_context_create($opts);
-			$t=file_get_contents($url, false, $context);
+			$uagent = '5cms '.$this->design->is_android_browser();
+			$t=file_get_contents_ex($url, $uagent);
 		} elseif ($this->design->is_mobile_browser()) {
-			$opts = array(
-			  'http'=>array(
-			    'method'=>"GET",
-			    'header'=>"User-Agent: android"
-			  )
-			  // Для SSL operation failed with code 1. OpenSSL
-			  //'ssl' => array('verify_peer' => false, 'verify_peer_name' => false)
-			);
-			$context = stream_context_create($opts);
-			$t=file_get_contents($url, false, $context);
+			$uagent = $this->design->is_mobile_browser(); 
+			$t=file_get_contents_ex($url, $uagent);
 		} else {
-			$t=file_get_contents($url);
-			// Для SSL operation failed with code 1. OpenSSL
-			//$t=file_get_contents($url, false, stream_context_create(array('ssl' => array('verify_peer' => false, 'verify_peer_name' => false))));
+			$t=file_get_contents_ex($url, '');
 		}		
 		$t=preg_replace('@[^<>]*</title>@', $link->meta_title.'</title>', $t);
 		$t=preg_replace('@<meta name="keywords"\s+content="[^"]*@', '<meta name="keywords" content="'.$link->meta_keywords, $t);
@@ -78,8 +84,7 @@ class SpeccatalogView extends View
 		$t=preg_replace('#<!--canonical-[^>]*>.*?<!--/canonical-->#is', '<link rel="canonical" href="'.$this->config->root_url.'/pages/'.$link->url.'"/>', $t);
 		print $t;
 		exit;
-
-	}	
+	}
 	
 	// Отображение списка записей
 	private function fetch_links()

@@ -40,8 +40,8 @@
 			{if !empty($last_comments1)}
 				{foreach $last_comments1 as $comment}
 					<li>
-						<p><b>{$comment->name}</b> о товаре <a href="products/{$comment->url}">{$comment->product}</a>:
-						&laquo;{$comment->text|escape|nl2br}&raquo;</p>
+						<div class="comment_header">{$comment->name} о товаре <a href="products/{$comment->url}">{$comment->product|escape}</a> <i>({$comment->date|date} в {$comment->date|time})</i>:</div>
+						<div class="comment_body">{$comment->text|escape|nl2br|bbcode}</div>
 						{if $comment->otvet}
 							<div class="comment_admint">Администрация:</div>
 							<div class="comment_admin" style="margin-bottom: 12px;">
@@ -57,8 +57,8 @@
 			{if !empty($last_comments2)}
 				{foreach $last_comments2 as $comment}
 					<li>
-						<p><b>{$comment->name}</b> о записи <a href="blog/{$comment->url}">{$comment->product}</a>:
-						&laquo;{$comment->text|escape|nl2br}&raquo;</p>
+						<div class="comment_header">{$comment->name} о записи <a href="blog/{$comment->url}">{$comment->product|escape}</a> <i>({$comment->date|date} в {$comment->date|time})</i>:</div>
+						<div class="comment_body">{$comment->text|escape|nl2br|bbcode}</div>
 						{if $comment->otvet}
 							<div class="comment_admint">Администрация:</div>
 							<div class="comment_admin" style="margin-bottom: 12px;">

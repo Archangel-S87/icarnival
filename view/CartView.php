@@ -40,6 +40,7 @@ class CartView extends View
 		if($this->request->post('cdek')) $cdek = $this->request->post('cdek', 'float');
 		if($this->request->post('boxberry')) $boxberry = $this->request->post('boxberry', 'float');
 		if($this->request->post('shiptor')) $shiptor = $this->request->post('shiptor', 'float');
+		if($this->request->post('postrf')) $postrf = $this->request->post('postrf', 'float');
 		$this->design->assign('delivery_id', $order->delivery_id);
 		$this->design->assign('name', $order->name);
 		$this->design->assign('bonus', $bonus);
@@ -119,7 +120,7 @@ class CartView extends View
 			$this->design->assign('error', 'wrong_name');
 		elseif(!empty($this->settings->spam_symbols) && mb_strlen($order->name,'UTF-8') > $this->settings->spam_symbols)
 			$this->design->assign('error', 'captcha');
-		elseif(!empty($order->email) && filter_var($order->email, FILTER_VALIDATE_EMAIL) === false)
+		elseif(!empty($order->email) && filter_var($order->email, FILTER_VALIDATE_EMAIL) === false)	
 			$this->design->assign('error', 'wrong_email');	
     	elseif($cart->total_price < $this->settings->minorder)
     		$this->design->assign('error', 'min_order');
@@ -167,6 +168,8 @@ class CartView extends View
 
             if ($order->delivery_id == 3) {
                 $delivery->price = $shiptor;
+            } elseif ($order->delivery_id == 4) {
+                $delivery->price = $postrf;
             } elseif ($order->delivery_id == 114) {
                 $delivery->price = $cdek;
             } elseif ($order->delivery_id == 121) {

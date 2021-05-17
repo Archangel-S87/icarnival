@@ -13,11 +13,11 @@
 		</td>
 		<td style="padding:6px; background-color:#ffffff; border:1px solid #e0e0e0;font-family:arial;">
 			{if $order->status == 0}
-				ждет обработки     
+				ждет обработки
 			{elseif $order->status == 4}
-				в обработке  
+				принят
 			{elseif $order->status == 1}
-				выполняется
+				доставляется
 			{elseif $order->status == 2}
 				выполнен
 			{elseif $order->status == 3}

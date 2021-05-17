@@ -44,7 +44,7 @@ class ArticlesView extends View
 		$this->design->assign('category', $cat);
 			
 		// Изменим кол-во просмотров	
-		if($post->visible && empty($_SESSION['admin']))
+		if(!empty($this->settings->allow_views) && $post->visible && empty($_SESSION['admin']))
 			$this->articles->update_views($post->id); 	
 		
 		$this->design->assign('post', $post);

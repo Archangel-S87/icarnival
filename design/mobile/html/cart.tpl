@@ -177,14 +177,14 @@
 			{/if}
 			<li id="li_delivery_{$delivery->id}">
 				<div class="checkbox">
-					<input class="{if $delivery@first}first{else}other{/if} {if $delivery->id == 3 ||$delivery->id == 114 || $delivery->id == 121 || $delivery->widget == 1}del_widget{/if}" type="radio" name="delivery_id" value="{$delivery->id}" {if $delivery@first}checked{/if} id="deliveries_{$delivery->id}" onchange="change_payment_method({$delivery->id})" 
+					<input class="{if $delivery@first}first{else}other{/if} {if $delivery->id == 3 || $delivery->id == 4 ||$delivery->id == 114 || $delivery->id == 121 || $delivery->widget == 1}del_widget{/if}" type="radio" name="delivery_id" value="{$delivery->id}" {if $delivery@first}checked{/if} id="deliveries_{$delivery->id}" onchange="change_payment_method({$delivery->id})" 
 						{if $delivery->payment_methods}data-payments="{foreach $delivery->payment_methods as $payment_method}{$payment_method->id},{/foreach}"{/if} 
 						{if $delivery->free_from && $delivery->free_from > 0}data-freefrom="{$delivery->free_from}"{/if}
 					/>
 				</div>
 		
 				<div class="deliverywrapper">
-					<label for="deliveries_{$delivery->id}" {if $delivery->description || $delivery->id == 3 ||$delivery->id == 114 || $delivery->id == 121 || $delivery->widget == 1}class="hideBtn" onclick="hideShow(this);$('#deliveries_{$delivery->id}').click();return false;"{/if}
+					<label for="deliveries_{$delivery->id}" {if $delivery->description || $delivery->id == 3 || $delivery->id == 4 ||$delivery->id == 114 || $delivery->id == 121 || $delivery->widget == 1}class="hideBtn" onclick="hideShow(this);$('#deliveries_{$delivery->id}').click();return false;"{/if}
 						{if $delivery->id == 3}data-role="shiptor_widget_show"{/if}
 					>
 						<div class="delivery-header">				
@@ -193,7 +193,7 @@
 							{if $delivery->separate_payment}[оплачивается отдельно]{/if} 
 				
 							(<span id="not-null-delivery-price-{$delivery->id}">{if $delivery->free_from > 0 && $cart->total_price >= $delivery->free_from}бесплатно</span>)
-							{elseif in_array($delivery->id, array(3,114,121)) || $delivery->widget == 1}---</span>&nbsp;{$currency->sign})
+							{elseif in_array($delivery->id, array(3,4,114,121)) || $delivery->widget == 1}---</span>&nbsp;{$currency->sign})
 							{elseif $delivery->price==0 && $delivery->price2 == 0}бесплатно</span>)
 							{else}{if $delivery->price2 > 0}{($delivery->price + ($delivery->price2 * $cart->total_weight|ceil))|convert}{else}{$delivery->price|convert}{/if}</span>&nbsp;{$currency->sign})
 							{/if}
@@ -228,6 +228,9 @@
 					{/if}
 					{if $delivery->id == 3}
 						{include file='shiptor.tpl'}
+					{/if}
+					{if $delivery->id == 4}
+						{include file='postrf.tpl'}
 					{/if}
 			
 					{if $delivery->widget == 1}

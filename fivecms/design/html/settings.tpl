@@ -82,7 +82,18 @@
 					<li><label class=property>{$tr->worktime}</label><input name="worktime" class="fivecms_inp" type="text" value="{$settings->worktime|escape}" /></li>
 					
 				</ul>
-				<input style="margin-top: 20px;" class="button_green button_save" type="submit" name="save" value="{$tr->save|escape}" />
+
+			<h2>ТОРГ-12</h2>
+			<ul>
+				<li><label class="property">Грузоотправитель</label><textarea name="consignor" style="width: 400px;">{$settings->consignor|escape}</textarea></li>
+				<li><label class="property">Поставщик</label><textarea name="supplier" style="width: 400px;">{$settings->supplier|escape}</textarea></li>
+				<li>
+					<label class="property">Доставка в накладной</label>
+					<input name="torg12_delivery" type="checkbox" {if $settings->torg12_delivery eq 'true'}checked{/if} value="true" />
+				</li>
+			</ul>
+
+			<input style="margin-top: 20px;" class="button_green button_save" type="submit" name="save" value="{$tr->save|escape}" />
 		</div>
 		
 		<!-- Параметры (The End)-->

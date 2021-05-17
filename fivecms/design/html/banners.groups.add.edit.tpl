@@ -36,7 +36,7 @@
 	<form method=post enctype="multipart/form-data">
 		<div class="cell group">
 			<div class="banner_wrapper">
-				<div class="group title"><a href="#">{if $action == 'add'}{$tr->add_group|escape}{else}{$tr->edit_group|escape} "{$group->name}"{/if}</a></div>
+				<div class="group title"><a href="#">{if $action == 'add'}{$tr->add_group|escape}{else}{$tr->edit_group|escape} {if !empty($group->name)}"{$group->name}"{/if}{/if}</a></div>
 				<form method="get">
 					<input type=hidden name="session_id" value="{$smarty.session.id}">
 					<div style="padding:10px 0;">

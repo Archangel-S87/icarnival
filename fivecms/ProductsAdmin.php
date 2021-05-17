@@ -54,6 +54,10 @@ class ProductsAdmin extends Fivecms
 				$filter['is_new'] = 1;
 			elseif($f == 'to_yandex')
 				$filter['to_yandex'] = 1;
+            elseif($f == 'on_request')
+                $filter['on_request'] = 1;
+            elseif($f == 'out_of')
+                $filter['out_of'] = 1;
 			elseif($f == 'discounted')
 				$filter['discounted'] = 1; 
 			elseif($f == 'visible')
@@ -61,8 +65,21 @@ class ProductsAdmin extends Fivecms
 			elseif($f == 'hidden')
 				$filter['visible'] = 0; 
 			elseif($f == 'outofstock')
-				$filter['in_stock'] = 0; 
-			$this->design->assign('filter', $f);
+				$filter['in_stock'] = 0;
+            elseif($f == 'video')
+                $filter['video'] = 1;
+            elseif($f == 'not_video')
+                $filter['video'] = 0;
+            elseif($f == 'brands') {
+                $brand_ids = [];
+                foreach ($this->brands->get_brands() as $brand) {
+                    $brand_ids[] = $brand->id;
+                }
+                $filter['brand_id'] = $brand_ids;
+            }
+            elseif($f == 'not_brands')
+                $filter['brand_id'] = [0];
+            $this->design->assign('filter', $f);
 		}
 		
 		if($srt = $this->request->get('sort')){
@@ -301,7 +318,79 @@ class ProductsAdmin extends Fivecms
 			    	      			    	
 			        break;
 				}
-			}			
+                // Увеличиваем цену товара
+                case 'up_price':
+                {
+                    $percent = $this->request->post('percent_price', 'integer');
+                    $type_recalc = $this->request->post('type_recalc');
+
+                    if ($percent) {
+                        // Сначала делаем типа-бэкап, записываем текущую цену в отдельно созданное для этого поле
+                        $query = $this->db->placehold("UPDATE __variants SET old_price = price WHERE product_id in (?@)", $ids);
+                        $this->db->query($query);
+                        // Потом обновляем цену (если она есть и больше нуля) на величину нашего процента или рубля
+                        if ($type_recalc == 'percent')
+                            $query = $this->db->placehold("UPDATE __variants SET price = CEILING( (price+(price*?/100)) / 10 ) * 10 WHERE price>0 AND product_id in (?@)", intval($percent), $ids);
+                        elseif ($type_recalc == 'rub')
+                            $query = $this->db->placehold("UPDATE __variants SET price = price+? WHERE price>0 AND product_id in (?@)", intval($percent), $ids);
+                        else break;
+                        $this->db->query($query);
+                    }
+
+                    // После выполнения действия, если нам известен REQUEST_URI, то делаем перенаправление на эту страницу
+                    // Это позволит избежать случайного повторения POST при обновлении страницы!
+                    if (isset($_SERVER['REQUEST_URI'])) {
+                        header('Location: '.$_SERVER['REQUEST_URI']);
+                        exit;
+                    }
+
+                    break;
+                }
+                // Уменьшаем цену товара
+                case 'down_price':
+                {
+                    $percent = $this->request->post('percent_price', 'integer');
+                    $type_recalc = $this->request->post('type_recalc');
+
+                    if ($percent) {
+                        // Сначала делаем типа-бэкап, записываем текущую цену в отдельно созданное для этого поле
+                        $query = $this->db->placehold("UPDATE __variants SET old_price = price WHERE product_id in (?@)", $ids);
+                        $this->db->query($query);
+                        // Потом обновляем цену (если она есть и больше нуля) на величину нашего процента
+                        if ($type_recalc == 'percent')
+                            $query = $this->db->placehold("UPDATE __variants SET price = CEILING( (price-(price*?/100)) / 10 ) * 10 WHERE price>0 AND product_id in (?@)", intval($percent), $ids);
+                        elseif ($type_recalc == 'rub')
+                            $query = $this->db->placehold("UPDATE __variants SET price = price-? WHERE price>0 AND product_id in (?@)", intval($percent), $ids);
+                        else break;
+                        $this->db->query($query);
+                    }
+
+                    // После выполнения действия, если нам известен REQUEST_URI, то делаем перенаправление на эту страницу
+                    // Это позволит избежать случайного повторения POST при обновлении страницы!
+                    if (isset($_SERVER['REQUEST_URI'])) {
+                        header('Location: '.$_SERVER['REQUEST_URI']);
+                        exit;
+                    }
+
+                    break;
+                }
+                // Откат цены
+                case 'retrieve_price':
+                {
+                    // Сначала делаем типа-бэкап, записываем текущую цену в отдельно созданное для этого поле
+                    $query = $this->db->placehold("UPDATE __variants SET price = old_price WHERE old_price is not null AND product_id in (?@)", $ids);
+                    $this->db->query($query);
+
+                    // После выполнения действия, если нам известен REQUEST_URI, то делаем перенаправление на эту страницу
+                    // Это позволит избежать случайного повторения POST при обновлении страницы!
+                    if (isset($_SERVER['REQUEST_URI'])) {
+                        header('Location: '.$_SERVER['REQUEST_URI']);
+                        exit;
+                    }
+
+                    break;
+                }
+            }
 		}
 
 		// Отображение

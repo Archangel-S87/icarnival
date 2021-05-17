@@ -59,7 +59,7 @@
 					<a class="approve" href="#">{$tr->approve|escape}</a>
 					</div>
 					
-					<div class="comment_body">{$comment->text|strip_tags|escape|nl2br}</div>
+					<div class="comment_body">{$comment->text|escape|nl2br|bbcode}</div>
 			
 					{if $comment->otvet}
 					<div class="comment_admint">{$tr->comment_otvet|escape}:</div>

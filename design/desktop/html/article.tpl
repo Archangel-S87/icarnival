@@ -32,10 +32,12 @@
 				<span><a href="articles/{$category->url}" title="{$category->name|escape}">{$category->name|escape}</a></span>
 			</div>
 			{/if}
+			{if !empty($settings->allow_views)}
 			<div class="right">
 				<svg><use xlink:href='#views' /></svg>
 				<span>Просмотров: {$post->views}</span>
 			</div>
+			{/if}
 		</div>
 		<div class="page-pg" itemprop="description">
 			{$post->text}

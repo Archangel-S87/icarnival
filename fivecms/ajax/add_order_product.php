@@ -48,6 +48,13 @@
                 	$variant->compare_price = $variant->compare_price * $currencies[$variant->currency_id]->rate_to / $currencies[$variant->currency_id]->rate_from;
                 }
             }
+            
+            // округление копеек
+			$base_currency = reset($currencies);
+			$variant->precision = isset($base_currency->cents)?$base_currency->cents:2;	
+			$variant->price = round($variant->price, $variant->precision);
+			// округление копеек @
+            
 			$products[$variant->product_id]->variants[] = $variant;
 		}
 	}

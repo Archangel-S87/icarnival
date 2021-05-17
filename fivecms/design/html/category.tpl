@@ -277,8 +277,9 @@ function translit(str)
 			<ul style="margin-top:15px;">
 				<li><label style="width:332px;" class="property">{$tr->show_first_price|escape}</label>
 					<select name="seo_type" class="fivecms_inp" style="min-width:70px;width:70px;">
-						<option value='0' {if !empty($category->seo_type) && $category->seo_type == '0'}selected{/if}>{$tr->no|escape}</option>
-						<option value='1' {if !empty($category->seo_type) && $category->seo_type == '1'}selected{/if}>{$tr->yes|escape}</option>
+						<option value='0' {if empty($category->seo_type)}selected{/if}>{$tr->not_set|lower}</option>
+						<option value='1' {if !empty($category->seo_type) && $category->seo_type == '1'}selected{/if}>{$tr->no|escape}</option>
+						<option value='2' {if !empty($category->seo_type) && $category->seo_type == '2'}selected{/if}>{$tr->yes|escape}</option>
 					</select>
 				</li>
 			</ul>

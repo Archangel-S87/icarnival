@@ -22,7 +22,15 @@
 	{else}
 		{$seo_two = ''}
 	{/if}
-	{if !empty($category->seo_type) && !empty($product->variant->price)}
+	{if !empty($category->seo_type)}
+		{$seo_type = $category->seo_type}
+	{elseif !empty($first_category->seo_type)}
+		{$seo_type = $first_category->seo_type}
+	{else}
+		{$seo_type = 0}
+	{/if}	
+
+	{if $seo_type == 2 && !empty($product->variant->price)}
 		{$seo_description = $seo_one|cat:$product->name|cat:" ✩ за "|cat:($product->variant->price|convert|strip:'')|cat:" "|cat:$currency->sign|cat:$seo_two scope=root}
 	{else}
 		{$seo_description = $seo_one|cat:$product->name|cat:$seo_two scope=root}
@@ -378,7 +386,7 @@
 									{if !$comment->approved}ожидает модерации</b>{/if}
 								</div>
 						
-								<div class="comment_body">{$comment->text|escape|nl2br}</div>
+								<div class="comment_body">{if !empty($settings->allow_comment_tags)}{$comment->text|escape|nl2br|bbcode}{else}{$comment->text|escape|nl2br}{/if}</div>
 								{if $comment->otvet}
 									<div class="comment_admint">Администрация:</div>
 									<div class="comment_admin">
@@ -424,6 +432,9 @@
 							{/if}
 						</div>
 						{/if}
+						
+						{if !empty($settings->allow_comment_tags)}<div class="comment_help">{$settings->comment_tags}</div>{/if}
+						
 						<textarea class="comment_textarea" id="comment_text" name="text" data-format=".+" data-notice="Введите комментарий">{if !empty($comment_text)}{$comment_text|escape}{/if}</textarea><br />
 						<div>
 						<label for="comment_name">Имя</label>

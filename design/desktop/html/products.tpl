@@ -47,7 +47,7 @@
 {elseif !empty($keyword)}
 	<h1><!--h1-->Результаты поиска по: "{$keyword|escape}"<!--/h1--></h1>
 {elseif !empty($page)}
-	<h1 data-page="{$page->id}"><!--h1-->{$page->name|escape}</h1>
+	<h1 data-page="{$page->id}"><!--h1-->{$page->name|escape}<!--/h1--></h1>
 {elseif $settings->filtercan == 1 && ( !empty($filter_features) || !empty($smarty.get.b)  || !empty($smarty.get.v) || !empty($smarty.get.v1) || !empty($smarty.get.v2) )}
     {if !empty($meta_title)}
     	{$mt = $meta_title|escape}

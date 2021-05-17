@@ -119,3 +119,9 @@
 [2021-02-21 14:06:22] [info] Message: Response with code 200 received. 
 [2021-02-21 15:01:54] [info] Message: Send request: POST /payments 
 [2021-02-21 15:01:55] [info] Message: Response with code 200 received. 
+[2021-05-15 08:02:38] [error] Message: Authorization headers not set 
+[2021-05-15 08:03:41] [error] Message: Authorization headers not set 
+[2021-05-17 11:22:08] [info] Message: Send request: POST /payments 
+[2021-05-17 11:22:08] [info] Message: Response with code 200 received. 
+[2021-05-17 11:23:14] [info] Message: Send request: GET /payments/28343b71-000f-5000-9000-10f442b674fe 
+[2021-05-17 11:23:14] [info] Message: Response with code 200 received. 

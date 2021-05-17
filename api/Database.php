@@ -433,6 +433,12 @@ class Database extends Fivecms
 		$this->dump_table($this->config->db_prefix."settings", $h);
 		$this->dump_table($this->config->db_prefix."mobtheme", $h);
 		$this->dump_table($this->config->db_prefix."forms", $h);
+		$this->dump_table($this->config->db_prefix."currencies", $h);
+		$this->dump_table($this->config->db_prefix."coupons", $h);
+		$this->dump_table($this->config->db_prefix."discountgroup", $h);
+		$this->dump_table($this->config->db_prefix."delivery", $h);
+		$this->dump_table($this->config->db_prefix."delivery_payment", $h);
+		$this->dump_table($this->config->db_prefix."payment_methods", $h);
 	    fclose($h);
 	}
 	

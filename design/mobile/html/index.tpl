@@ -171,7 +171,7 @@
 			{$content}
 		</div>
 	</div>
-	{if $uagent == 'ios' && $module != 'MainView'}
+	{if $uagent == 'iphone' && $module != 'MainView'}
 	<a href="javascript:history.go(-1)" class="history_back">&lang;</a>
 	{/if}
 	{if $module == 'CartView'}
@@ -443,7 +443,7 @@
 			});
 		</script>
 	{/if}
-	{*{if $uagent == 'ios'}
+	{*{if $uagent == 'iphone'}
 	<script>
 		// Загружаем пред. страницу свайпом
 		$(window).load(function() { 

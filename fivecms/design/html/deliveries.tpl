@@ -45,14 +45,14 @@
 					<input type="hidden" name="positions[{$delivery->id}]" value="{$delivery->position}">
 					<div class="move cell"><div class="move_zone"></div></div>
 			 		<div class="checkbox cell">
-						<input {if $delivery->id == 3 || $delivery->id == 114 || $delivery->id == 121}disabled{/if} type="checkbox" name="check[]" value="{$delivery->id}" />				
+						<input {if $delivery->id == 3 || $delivery->id == 4 || $delivery->id == 114 || $delivery->id == 121}disabled{/if} type="checkbox" name="check[]" value="{$delivery->id}" />				
 					</div>
 					<div class="name cell">
 						<a href="{url module=DeliveryAdmin id=$delivery->id return=$smarty.server.REQUEST_URI}">{$delivery->name|escape}</a> [id={$delivery->id}]
 					</div>
 					<div class="icons cell">
 						<a class="enable" title="{$tr->active|escape}" href="#"></a>
-						{if $delivery->id == 3 || $delivery->id == 114 || $delivery->id == 121}{else}<a class="delete" title="{$tr->delete|escape}" href="#"></a>{/if}
+						{if $delivery->id == 3 || $delivery->id == 4 || $delivery->id == 114 || $delivery->id == 121}{else}<a class="delete" title="{$tr->delete|escape}" href="#"></a>{/if}
 					</div>
 					<div class="clear"></div>
 				</div>

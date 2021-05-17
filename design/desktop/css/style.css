@@ -318,8 +318,8 @@ a#mmenubut, a#mmenubut2{cursor:default;}
 .comment_list li, li:nth-child(odd) .comment_admin, li:nth-child(odd) .comment_admint{background-color:#FFFFFF;}
 .comment_list li li:nth-child(odd){background-color:transparent;}
 .comment_list div{text-align:justify;}
-.comment_admin{margin:0px 0px 0 15px;padding:7px 10px;border-radius:0 5px 5px 5px;border:1px solid #DADADA;margin-top:-1px;position:relative;z-index:1;}
-.comment_admint{margin:15px 0px 0 15px;padding:3px 11px;border-radius:4px 4px 0 0;font-weight:700;width:135px;border-top:1px solid #dadada;border-left:1px solid #dadada;border-right:1px solid #dadada;position:relative;z-index:5;}
+.comment_admin{margin:0px;padding:7px 10px;border-radius:0 5px 5px 5px;border:1px solid #DADADA;margin-top:-1px;position:relative;z-index:1;}
+.comment_admint{margin:15px 0px 0 0px;padding:3px 10px;border-radius:4px 4px 0 0;font-weight:700;width:135px;border-top:1px solid #dadada;border-left:1px solid #dadada;border-right:1px solid #dadada;position:relative;z-index:5;}
 .comment_header{background:url("../images/user.png") 0px 0px no-repeat transparent;font-size:14px;font-weight:700;padding-left:16px;margin-bottom:6px;}
 .comment_header i{font-weight:400;font-style:normal;color:#797777;font-size:12px;}
 .comment_form{display:table-cell;vertical-align:top;padding:10px 5px 15px 45px;width:500px;overflow:hidden;}
@@ -673,6 +673,8 @@ select{height:23px;}
 .product .images{margin-bottom:0px;padding-bottom:0px;}
 .product .images img{margin-bottom:0px;}
 #comments .comm-title, .feedb-title{color:#1A457D;margin-bottom:10px;font-size:18px;font-weight:700;text-transform:uppercase;}
+.comment_help{margin-bottom:15px;color:#696767;font-size:13px;}
+.comment_body .izoom{margin:10px 10px 10px 0;max-height:100px;max-width:100%;}
 .feedb-title{margin:15px 0 0 0px;}
 .tab_container #tab3{margin-bottom:10px;}
 #bottom_menu, #all_brands, #currencies, #all_browsed, #blog_menu, #lastpurchases, #commnts, .addblock, #mnew, #msubscribe{padding:10px;}
@@ -793,7 +795,7 @@ input#viewform{padding:5px 5px 6px;font-size:11px;float:none;margin:12px 0 0 0px
 .autocomplete-suggestion img{max-height:45px;max-width:45px;-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;}
 .prod-back{float:left;margin-right:20px;}
 #curr_choose{margin:10px 5px 10px 10px;float:left;}
-#curr_plate{margin:10px 10px 10px 5px;padding:5px;float:right;background-color:#FFFFFF;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;max-width:115px;font-size:12px;}
+#curr_plate{margin:10px 10px 10px 5px;padding:5px;float:right;background-color:#FFFFFF;border-radius:5px;font-size:12px;}
 #tarif-list td{padding-bottom:2px;padding-top:3px;}
 #content table{margin:15px 0;}
 #content table td, #content table th{border: 1px solid #e8e2e2;padding:5px;margin:0;}

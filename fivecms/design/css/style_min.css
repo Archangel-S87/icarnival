@@ -734,6 +734,7 @@ span.order_label{float:left;display:block;padding:0;width:16px;height:16px;margi
 div.comment_info{margin-top:10px;font-size:12px;color:#505050}
 div.comment_name{font-size:16px;color:#000;margin-bottom:10px}
 div.comment_text{font-size:13px;color:#000}
+.comment_body .izoom{margin:10px 10px 10px 0;max-height:100px;max-width:100%;}
 div#action{display:table;width:100%;margin-top:10px;margin-bottom:10px;margin-left:0}
 div#action input#apply_action{float:right;display:block}
 div#action span#select{padding-left:20px}
@@ -779,7 +780,7 @@ div#order_details div#user{border:1px solid #afbad6;background-color:#fff;paddin
 .order_details label{display:block;color:gray;font-weight:700;padding-bottom:5px}
 .order_details input[type=text]{width:177px;margin-bottom:10px}
 .order_details textarea{width:177px;height:40px;margin-bottom:10px}
-form#order div#order_details div.view_order_detail{font-size:13px;margin-bottom:10px}
+form#order div#order_details div.view_order_detail{font-size:13px;margin-bottom:10px;word-break:break-word;}
 form#order div#order_details div.view_note .note_text{padding:5px;border:1px dotted #ffc539;background-color:#fffac4;margin-top:5px;margin-bottom:10px}
 form#order div#order_details div.edit_note textarea{height:100px}
 div#purchases{float:left;width:75%}
@@ -901,8 +902,8 @@ p.rel-var{font-size:11px}
 .comment_list li{padding:10px 5px;overflow:hidden}
 #list .even .comment_admin,#list .even .comment_admint{background-color:#F9F9F9}
 #list .comment_admin,#list .comment_admint{background-color:#EBEBEB}
-.comment_admin{margin:0 0 0 15px;padding:7px 10px;border-radius:0 4px 4px 4px;border:1px dashed #DADADA;margin-top:-1px;position:relative;z-index:1}
-.comment_admint{margin:15px 0 0 15px;padding:3px 12px;border-radius:4px 4px 0 0;font-weight:700;width:118px;border-top:1px dashed #dadada;border-left:1px dashed #dadada;border-right:1px dashed #dadada;position:relative;z-index:5}
+.comment_admin{margin:0;padding:7px 10px;border-radius:0 4px 4px 4px;border:1px dashed #DADADA;margin-top:-1px;position:relative;z-index:1}
+.comment_admint{margin:15px 0 0 0px;padding:3px 10px;border-radius:4px 4px 0 0;width:156px;border-top:1px dashed #dadada;border-left:1px dashed #dadada;border-right:1px dashed #dadada;position:relative;z-index:5}
 .comment_admin p{margin-bottom:5px}
 table#tdiscount{border:0 solid #dadada}
 #tdiscount input{border:1px solid #dadada;width:70px!important;padding:5px;height:18px}

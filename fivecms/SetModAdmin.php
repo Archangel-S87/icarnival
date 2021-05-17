@@ -42,6 +42,9 @@ class SetModAdmin extends Fivecms
 			$this->settings->maxattachment = $this->request->post('maxattachment');
 			$this->settings->ulogin = $this->request->post('ulogin');
 			$this->settings->cart_tabs = $this->request->post('cart_tabs');
+			$this->settings->allow_comment_tags = $this->request->post('allow_comment_tags');
+			$this->settings->comment_tags = $this->request->post('comment_tags');
+			$this->settings->allow_views = $this->request->post('allow_views');
 			
 			$this->settings->spam_ip = $this->request->post('spam_ip');
 			$this->settings->spam_cyr = $this->request->post('spam_cyr');
@@ -61,6 +64,18 @@ class SetModAdmin extends Fivecms
 			$this->settings->consultant = $this->request->post('consultant');
 
 			$this->design->assign('message_success', 'saved');
+
+            $temp_position = $this->request->post('position_carousel');
+            $position_carousel = [];
+            $index = 0;
+            asort($temp_position);
+            while (count($temp_position)) {
+                reset($temp_position);
+                $key = key($temp_position);
+                $position_carousel[$key] = ++$index;
+                unset($temp_position[$key]);
+            }
+            $this->settings->position_carousel = $position_carousel;
 		}
 
 		$image = $this->request->files('bannerwide_file');

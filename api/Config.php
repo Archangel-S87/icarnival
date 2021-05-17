@@ -4,7 +4,7 @@ require_once('Fivecms.php');
 
 class Config
 {
-	public $version = '21-6-6.270221';
+	public $version = '21-6-9.70421';
 	
 	// Файл для хранения настроек
 	public $config_file = 'config/config.php';

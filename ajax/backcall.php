@@ -73,3 +73,5 @@ if($fivecms->settings->spam_ip == 1 && (
 } else {
 	echo "btf_error";
 }
+
+?>

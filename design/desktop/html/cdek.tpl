@@ -39,7 +39,7 @@
 						$('#cdek').val('0');
 					{else}
 						$('#not-null-delivery-price-114').html((wat.price*curr_convert).toFixed({$currency->cents}));
-						$('#cdek').val(wat.price);
+						$('#cdek').val(wat.price.toFixed({$currency->cents}));
 					{/if}
 				}
 				// calc (1.1) end
@@ -57,7 +57,7 @@
 						$('#cdek').val('0');
 					{else}
 						$('#not-null-delivery-price-114').html((wat.price*curr_convert).toFixed({$currency->cents}));
-						$('#cdek').val(wat.price);
+						$('#cdek').val(wat.price.toFixed({$currency->cents}));
 					{/if}
 				}
 				// calc (1.2) end

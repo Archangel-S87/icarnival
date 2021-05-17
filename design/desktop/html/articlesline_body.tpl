@@ -18,12 +18,14 @@
 				<svg><use xlink:href='#calendar' /></svg>
 				<span>{$post->date|date}</span>
 			</div>
+			{if !empty($settings->allow_views)}
 			<div class="right">
 				<svg><use xlink:href='#views' /></svg>
 				<span>Просмотров: {$post->views}</span>
 			</div>
+			{/if}
 		</div>
-		{if !empty($post->annotation)}<div class="blog_annotation {if !empty($post->categories)}has_category{/if}" {if !empty($post->text)}style="cursor:pointer;" onclick="window.location='/article/{$post->url}'"{/if}>{$post->annotation}</div>{/if}
+		{if !empty($post->annotation)}<div class="blog_annotation {if !empty($post->section)}has_category{/if}" {if !empty($post->text)}style="cursor:pointer;" onclick="window.location='/article/{$post->url}'"{/if}>{$post->annotation}</div>{/if}
 		{if !empty($post->section)}
 			<div class="path">
 				<svg><use xlink:href='#folder' /></svg>

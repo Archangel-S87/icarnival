@@ -168,6 +168,8 @@ h2.your_orders{margin-top:20px;}
 .comment_list li:last-child{border-bottom:0px solid #EFEEEE !important;}
 .comment_header{background:url("../images/user.png") 0px 0px no-repeat transparent;font-weight:700;padding-left:16px;margin-bottom:6px;}
 .comment_header i{font-weight:normal;font-style:normal;color:#5d5b5b;font-size:12px;float:right;}
+.comment_help{margin-bottom:15px;color:#696767;font-size:13px;}
+.comment_body .izoom{margin:10px 10px 10px 0;max-height:100px;width:auto;max-width:100%;}
 #comments .post-pg, .comments_title{margin-bottom:0;}
 .moderation{margin-bottom:10px;}
 .comment_form{border:1px solid #cecece;border-bottom:0;padding:13px 15px 15px 15px;margin-top:20px;width:auto;overflow:hidden;}
@@ -289,7 +291,7 @@ ul#deliveries #ems-post-countries{max-width:160px;}
 .hidetitle a{font-size:17px;font-weight:700;text-decoration:none;}
 .hidetitle svg{height:16px;width:16px;}
 .hidetitle.show svg{-moz-transform:rotate(90deg);-ms-transform:rotate(90deg);-webkit-transform:rotate(90deg);-o-transform:rotate(90deg);transform:rotate(90deg);}
-.feat-block a{display:inline-block;}
+.feat-block .hidetitle1{display:contents;}
 .feat-block select{font-size:16px;}
 ul#deliveries li #hideCont, ul#payments li #hideCont{display:none;margin-top:10px;}
 .delivery-header{font-weight:700;margin:0 10px 0 0;font-size:17px;}
@@ -489,7 +491,7 @@ input[type="search"],
 .tiny_products span input[name="amount"]{width:32px;font-size:14px;text-align:center;padding:2px 0 1px 0;}
 .tiny_products span{font-size:12px;}
 .tiny_products span.unit{font-size:15px;}
-.tiny_products .pricecolor .currency, .tiny_products .price span.currency{font-size:15px;padding-left:3px;}
+.tiny_products .pricecolor .currency, .tiny_products .price span.currency{font-size:15px;padding-left:3px;line-height:27px;}
 .tiny_products span.compare_price{font-size:13px;padding:0 3px 0 0;}
 .tiny_products span.price{font-size:21px;font-weight:700;}
 .tiny_products input[type="submit"]{float:left;display:block;font-size:14px;}
@@ -775,6 +777,10 @@ body .boxberry_container{position:fixed!important;top:10px !important;}
 .history_back{display:block;border-radius:50%;border:1px solid #b5b5b5;background-color: rgba(255,255,255,0.8);position:fixed;bottom:15px;left:10px;line-height:38px;width:40px;height:40px;z-index:65001;text-align:center;text-decoration:none;font-size:16px;cursor:pointer;}
 .feedbackview .map{margin-top:15px;}
 .feedbackview .map iframe{width:100%;height:340px;border:0;}
+.box-currency{display:table;padding:10px;font-size:14px;}
+#curr_choose select{font-size:14px;}
+#curr_choose{float:left;}
+#curr_plate{float:right;margin-left:10px;}
 /* form handler */
 .user_form{width:100%;}
 .form-title{text-transform:uppercase;font-weight:700;font-size:16px;margin:9px 0 3px 0;}

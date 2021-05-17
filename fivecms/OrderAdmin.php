@@ -136,13 +136,6 @@ class OrderAdmin extends Fivecms
 					else
 						$this->orders->update_order($order->id, array('status'=>1));
 				}
-                elseif($new_status == 5)
-                {
-                    if(!$this->orders->close(intval($order->id)))
-                        $this->design->assign('message_error', 'error_closing');
-                    else
-                        $this->orders->update_order($order->id, array('status'=>5));
-                }
 				elseif($new_status == 2)
 				{
 					if(!$this->orders->close(intval($order->id)))
@@ -301,6 +294,9 @@ class OrderAdmin extends Fivecms
 		$this->design->assign('subtotal', $subtotal);
 		$this->design->assign('order', $order);
 
+        $delivery = null;
+        $payment_currency = null;
+
 		if(!empty($order->id))
 		{
 			// Способ доставки
@@ -347,11 +343,44 @@ class OrderAdmin extends Fivecms
 	  	
 	 	$this->design->assign('order_labels', $order_labels);	  	
 
-		$this->design->assign('tabs_count', $this->orders->all_count_orders());		
-		
-		if($this->request->get('view') == 'print') {
- 		  	return $this->design->fetch('order_print.tpl');
-		} elseif($this->request->get('view') == 'excel') {
+		$this->design->assign('tabs_count', $this->orders->all_count_orders());
+
+        if ($this->request->get('view') == 'print') {
+            $order->address = str_replace(',,', ',', $order->address);
+            $order->address = str_replace(' г ', '', $order->address);
+
+            $api_key = '3472638f-fc42-4736-baef-1467960939e7';
+
+            $url_geocode = "http://geocode-maps.yandex.ru/1.x/?apikey={$api_key}&geocode=";
+            $coords = simplexml_load_string(file_get_contents_curl($url_geocode . $order->address));
+
+            $found = $coords->GeoObjectCollection->metaDataProperty->GeocoderResponseMetaData->found ?? 0;
+            if ($found == 0) {
+                $addr_arr = explode(', ', $order->address);
+                for ($i = 0; $i < sizeof($addr_arr); $i++) {
+                    if ($i < 2) {
+                        $addr_arr[$i] = preg_replace('/\d/', '', $addr_arr[$i]);
+                    } elseif (trim($addr_arr[$i]) == ''
+                        || mb_strpos($addr_arr[$i], 'кв.') !== false
+                        || mb_strpos($addr_arr[$i], 'офис') !== false) {
+                        unset($addr_arr[$i]);
+                    }
+                }
+                $new_addr = implode($addr_arr, ', ');
+                $coords = simplexml_load_string(file_get_contents_curl($url_geocode . urlencode(trim($new_addr))));
+                //echo 'http://geocode-maps.yandex.ru/1.x/?apikey=3472638f-fc42-4736-baef-1467960939e7&geocode='.$new_addr;
+                //print_r($coords);
+            }
+
+            $pos = $coords->GeoObjectCollection->featureMember->GeoObject->Point->pos ?? '';
+            $coords_str = str_replace(' ', ',', $pos);
+
+            $this->design->assign('api_key', $api_key);
+            $this->design->assign('coords', $coords_str);
+            $this->design->assign('new_address', $new_addr ?? '');
+
+            return $this->design->fetch('order_print.tpl');
+        } elseif($this->request->get('view') == 'excel') {
 		    // Сформировать товарный чек
             try {
                 $this->get_commodity_check($order, $purchases, $delivery, $subtotal, $payment_currency);
@@ -444,7 +473,7 @@ class OrderAdmin extends Fivecms
                 ->setCellValue('H' . $row, $exunits)
                 ->setCellValue('J' . $row, $p->amount)
                 /*->setCellValue('K'.$row, $p->price)*/
-                ->setCellValue('K' . $row, $this->money->convert($p->price, $payment_currency->id, false))
+                ->setCellValue('K' . $row, $this->money->convert($p->price, !empty($payment_currency->id) ? $payment_currency->id : 0, false))
                 ->setCellValue('O' . $row, '=J' . $row . '*K' . $row);
             $objPHPExcel->getActiveSheet()->getRowDimension($row)->setRowHeight($row_height);
             $all_count++;
@@ -467,7 +496,7 @@ class OrderAdmin extends Fivecms
         $objPHPExcel->getActiveSheet()->removeRow($baseRow - 1, 1);
 
         $order_sale = $subtotal - $total_price + $order->delivery_price;
-        $order_sale = $this->money->convert($order_sale, $payment_currency->id, false);
+        $order_sale = $this->money->convert($order_sale, !empty($payment_currency->id) ? $payment_currency->id : 0, false);
 
         if ($subtotal > $total_price) {
             $objPHPExcel->getActiveSheet()->setCellValue('O' . $row, $order_sale);
@@ -897,4 +926,17 @@ class OrderAdmin extends Fivecms
         $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
         $objWriter->save('php://output');
     }
+}
+
+function file_get_contents_curl($url) {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    //Устанавливаем параметр, чтобы curl возвращал данные, вместо того, чтобы выводить их в браузер.
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    $data = curl_exec($ch);
+    curl_close($ch);
+
+    return utf8_decode($data);
 }

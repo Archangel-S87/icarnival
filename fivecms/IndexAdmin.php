@@ -19,6 +19,7 @@ class IndexAdmin extends Fivecms
 		'FeatureAdmin'        => 'features',
 		'OrdersAdmin'         => 'orders',
 		'OrderAdmin'          => 'orders',
+		'ExportOrdersAdmin'   => 'orders',
 		'OrdersLabelsAdmin'   => 'labels',
 		'OrdersLabelAdmin'    => 'labels',
 		'UsersAdmin'          => 'users',

@@ -324,6 +324,8 @@ $tr->help_text = '<p style="font-weight:700;">Images</p>
 $tr->main_help = '<ul class="stars">
 <li>Meta-tags and text of main page you can find <a href="index.php?module=PagesAdmin">here...</a></li>
 <li>logo and Favicon <a href="index.php?module=SettingsAdmin#logo">here...</a></li>
+<li>Phone number in header & footer in desktop design <a href="index.php?module=SettingsAdmin">here...</a></li>
+<li>Phone number/whatsapp/viber to call in mobile design <a href="index.php?module=MobsetAdmin">here...</a></li>
 <li>Settings of desktop color scheme <a href="index.php?module=ColorAdmin">here...</a></li>
 <li>Settings of mobile color scheme <a href="index.php?module=MobthemeAdmin">here...</a></li>
 <li>Discounts, bonuses, coupons <a href="index.php?module=DiscountGroupAdmin">here...</a></li>
@@ -1038,6 +1040,9 @@ $tr->allow_attachment = 'Allow files attachment to order';
 $tr->max_attach_file_size = 'Max attached file size';
 $tr->in_server_sett = 'in server settings';
 $tr->soc_auth = 'Authorization via socials (Ulogin)';
+$tr->cart_tabs = 'Step-by-step checkout';
+$tr->allow_comment_tags = 'Allow BBCode in comments';
+$tr->comment_tags = 'Information about allowed BBCodes in templates';
 $tr->stad = 'Herd instinct';
 $tr->spam_protect = 'Spam protection';
 $tr->block_session = 'Block sequential registration, responses, backcall from visitors with the same IP or session ID';
@@ -1047,7 +1052,6 @@ $tr->ad_unit = 'Ad unit';
 $tr->motivate_ads = 'Motivational texts (or banners) at the bottom of all articles, blog entries, services';
 $tr->collect_cookies_warn = 'Collect cookies warning';
 $tr->chat = 'Online Chat';
-$tr->cart_tabs = 'Step-by-step checkout';
 $tr->redhelper = 'Enter login set at <a class="bluelink" href="http://redhelper.ru/?p=2009838" target="_blank">registration</a> in RedHelper';
 $tr->help_adv = '<p style="font-weight:700;margin:10px 0 10px 0;text-transform:uppercase;">Preset classes:</p>
 		<ul style="margin-bottom:5px;" class="stars">
@@ -1058,7 +1062,8 @@ $tr->help_adv = '<p style="font-weight:700;margin:10px 0 10px 0;text-transform:u
 $tr->main_cat_num = 'Number of popular categories';
 $tr->main_cat_columns = 'Columns number in popular categories';
 $tr->if_null_hide = 'hidden if 0';
-$tr->if_empty_hide = 'hiden if empty field';			
+$tr->if_empty_hide = 'hiden if empty field';
+$tr->allow_views = 'Allow posts and articles views count';
 /* settings.tpl */		
 $tr->cart_db_cleared = 'Shopping carts from DB deleted';
 $tr->change_lang = 'Change language';

@@ -1,6 +1,5 @@
 <?PHP
 require_once('api/Fivecms.php');
-require_once 'Postcalc/Postcalc.php';
 
 class DeliveryAdmin extends Fivecms
 {	
@@ -30,14 +29,6 @@ class DeliveryAdmin extends Fivecms
 	 		
 	 		if(!$delivery_payments = $this->request->post('delivery_payments'))
 	 			$delivery_payments = array();
-
-            if ($delivery->id == 122) {
-                // Дополнительная стоимость
-                if ($delivery->option5) {
-                    $delivery->option1['pk'] = $delivery->option5;
-                }
-                $delivery->option1 = json_encode($delivery->option1, JSON_UNESCAPED_UNICODE );
-            }
 			
 			if(empty($delivery->id))
 			{
@@ -61,12 +52,6 @@ class DeliveryAdmin extends Fivecms
 			$delivery_payments = $this->delivery->get_delivery_payments($delivery->id);
 		}	
 		$this->design->assign('delivery_payments', $delivery_payments);
-
-        if (!empty($delivery->id) && $delivery->id == 122) {
-            $delivery->option1 = json_decode($delivery->option1, true);
-            $postcalc = new Postcalc($delivery->option1);
-            $this->design->assign('postcalc', $postcalc);
-        }
 
 		// Связанные способы оплаты
 		$payment_methods = $this->payment->get_payment_methods();

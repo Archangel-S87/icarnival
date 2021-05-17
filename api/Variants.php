@@ -36,6 +36,7 @@ class Variants extends Fivecms
 		$product_id_filter = '';
 		$variant_id_filter = '';
 		$instock_filter = '';
+		$order_filter = 'ORDER BY v.position';
 		
 		$currencies = $this->money->get_currencies();
 		
@@ -50,15 +51,22 @@ class Variants extends Fivecms
 
 		if(!$product_id_filter && !$variant_id_filter)
 			return array();
+
+        if(!empty($filter['sort'])) {
+            switch ($filter['sort']) {
+                case 'product_id':
+                    $order_filter = 'ORDER BY v.product_id';
+            }
+        }
 		
 		$query = $this->db->placehold("SELECT v.id, v.product_id , v.price, NULLIF(v.compare_price, 0) as compare_price, v.sku, IFNULL(v.stock, ?) as stock, (v.stock IS NULL) as infinity, v.name, v.name1, v.name2, v.unit, v.currency_id, v.attachment, v.position, v.discount, v.discount_date
 					FROM __variants AS v
 					WHERE 
 					1
-					$product_id_filter          
-					$variant_id_filter   
+					$product_id_filter
+					$variant_id_filter
 					$instock_filter
-					ORDER BY v.position       
+					$order_filter
 					", $this->settings->max_order_amount);
 		
 		$this->db->query($query);	
@@ -82,10 +90,16 @@ class Variants extends Fivecms
             $v->compare_oprice = $v->compare_price;
             
             //делаем пересчет в базовый курс
-            if($v->currency_id > 0) {
+            if($v->currency_id > 0 && !empty($currencies[$v->currency_id])) {
                 $v->price = $v->price * $currencies[$v->currency_id]->rate_to / $currencies[$v->currency_id]->rate_from;
                 $v->compare_price = $v->compare_price * $currencies[$v->currency_id]->rate_to / $currencies[$v->currency_id]->rate_from;
             }
+            
+            // округление копеек
+            $base_currency = reset($currencies);
+            $v->precision = isset($base_currency->cents)?$base_currency->cents:2;	
+			$v->price = round($v->price, $v->precision);
+			// округление копеек @
         }
         
         return $variants;
@@ -119,11 +133,17 @@ class Variants extends Fivecms
         $variant->oprice = $variant->price;
         $variant->compare_oprice = $variant->compare_price;
         //делаем пересчет в базовый курс
-        if($variant->currency_id > 0) {
+        if($variant->currency_id > 0 && !empty($currencies[$variant->currency_id])) {
             $variant->price = $variant->price * $currencies[$variant->currency_id]->rate_to / $currencies[$variant->currency_id]->rate_from;
             $variant->compare_price = $variant->compare_price * $currencies[$variant->currency_id]->rate_to / $currencies[$variant->currency_id]->rate_from;
         }
         // multicurrency end
+        
+        // округление копеек
+        $base_currency = reset($currencies);
+        $variant->precision = isset($base_currency->cents)?$base_currency->cents:2;	
+		$variant->price = round($variant->price, $variant->precision);
+        // округление копеек @
         
 		return $variant;
 	}

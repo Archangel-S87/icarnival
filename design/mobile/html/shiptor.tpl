@@ -44,8 +44,8 @@
 		{if $delivery->free_from > 0 && $cart->total_price >= $delivery->free_from}
 			$('#shiptor').val('0');
 		{else}
-		   $('#not-null-delivery-price-3').html( (shiptor_price*curr_convert).toFixed(0) );
-		   $('#shiptor').val(shiptor_price);
+		   $('#not-null-delivery-price-3').html( (shiptor_price*curr_convert).toFixed({$currency->cents}) );
+		   $('#shiptor').val(shiptor_price.toFixed({$currency->cents}));
 		{/if}   
 		// calc (1) end
 

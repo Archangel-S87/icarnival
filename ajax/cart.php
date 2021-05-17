@@ -2,10 +2,16 @@
 	session_start();
 	require_once('../api/Fivecms.php');
 	$fivecms = new Fivecms();
-	
-	$variant = $fivecms->request->get('variant', 'integer');
+
+    $variant = $fivecms->request->get('variant', 'integer');
+    $new_variant = $fivecms->request->get('new_variant', 'integer');
     $amount = $fivecms->request->get('amount', 'integer');
-	$amount = empty($amount)?1:$amount;
+    $amount = empty($amount) ? 1 : $amount;
+
+    if ($new_variant) {
+        $fivecms->cart->delete_item($variant);
+        $variant = $new_variant;
+    }
     
     // user, currency, settings
 	$fivecms->currencies = $fivecms->money->get_currencies(array('enabled'=>1));
@@ -49,5 +55,5 @@
 	header("Content-type: application/json; charset=UTF-8");
 	header("Cache-Control: must-revalidate");
 	header("Pragma: no-cache");
-	header("Expires: -1");		
+	header("Expires: -1");
 	print json_encode($result);

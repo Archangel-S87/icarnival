@@ -2,9 +2,8 @@
 {capture name=tabs}
 	{if in_array('orders', $manager->permissions)}
 		<li {if isset($status) && $status===0}class="active"{/if}><a href="{url module=OrdersAdmin status=0 keyword=null id=null page=null label=null}">{$tr->new_pl|escape}</a></li>
-		<li {if isset($status) && $status==4}class="active"{/if}><a href="{url module=OrdersAdmin status=4 keyword=null id=null page=null label=null}">{$tr->status_in_processing|escape}</a></li>
+		<li {if isset($status) && $status==4}class="active"{/if}><a href="{url module=OrdersAdmin status=4 keyword=null id=null page=null label=null}">{$tr->status_in_process_pl|escape}</a></li>
 		<li {if isset($status) && $status==1}class="active"{/if}><a href="{url module=OrdersAdmin status=1 keyword=null id=null page=null label=null}">{$tr->status_accepted_pl|escape}</a></li>
-		<li {if isset($status) && $status==5}class="active"{/if}><a href="{url module=OrdersAdmin status=5 keyword=null id=null page=null label=null}">{$tr->status_delivery_pl|escape}</a></li>
 		<li {if isset($status) && $status==2}class="active"{/if}><a href="{url module=OrdersAdmin status=2 keyword=null id=null page=null label=null}">{$tr->status_completed_pl|escape}</a></li>
 		<li {if isset($status) && $status==3}class="active"{/if}><a href="{url module=OrdersAdmin status=3 keyword=null id=null page=null label=null}">{$tr->status_canceled_pl|escape}</a></li>
 		{if isset($keyword)}
@@ -197,6 +196,7 @@
 	
 			<span id="select">
 				<select name="action">
+					<option value="journal">Сформировать журнал доставок</option>
 					{if isset($status)}
 						{if $status!==0}<option value="set_status_0">{$tr->in} {$tr->new_pl|lower}</option>{/if}
 						{if $status!==4}<option value="set_status_4">{$tr->status_in_processing|escape}</option>{/if}

@@ -971,7 +971,7 @@ function import_product($xml_product)
 							rename($dir.$image, $fivecms->config->original_images_dir.$image);
 							$fivecms->products->add_image($product_id, $image);
 						} else {
-							//Если есть, то удаляем из папки temp, чобы не захламлять
+							//Если есть, то удаляем из папки temp, чтобы не захламлять
 							unlink($dir.$image);
 						}
 					}
