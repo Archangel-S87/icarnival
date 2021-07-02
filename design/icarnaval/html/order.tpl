@@ -47,7 +47,7 @@
 			{$payment_method->description}
 			</p>*}
 			{if empty($settings->payment_control) || 
-					( $settings->payment_control==1 && in_array($order->status, array(1,2)) ) ||
+					( $settings->payment_control==1 && in_array($order->status, array(4,2)) ) ||
 					( $settings->payment_control==2 && (empty($deliveries|count) || !empty($delivery)) )
 				}
 				{$payment_control = 1}
@@ -55,10 +55,20 @@
 				К оплате: {$order->total_price|convert:$payment_method->currency_id}&nbsp;{if isset($all_currencies[$payment_method->currency_id]->sign)}{$all_currencies[$payment_method->currency_id]->sign}{/if}
 				</h2>
 
-				{* Форма оплаты, генерируется модулем оплаты *}
-				{checkout_form order_id=$order->id module=$payment_method->module}
+				{if $payment_method->module == 'YooMoneyApi'}
+					{* Оплата Юкасса *}
+					{if !empty($order->invalid_request)}
+						<p>При оплате возникла ошибка: {$order->invalid_request|escape}</p>
+					{else}
+						{* Форма оплаты, генерируется модулем оплаты *}
+						{checkout_form order_id=$order->id module=$payment_method->module}
+					{/if}
+				{else}
+					{* Форма оплаты, генерируется модулем оплаты *}
+					{checkout_form order_id=$order->id module=$payment_method->module}
+				{/if}
 			{/if}
-		{/if}	
+		{/if}
 	{/if}
 
 

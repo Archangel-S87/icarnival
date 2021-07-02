@@ -15,7 +15,7 @@ db_user = "root";
 db_password = "root";
 
 ;Имя базы
-db_name = "icarnival_new";
+db_name = "icarnival";
 
 ;Префикс для таблиц
 db_prefix = f_;

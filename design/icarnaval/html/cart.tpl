@@ -320,25 +320,60 @@
 			</div>
 				<script>
 					function change_payment_method($id) {
-						$('#calc_info').html( $("#li_delivery_"+$id+" .deliveryinfo").text() );
-		  
+						$('#calc_info').html($("#li_delivery_" + $id + " .deliveryinfo").text());
+
 						$("#payments li").hide();
-						var data_payments = $("#deliveries_"+$id).attr('data-payments');
-						if(data_payments != null){
+						var data_payments = $("#deliveries_" + $id).attr('data-payments');
+						if (data_payments != null) {
 							var arr = data_payments.split(',');
-							$.each(arr,function(index,value){
-								$("#list_payment_"+value.toString()).css("display","block");
+							$.each(arr, function (index, value) {
+								$("#list_payment_" + value.toString()).css("display", "block");
 							});
 						}
-						$('#payments input[name="payment_method_id"]').prop('checked','false');
-						$('#payments li:visible:first input[name="payment_method_id"]').prop('checked','true');
+						$('#payments input[name="payment_method_id"]').prop('checked', 'false');
+						$('#payments li:visible:first input[name="payment_method_id"]').prop('checked', 'true');
 						//payment_first = $('#payments li:visible:first input[name="payment_method_id"]').val();
+
+						// Сброс предупреждений
+						$('.show_map').removeClass('look_here');
+
+						// При доставке самовывозом в поле вдрес проставить адрес магазина
+						const address_input = $('.del_main input[name="address"]');
+						if (+ $id === 2) {
+							address_input.attr('readonly', true);
+							address_input.val('{$settings->adress_shop|escape}');
+						} else {
+							address_input.val(temp_address_user);
+							address_input.attr('readonly', false);
+						}
 					}
+
+					let temp_address_user = '';
 					
-					$(window).load(function(){ 
+					$(window).load(function(){
+						temp_address_user = $('.del_main input[name="address"]').val();
+
 						delivery_num = $('#deliveries li:visible:first input[name="delivery_id"]').val();
 						change_payment_method(delivery_num);
+
+						// Проверка на заполнение адреса доставки в виджетах
+						$('form.main_cart_form').submit(function () {
+							const current_del = $('#deliveries input[name="delivery_id"]:checked').closest('li'),
+								show_map = current_del.find('.show_map');
+							if (show_map.length) {
+								if (current_del.find('input[type="hidden"]').val() === '') {
+									show_map.addClass('look_here');
+									$('.del_pay_cart_tab').show();
+									$('.contacts_cart_tab').hide();
+									$('.return_tab_button').hide();
+									return false;
+								} else {
+									show_map.removeClass('look_here');
+								}
+							}
+						});
 					});
+
 				</script>
 			
 			{if empty($settings->cart_tabs) && ($payment_methods || $deliveries)}
@@ -364,6 +399,7 @@
 						{elseif $error == 'captcha'}Не пройдена проверка на бота
 						{elseif $error == 'wrong_name'}В поле 'ФИО' может использоваться только кириллица
 						{elseif $error == 'wrong_email'}Некорректный Email
+						{elseif $error == 'empty_calc'}Некорректный вдрес доставки
 						{/if}
 					</div>
 					{/if}

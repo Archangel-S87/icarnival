@@ -1,4 +1,0 @@
-Вот товары с объёмом 0.012
-На тест id=1400 Simpla https://icarnival.ru/simpla/?module=ProductAdmin&id=1601&return=%2Fsimpla%2F
-На тест id=1607 Simpla https://icarnival.ru/simpla/?module=ProductAdmin&id=1811&return=%2Fsimpla%2F
-На тест id=2212 Simpla https://icarnival.ru/simpla/?module=ProductAdmin&id=2445&return=%2Fsimpla%2F

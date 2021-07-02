@@ -2,6 +2,10 @@
 
 require_once('api/Fivecms.php');
 
+use YooKassa\Client;
+use YooKassa\Model\PaymentInterface;
+use YooMoneyModule\YooMoneyLogger;
+
 class OrderAdmin extends Fivecms
 {
 	public function fetch()
@@ -326,7 +330,54 @@ class OrderAdmin extends Fivecms
 			$files = $this->files->get_files(array('object_id'=>$order->id,'type'=>'order')); 	
 			$this->design->assign('cms_files', $files);
 			// функционал загрузки файлов end
-			
+
+            // Принять или отменить отложенный платёж
+            if ($payment_method
+                && $payment_method->module == 'YooMoneyApi'
+                && $order->payment_details
+                && !$order->paid) {
+                require_once 'payment/YooMoneyApi/autoload.php';
+                $settings = $this->payment->get_payment_settings($payment_method->id);
+                $apiClient = new Client();
+                $apiClient->setAuth($settings['yoomoney_shopid'], $settings['yoomoney_password']);
+                $apiClient->setLogger(new YooMoneyLogger($settings['yookassa_debug']));
+
+                /** @var PaymentInterface $payment */
+                try {
+                    $payment = $apiClient->getPaymentInfo($order->payment_details);
+                } catch (Exception $e) {
+                    $payment = (object)[
+                        'invalid_request' => $e->getMessage()
+                    ];
+                }
+
+                if ($this->request->post('capture_payment')) {
+                    try {
+                        $payment = $apiClient->capturePayment([], $payment->getId());
+                    } catch (Exception $e) {
+                        $payment = (object)[
+                            'invalid_request' => $e->getMessage()
+                        ];
+                    }
+                    if ($payment->getStatus() == 'succeeded') {
+                        $this->orders->set_pay($order->id);
+                        $order = $this->orders->get_order((int)$order->id);
+                        $this->design->assign('order', $order);
+                    }
+                }
+
+                if ($this->request->post('cancel_payment')) {
+                    try {
+                        $payment = $apiClient->cancelPayment($payment->getId());
+                    } catch (Exception $e) {
+                        $payment = (object)[
+                            'invalid_request' => $e->getMessage()
+                        ];
+                    }
+                }
+
+                $this->design->assign('payment', $payment);
+            }
 		}
 
 		// Все способы доставки

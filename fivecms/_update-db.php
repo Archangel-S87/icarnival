@@ -57,6 +57,10 @@ class UpdateDB extends Fivecms
         if (!$this->check_column('out_of', $table_mame)) {
             $this->db->query("ALTER TABLE __{$table_mame} ADD out_of TINYINT(1) NOT NULL DEFAULT '0' AFTER on_request");
         }
+
+        if (!$this->check_column('delivery_time', $table_mame)) {
+            $this->db->query("ALTER TABLE __{$table_mame} ADD delivery_time VARCHAR(255) NULL DEFAULT NULL COMMENT 'Сроки поставки'");
+        }
     }
 
     private function set_users_order_payd()
@@ -95,6 +99,10 @@ class UpdateDB extends Fivecms
 
         if (!$this->check_column('phone_delivery', $table_mame)) {
             $this->db->query("ALTER TABLE __{$table_mame} ADD phone_delivery varchar(255) DEFAULT NULL COMMENT 'Телефон курьера'");
+        }
+
+        if (!$this->check_column('one_click', $table_mame)) {
+            $this->db->query("ALTER TABLE __{$table_mame} ADD one_click TINYINT(1) NULL DEFAULT NULL");
         }
     }
 

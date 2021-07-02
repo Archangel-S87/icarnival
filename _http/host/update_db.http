@@ -1,4 +1,4 @@
 ### Обновление базы данных
-POST http://test.icarnival.ru/fivecms/_update-db.php
-Authorization: Basic YWRtaW46YWRtaW4=
+POST https://icarnival.ru/fivecms/_update-db.php
+Authorization: Basic YWtyb246ODEwOTk4NzEyNTM0OTg3
 ###

@@ -31,7 +31,8 @@ class SettingsAdmin extends Fivecms
 				$this->settings->phone = $this->request->post('phone');
 				$this->settings->tel = $this->request->post('tel');
 				$this->settings->worktime = $this->request->post('worktime');
-			
+				$this->settings->adress_shop = $this->request->post('adress_shop');
+
 				$this->settings->cart_storage = $this->request->post('cart_storage');
 				$this->settings->purpose = $this->request->post('purpose');
 				$this->settings->font = $this->request->post('font');

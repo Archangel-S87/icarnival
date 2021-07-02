@@ -22,7 +22,7 @@ class CartView extends View
       if(!isset($_POST['submit_order']) || $_POST['submit_order']!=1)
 			header('location: '.$this->config->root_url.'/cart/');
 	}
-	
+
     // Если нажали оформить заказ
     if(isset($_POST['checkout']))
     {
@@ -47,30 +47,31 @@ class CartView extends View
 		$this->design->assign('email', $order->email);
 		$this->design->assign('phone', $order->phone);
 		$this->design->assign('address', $order->address);
+
 		// Antibot
 		if($this->request->post('bttrue')) {
 			$bttrue = $this->request->post('bttrue');
 			$this->design->assign('bttrue', $bttrue);
-		}	
+		}
 		if($this->request->post('btfalse')) {
 			$btfalse = $this->request->post('btfalse');
 			$this->design->assign('btfalse', $btfalse);
 		}
 		// Antibot @
-		
+
 		$cart = $this->cart->get_cart();
-		
+
 		// Скидка | Discount
 		if(!empty($cart->discount2))
         	$order->discount2 = $cart->discount2;
-        if(!empty($cart->value_discountgroup))	
-            $order->discount_group = $cart->value_discountgroup;   
-        if(!empty($cart->full_discount))                 
+        if(!empty($cart->value_discountgroup))
+            $order->discount_group = $cart->value_discountgroup;
+        if(!empty($cart->full_discount))
             $order->discount = $cart->full_discount;
-        
+
         unset($cart->value_discountgroup);
         unset($cart->full_discount);
-		
+
 		// Пишем реферера
 		if(!empty($_SESSION['referer']))
 			$order->referer = $_SESSION['referer'];
@@ -79,19 +80,19 @@ class CartView extends View
 			$order->utm = $_SESSION['utm'];
 		// Пишем yclid
 		if(!empty($_COOKIE['yclid']))
-			$order->yclid = $_COOKIE['yclid'];	
-			
+			$order->yclid = $_COOKIE['yclid'];
+
 		// Источник заказа (в десктопе)
-		$order->source = 1;	
+		$order->source = 1;
 
 		if($this->design->is_mobile_browser()) {
 			// Источник заказа (в мобильном дизайне)
-			$order->source = 2;	
+			$order->source = 2;
 		}
-		
+
 		// Отслеживаем заказы из моб.приложения
         if($this->design->is_android_browser()) {
-			$user_agent = $_SERVER['HTTP_USER_AGENT']; 
+			$user_agent = $_SERVER['HTTP_USER_AGENT'];
 			if(preg_match('/iPad|iPhone/i', $user_agent)) {
 				// Источник заказа (в мобильном приложении iOS)
 				$order->source = 3;
@@ -106,10 +107,10 @@ class CartView extends View
 			$order->coupon_discount = $cart->coupon_discount;
 			$order->coupon_code = $cart->coupon->code;
 		}
-		    	
+
     	if(!empty($this->user->id))
 	    	$order->user_id = $this->user->id;
-    	
+
     	if(empty($order->name))
     		$this->design->assign('error', 'empty_name');
 		elseif(empty($bttrue))
@@ -120,10 +121,12 @@ class CartView extends View
 			$this->design->assign('error', 'wrong_name');
 		elseif(!empty($this->settings->spam_symbols) && mb_strlen($order->name,'UTF-8') > $this->settings->spam_symbols)
 			$this->design->assign('error', 'captcha');
-		elseif(!empty($order->email) && filter_var($order->email, FILTER_VALIDATE_EMAIL) === false)	
-			$this->design->assign('error', 'wrong_email');	
+		elseif(!empty($order->email) && filter_var($order->email, FILTER_VALIDATE_EMAIL) === false)
+			$this->design->assign('error', 'wrong_email');
     	elseif($cart->total_price < $this->settings->minorder)
     		$this->design->assign('error', 'min_order');
+        elseif(in_array($order->delivery_id, [4, 114]) && !$order->calc)
+            $this->design->assign('error', 'empty_calc');
     	else
     	{
 			if($bonus && $this->settings->bonus_limit && $this->user->balance) {
@@ -131,7 +134,7 @@ class CartView extends View
 			      $order->bonus_discount = floatval($this->user->balance);
 			    else
 			      $order->bonus_discount = ($cart->total_price * $this->settings->bonus_limit / 100);
-			 
+
 			    $this->user->balance = $this->user->balance - $order->bonus_discount;
 			    $this->users->update_user($this->user->id, array('balance' => $this->user->balance));
 			}
@@ -140,21 +143,21 @@ class CartView extends View
 	    	$order_id = $this->orders->add_order($order);
 
 	    	$_SESSION['order_id'] = $order_id;
-	    	
+
 	    	// Если использовали купон, увеличим количество его использований
 	    	if($cart->coupon)
 	    		$this->coupons->update_coupon($cart->coupon->id, array('usages'=>$cart->coupon->usages+1));
-	    	
+
 	    	// Добавляем товары к заказу
 	    	foreach($this->request->post('amounts') as $variant_id=>$amount)
 	    	{
 	    		$this->orders->add_purchase(array('order_id'=>$order_id, 'variant_id'=>intval($variant_id), 'amount'=>intval($amount)));
 	    	}
 	    	$order = $this->orders->get_order($order_id);
-	    	
+
 	    	// Стоимость доставки
 			$delivery = $this->delivery->get_delivery($order->delivery_id);
-			
+
 			// Delivery calc
             if ($cart->total_weight > 3) {
                 $weight = ceil($cart->total_weight);
@@ -184,26 +187,26 @@ class CartView extends View
 	    	if(!empty($delivery) && ($delivery->free_from > $order->total_price || $delivery->free_from == 0)) {
 	    		$this->orders->update_order($order->id, array('delivery_price'=>$delivery->price, 'separate_delivery'=>$delivery->separate_payment));
 	    	}
-			
+
 			// for mobile app don`t delete or change!!!
 			// Автоматически регистрируем нового пользователя если не залогинен
 		 		if(!empty($_SERVER['HTTP_CLIENT_IP'])) { $ip=$_SERVER['HTTP_CLIENT_IP']; }
 				elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) { $ip=$_SERVER['HTTP_X_FORWARDED_FOR']; }
 				else { $ip=$_SERVER['REMOTE_ADDR']; }
-		 		
+
 		 		if(!$this->user && !empty($order->email)) {
 		    		$this->db->query('SELECT count(*) as count FROM __users WHERE email=?', $order->email);
 		  			$user_exists = $this->db->result('count');
-		  			if($user_exists) { 
+		  			if($user_exists) {
 		    			$this->db->query('SELECT * FROM __users WHERE email=?', $order->email);
 		    			$user_exists_id = $this->db->result('id');
 		  			  $this->orders->update_order($order->id, array('user_id'=>$user_exists_id));
-					} else { 
-		    		$chars="qazxswedcvfrtgbnhyujmkiolp1234567890QAZXSWEDCVFRTGBNHYUJMKIOLP"; 
-		    		$max=10; 
-		    		$size=StrLen($chars)-1; 
-		    		$password=null; 
-		    		while($max--) $password.=$chars[rand(0,$size)]; 
+					} else {
+		    		$chars="qazxswedcvfrtgbnhyujmkiolp1234567890QAZXSWEDCVFRTGBNHYUJMKIOLP";
+		    		$max=10;
+		    		$size=StrLen($chars)-1;
+		    		$password=null;
+		    		while($max--) $password.=$chars[rand(0,$size)];
 		    		$user_id = $this->users->add_user(array('email'=>$order->email, 'password'=>$password, 'name'=>$order->name, 'phone'=>$order->phone, 'enabled'=>'1', 'last_ip'=>$ip));
 		    		$this->orders->update_order($order->id, array('user_id'=>$user_id));
 		    		$this->notify->email_user_registration($user_id, $password);
@@ -212,9 +215,9 @@ class CartView extends View
 					}
 		  		}
 			// for mobile app end don`t delete or change!!!
-			
-			// add partner_id to user	
-			if(!empty($this->user->id)){	
+
+			// add partner_id to user
+			if(!empty($this->user->id)){
 				if(isset($_COOKIE['partner_id']) && intval($this->user->id) != intval($_COOKIE['partner_id']) && empty($this->user->partner_id)) {
 					$partner = $this->users->get_user(intval($_COOKIE['partner_id']));
 					if(!empty($partner) && $partner->enabled)
@@ -232,11 +235,11 @@ class CartView extends View
 			// Отправляем письмо пользователю
 			if(!empty($order->email))
 				$this->notify->email_order_user($order->id);
-	    	
+
 			// Отправляем письмо администратору
 			$this->notify->email_order_admin($order->id);
-			
-			// функция прикрепления файлов 
+
+			// функция прикрепления файлов
 			if ($this->settings->attachment == 1) {
 					$files 		= array();
 					$files 		= (array)$this->request->post('files');
@@ -269,17 +272,17 @@ class CartView extends View
 							}
 						}
 					}
-					$files = $this->files->get_files(array('object_id'=>$order->id,'type'=>'order')); 	
+					$files = $this->files->get_files(array('object_id'=>$order->id,'type'=>'order'));
 			}
 			// функция прикрепления файлов end
-			
+
 	    	// Очищаем корзину (сессию)
 			$this->cart->empty_cart();
-						
+
 			// Перенаправляем на страницу заказа
 			header('Location: '.$this->config->root_url.'/order/'.$order->url);
 		}
-    }   
+    }
     else
     {
 
@@ -288,14 +291,14 @@ class CartView extends View
 	    {
 			foreach($amounts as $variant_id=>$amount)
 			{
-				$this->cart->update_item($variant_id, $amount);         
+				$this->cart->update_item($variant_id, $amount);
 			}
 
 	    	$coupon_code = trim($this->request->post('coupon_code', 'string'));
 	    	if(empty($coupon_code))
 	    	{
 	    		$this->cart->apply_coupon('');
-				header('location: '.$this->config->root_url.'/cart');	    		
+				header('location: '.$this->config->root_url.'/cart');
 	    	}
 	    	else
 	    	{

@@ -41,6 +41,7 @@ class ProductAdmin extends Fivecms
 			$product->annotation = $this->request->post('annotation');
 			$product->body = $this->request->post('body');
             $product->video = $this->request->post('video');
+            $product->delivery_time = $this->request->post('delivery_time');
 
 			// Варианты товара
 			if($this->request->post('variants'))
@@ -437,10 +438,7 @@ class ProductAdmin extends Fivecms
 			}
 			else
 			{
-				// Сразу активен
 				$product = new stdClass;
-				$product->visible = 1;
-				$product->to_yandex = 1;			
 			}
 		}
 		

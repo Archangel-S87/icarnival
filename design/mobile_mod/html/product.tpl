@@ -284,7 +284,7 @@
 	</div>
 	
 	<div class="separator brand-sku-category">
-		{if !empty($brand)}<p class="product-brand">Производитель: <a title="{$brand->name|escape}" href="/brands/{$brand->url}">{$brand->name|escape}</a></p>{/if}
+		{if !empty($product->delivery_time)}<p class="product-brand">Срок поставки: <span style="color: #1B6F9F;">{$product->delivery_time|escape}</span></p>{/if}
 		{if !empty($category)}<p class="catname">Категория: <a title="{$category->name|escape}" href="catalog/{$category->url|escape}">{if !empty($category->menu)}{$category->menu|escape}{else}{$category->name|escape}{/if}</a></p>{/if}
 	</div>
 	
@@ -334,7 +334,8 @@
 					<div class="page-pg">{$product->body}</div>
 				</div>
 			{/if}
-	
+
+			<!--noindex-->
 			{if !empty($product->features)}
 				<div id="tab2" class="tab_content">
 					<ul class="features">
@@ -476,7 +477,8 @@
 					</ul>
 				</div>
 			{/if}
-			
+			<!--/noindex-->
+
 		</div>
 	</div>
 	{* Tabs end *}

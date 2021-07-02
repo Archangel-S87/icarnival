@@ -16,3 +16,7 @@ cp -a -r -u /home/admin/web/test.icarnival.ru/public_html/fivecms/json/files/ima
 cp -a -r -u /home/admin/web/icarnival.ru/public_html/files/originals/. /home/admin/web/test.icarnival.ru/public_html/files/originals
 
 cp -a -r -u /home/admin/web/test.icarnival.ru/public_html/files/categories/. /home/admin/web/icarnival.ru/public_html/files/categories
+
+cp -a -r -u /home/admin/web/new.icarnival.ru/public_html/files/blog/. /home/admin/web/icarnival.ru/public_html/files/blog
+
+cp -a -r -u /home/admin/web/new.icarnival.ru/public_html/files/uploads/. /home/admin/web/icarnival.ru/public_html/files/uploads

@@ -55,9 +55,9 @@
 	<form id="form_list" method="post">
 		<input type="hidden" name="session_id" value="{$smarty.session.id}">
 
-		<div id="list">		
+		<div id="list">
 			{foreach $orders as $order}
-			<div class="row">
+			<div class="row" {if $order->paid}style="background-color: #dcffd0;"{/if}>
 		 		<div class="checkbox cell">
 					<input type="checkbox" name="check[]" value="{$order->id}"/>				
 				</div>
@@ -84,9 +84,14 @@
 						{/if}
 							{if $order->paid}
 							<img src='design/images/cash_stack.png' alt='{$tr->paid|escape}' title='{$tr->paid|escape}' />
+							{elseif $order->waiting_for_capture}
+								<img src="design/images/capture.svg" alt="One click" title="Оплата не принята!">
 							{else}
-							<img src='design/images/cash_stack_gray.png' alt='{$tr->not_paid|escape}' title='{$tr->not_paid|escape}' />				
+								<img src='design/images/cash_stack_gray.png' alt='{$tr->not_paid|escape}' title='{$tr->not_paid|escape}' />
 							{/if}
+						{if $order->one_click}
+							<img src="design/images/exclamation-circle-solid.svg" alt="One click" title="В один клик!">
+						{/if}
 					</div>
 				</div>
 				<div class="order_name cell">

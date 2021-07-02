@@ -298,8 +298,13 @@
 			});
 		</script>
 		{* Выбор варианта товара (The End) *}
-		
-		{if !empty($brand->name)}<div class="annot-brand"><span>Производитель:</span> <a class="bluelink" style="font-weight:700;" href="brands/{$brand->url}">{$brand->name|escape}</a></div>{/if}
+
+		{if !empty($product->delivery_time)}
+			<div class="annot-brand">
+				<span>Срок поставки:</span>
+				<span style="color: #0D679A;">{$product->delivery_time|escape}</span>
+			</div>
+		{/if}
 			
 		{if $product->annotation}
 			<div class="annot">
@@ -328,7 +333,7 @@
 		{* Share @ *}
 
 	</div>
-	
+
 	<div class="container">
 
 		<ul class="tabs">
@@ -347,10 +352,17 @@
 				{$product->body}
 			</div>
 			{/if}
-		
+
+			<!--noindex-->
 			{if !empty($product->features)}
 			<div id="tab2" class="tab_content">
 				<ul class="features">
+					{if !empty($brand->name)}
+						<li>
+							<label class="featurename"><span>Производитель</span></label>
+							<label class="lfeature"><a class="bluelink" href="brands/{$brand->url}">{$brand->name|escape}</a></label>
+						</li>
+					{/if}
 				{foreach $product->features as $f}
 				<li>
 					<label class="featurename"><span>{$f->name|escape}</span></label>
@@ -509,6 +521,8 @@
 				{include file='del_pay.tpl'}
 			</div>
 			{/if}
+			<!--/noindex-->
+
 		</div>
 	</div>
 

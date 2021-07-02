@@ -332,9 +332,26 @@
 						}	
 						$('#payments li:visible:first input[name="payment_method_id"]').prop('checked',true);
 						payment_first = $('#payments li:visible:first input[name="payment_method_id"]').val();
+
+						// Сброс предупреждений
+						$('.show_map').removeClass('look_here');
+
+						// При доставке самовывозом в поле вдрес проставить адрес магазина
+						const address_input = $('.cart_form input[name="address"]');
+						if (+ $id === 2) {
+							address_input.attr('readonly', true);
+							address_input.val('{$settings->adress_shop|escape}');
+						} else {
+							address_input.val(temp_address_user);
+							address_input.attr('readonly', false);
+						}
 					}
+
+					let temp_address_user = '';
 					
-					$(window).load(function(){ 
+					$(window).load(function(){
+						temp_address_user = $('.cart_form input[name="address"]').val();
+
 						delivery_num = $('#deliveries li:visible:first input[name="delivery_id"]').val();
 						delivery_num_ajax = $('#deliveries li:first input[name="delivery_id"]').val();
 						if(!delivery_num) {
@@ -342,6 +359,25 @@
 							force_change = 1;
 						}	
 						change_payment_method(delivery_num);
+
+						// Проверка на заполнение адреса доставки в виджетах
+						$('form').submit(function () {
+							const current_del = $('#deliveries input[name="delivery_id"]:checked').closest('li'),
+									show_map = current_del.find('.show_map');
+							if (show_map.length) {
+								if (current_del.find('input[type="hidden"]').val() === '') {
+									show_map.addClass('look_here');
+									current_del.find('.deliverywrapper label')
+											.addClass('show')
+											.siblings('div#hideCont')
+											.slideDown('fast');
+									$('html, body').animate({ scrollTop:$(show_map).offset().top - 80},500);
+									return false;
+								} else {
+									show_map.removeClass('look_here');
+								}
+							}
+						});
 					});
 				</script>
 
@@ -364,6 +400,7 @@
 			{elseif $error == 'wrong_name'}В поле 'ФИО' может использоваться только кириллица
 			{elseif $error == 'wrong_email'}Некорректный Email
 			{elseif $error == 'out_of_stock_order'}В вашем заказе есть закончившиеся товары
+			{elseif $error == 'empty_calc'}Некорректный вдрес доставки
 			{/if}
 		</div>
 		{/if}

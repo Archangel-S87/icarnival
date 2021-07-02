@@ -2,5 +2,5 @@ DirectoryIndex index.php
 AddType application/octet-stream csv
 AuthName "5CMS"
 AuthType Basic
-AuthUserFile C:\OpenServer\domains\icarnival-new.loc/fivecms/.passwd
+AuthUserFile C:\OpenServer\domains\icarnival.loc/fivecms/.passwd
 require valid-user

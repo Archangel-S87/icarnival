@@ -7,6 +7,16 @@
 	<a href="{$config->root_url}/fivecms/index.php?module=OrderAdmin&id={$order->id}">ЗАКАЗ №{$order->id}</a>
 </h3>
 <table cellpadding="6" cellspacing="0" style="border-collapse: collapse;">
+	{if !empty($order->one_click)}
+		<tr>
+			<td style="padding:6px; background-color:#f4f4f4; border:1px solid #e0e0e0;font-family:arial;">
+				Способ зыказа
+			</td>
+			<td style="padding:6px; background-color:#ffffff; border:1px solid #e0e0e0;font-family:arial;">
+				В один клик!
+			</td>
+		</tr>
+	{/if}
 	<tr>
 		<td style="padding:6px; background-color:#f4f4f4; border:1px solid #e0e0e0;font-family:arial;">
 			Статус заказа

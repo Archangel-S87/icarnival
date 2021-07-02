@@ -11,6 +11,7 @@ define('YOOMONEY_MODULE_VERSION', '2.0.3');
 use YooKassa\Client;
 use YooKassa\Model\Payment;
 use YooKassa\Request\Payments\CreatePaymentRequest;
+use YooKassa\Request\Payments\CreatePaymentRequestBuilder;
 use YooMoneyModule\YooMoneyLogger;
 
 class YooMoneyApi extends Fivecms
@@ -82,10 +83,11 @@ class YooMoneyApi extends Fivecms
             }
             $apiClient = $this->getApiClient($settings['yoomoney_shopid'], $settings['yoomoney_password'], $settings['yookassa_debug']);
 
+            /** @var CreatePaymentRequestBuilder $builder */
             $builder = CreatePaymentRequest::builder()
                        ->setAmount($amount)
                        ->setPaymentMethodData($payment_type)
-                       ->setCapture(true)
+                       ->setCapture($settings['yookassa_api_capture'])
                        ->setDescription($this->createDescription($order, $settings))
                        ->setConfirmation(
                            array(
@@ -334,8 +336,8 @@ class YooMoneyApi extends Fivecms
             <script src="https://static.yoomoney.ru/checkout-credit-ui/v1/index.js"></script>
             <script type="text/javascript"><!--
                 jQuery(document).ready(function () {
-                    const yooShopId = <?= $settings['yoomoney_shopid']; ?>;
-                    const yooAmount = <?= $amount; ?>;
+                    let yooShopId = <?= $settings['yoomoney_shopid']; ?>;
+                    let yooAmount = <?= $amount; ?>;
 
                     function createCheckoutCreditUI() {
                         if (!CheckoutCreditUI) {

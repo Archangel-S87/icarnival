@@ -271,6 +271,10 @@
 					<option value=7 {if !empty($order->source) && $order->source == 7}selected{/if}>{$tr->offline|escape}</option>
 					<option value=8 {if !empty($order->source) && $order->source == 8}selected{/if}>{$tr->another|escape}</option>
 				</select>
+
+				{if !empty($order->one_click)}
+					<p style="margin-top:10px;"><img src="design/images/exclamation-circle-solid.svg" alt="One click" title="В один клик!" style="height: 10px;"> В один клик!</p>
+				{/if}
 				
 				{if !empty($order->referer)}
 					<h2 style="margin-top:15px;">{$tr->referer|escape}</h2>
@@ -638,7 +642,36 @@
 					<input type=checkbox name="paid" id="paid" value="1" {if !empty($order->paid)}checked{/if}> <label for="paid" {if !empty($order->paid)}class="green"{/if}>{$tr->order} {$tr->paid}</label> {if isset($order->payment_date)}({$order->payment_date|date} {$order->payment_date|time}){/if}
 				</div>
 
-				{if !empty($order->payment_details)}<p style="margin-top:10px;">Платежная информация: {$order->payment_details|escape}</p>{/if}
+				{if !empty($payment) && empty($payment->invalid_request)}
+					<div style="margin-top:10px;">
+						<p>Заказаз: {$payment->id|escape}</p>
+						{$status = $payment->status}
+						{if $status == 'pending'}
+							{$status = 'ожидает ответа пользователя'}
+						{elseif ($status == 'waiting_for_capture')}
+							{$status = 'средства заморожены'}
+						{elseif ($status == 'succeeded')}
+							{$status = 'оплата успешно завершена'}
+						{elseif ($status == 'canceled')}
+							{$status = 'оплата отменена'}
+						{/if}
+						<p>Статус: {$status}</p>
+						{if $payment->status == 'waiting_for_capture' && $payment->captured_at}
+							<p>Заморожен до: {$payment->captured_at|date_format:'d.m.Y H:i:s'}</p>
+						{/if}
+
+						{if $payment->status == 'waiting_for_capture'}
+							<div style="display:flex; margin-top: 10px;">
+								<button type="submit" name="cancel_payment" class="button_green" value="1" style="background-color: lightgrey; color: #000; margin-right: 20px;" onclick="return confirm('Платёж будет отменён. Вы уверены?')">Отменить платёж</button>
+								<button type="submit" name="capture_payment" class="button_green" value="1">Получить платёж</button>
+							</div>
+						{/if}
+					</div>
+				{elseif !empty($payment) && !empty($payment->invalid_request)}
+					<p style="margin-top:10px;">{$payment->invalid_request|escape}</p>
+				{else}
+					{if !empty($order->payment_details)}<p style="margin-top:10px;">Платежная информация: {$order->payment_details|escape}</p>{/if}
+				{/if}
 			</div>
 	
 			{if !empty($payment_method)}

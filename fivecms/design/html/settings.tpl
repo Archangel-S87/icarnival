@@ -80,7 +80,9 @@
 				</div>
 					
 					<li><label class=property>{$tr->worktime}</label><input name="worktime" class="fivecms_inp" type="text" value="{$settings->worktime|escape}" /></li>
-					
+
+					<li><label class=property>Адрес магазина</label><input name="adress_shop" class="fivecms_inp" type="text" value="{$settings->adress_shop|escape}" /></li>
+
 				</ul>
 
 			<h2>ТОРГ-12</h2>

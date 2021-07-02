@@ -228,6 +228,29 @@
         </options>
     </settings>
     <settings>
+        <variable>yookassa_api_capture</variable>
+        <name>Автоматически принять поступившую оплату</name>
+        <options>
+            <name>Включить</name>
+            <value>1</value>
+        </options>
+        <options>
+            <name>Выключить</name>
+            <value>0</value>
+        </options>
+    </settings>
+    <settings>
+        <variable>yoomoney_docs</variable>
+        <name>                                                                                                         
+                   
+        </name>
+        <options>
+            <name>Время холдирование возможно либо на 6 часов либо 7 дней. Документация https://yookassa.ru/en/developers/payment-methods/overview
+            </name>
+            <value>1</value>
+        </options>
+    </settings>
+    <settings>
         <variable>yookassa_api_second_receipt_status</variable>
         <name>Формировать второй чек при переходе заказа в статус</name>
         <options>

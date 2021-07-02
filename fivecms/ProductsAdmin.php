@@ -303,6 +303,21 @@ class ProductsAdmin extends Fivecms
                 	}
                     break;
                 }
+                case 'del_from_category':
+                {
+                    $category_id = $this->request->post('target_category', 'integer');
+                    $filter['page'] = 1;
+                    $category = $this->categories->get_category($category_id);
+                    $filter['category_id'] = $category->children;
+
+                    foreach($ids as $id)
+                    {
+                        $query = $this->db->placehold('DELETE FROM __products_categories WHERE product_id=? AND category_id=?', $id, $category_id);
+                        $this->db->query($query);
+
+                    }
+                    break;
+                }
 			    case 'move_to_brand':
 			    {
 			    	$brand_id = $this->request->post('target_brand', 'integer');

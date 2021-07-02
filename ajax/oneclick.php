@@ -9,6 +9,7 @@ $amount = $fivecms->request->get('amount', 'integer');
 $amount = empty($amount)?1:$amount;
 
 $order = new StdClass;
+$order->one_click = 1;
 $order->name = $fivecms->request->get('name');
 $order->email = $fivecms->request->get('email');
 $order->phone = $fivecms->request->get('phone');

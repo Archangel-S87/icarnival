@@ -61,6 +61,7 @@ $(window).load(function(){
 			{/if}
 		}
 		// calc (1.1) end
+		$('#li_delivery_114 .show_map').removeClass('look_here');
 	}
 	function onChooseProfile(wat) {
 		serviceMess(
@@ -79,6 +80,7 @@ $(window).load(function(){
 			{/if}
 		}
 		// calc (1.2) end
+		$('#li_delivery_114 .show_map').removeClass('look_here');
 	}
 	serviceMess = function (text) {
 		$('#li_delivery_114 .deliveryinfo').html(text);
@@ -100,7 +102,8 @@ $(window).load(function(){
 		});
 		ourWidjet.open();
 	});
-	
+
+	{*
 	// Проверка доступности СДЭК
 	/*if(cdekReady == 0){
 			{if $delivery->free_from > 0 && $cart->total_price >= $delivery->free_from}
@@ -112,6 +115,7 @@ $(window).load(function(){
 			$('#calc_info').html('Сервер СДЭК недоступен');
 			$('#li_delivery_114 .show_map').hide();
 	}*/
+	*}
 	
 	$(document).on('click', '.CDEK-widget__popup__close-btn', function () {
 		ourWidjet.close();

@@ -82,6 +82,7 @@
             // calc (2) end
 
             fancy.close();
+            $('#li_delivery_4 .show_map').removeClass('look_here');
         }
 
     });

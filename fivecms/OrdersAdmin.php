@@ -1,4 +1,8 @@
-<?PHP 
+<?PHP
+
+use YooKassa\Client;
+use YooKassa\Model\PaymentStatus;
+use YooMoneyModule\YooMoneyLogger;
 
 require_once('api/Fivecms.php');
 
@@ -208,9 +212,39 @@ class OrdersAdmin extends Fivecms
 
 		// Отображение
 		$orders = array();
-		foreach($this->orders->get_orders($filter) as $o)
-			$orders[$o->id] = $o;
-	 	
+		$check_payment_method = null;
+		foreach($this->orders->get_orders($filter) as $o) {
+            $orders[$o->id] = $o;
+            if (!$check_payment_method && !$o->paid && $o->payment_details) {
+                $payment_method = $this->payment->get_payment_method($o->payment_method_id);
+                if ($payment_method && $payment_method->module == 'YooMoneyApi') {
+                    $check_payment_method = $o->payment_method_id;
+                }
+            }
+        }
+
+		// Запров ордеров со статусом WAITING_FOR_CAPTURE
+		if ($check_payment_method) {
+            require_once 'payment/YooMoneyApi/autoload.php';
+            $settings = $this->payment->get_payment_settings($check_payment_method);
+            $apiClient = new Client();
+            $apiClient->setAuth($settings['yoomoney_shopid'], $settings['yoomoney_password']);
+            $apiClient->setLogger(new YooMoneyLogger($settings['yookassa_debug']));
+            try {
+                $payments = $apiClient->getPayments(['status' => PaymentStatus::WAITING_FOR_CAPTURE]);
+            } catch (Exception $e) {
+                $payments = null;
+            }
+            if ($payments) {
+                foreach ($payments->getItems() as $payment) {
+                    $order_id = (int)$payment->getMetadata()->toArray()['order_id'] ?? 0;
+                    if (isset($orders[$order_id])) {
+                        $orders[$order_id]->waiting_for_capture = true;
+                    }
+                }
+            }
+        }
+        
 		// Метки заказов
 		$orders_labels = array();
 	  	foreach($this->orders->get_order_labels(array_keys($orders)) as $ol)

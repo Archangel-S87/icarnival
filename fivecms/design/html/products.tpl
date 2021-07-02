@@ -160,6 +160,7 @@
 				{if $categories_count>1}
 				<option value="move_to_category">{$tr->move_to_category|escape}</option>
 				<option value="add_to_category">{$tr->add_category|escape}</option>
+				<option value="del_from_category">Удалить из категории</option>
 				{/if}
 				{if $all_brands|count>0}
 				<option value="move_to_brand">{$tr->add_brand|escape}</option>
@@ -423,7 +424,7 @@ $(function() {
 
 	// Перенос товара в другую категорию или добавить товару категорию
 	$("#action select[name=action]").change(function() {
-		if ($(this).val() == 'move_to_category' || $(this).val() == 'add_to_category')
+		if ($(this).val() == 'move_to_category' || $(this).val() == 'add_to_category' || $(this).val() == 'del_from_category')
 			$("span#move_to_category").show();
 		else
 			$("span#move_to_category").hide();

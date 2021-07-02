@@ -1,5 +1,10 @@
 <?PHP
 
+use YooKassa\Client;
+use YooKassa\Model\PaymentInterface;
+use YooKassa\Model\PaymentStatus;
+use YooMoneyModule\YooMoneyLogger;
+
 require_once('View.php');
 
 class OrderView extends View
@@ -122,6 +127,31 @@ class OrderView extends View
 		{
 			$payment_method = $this->payment->get_payment_method($order->payment_method_id);
 			$this->design->assign('payment_method', $payment_method);
+
+            // Проверка на резервирование средств
+            if ($payment_method
+                && $payment_method->module == 'YooMoneyApi'
+                && $order->payment_details
+                && !$order->paid) {
+                require_once 'payment/YooMoneyApi/autoload.php';
+                $settings = $this->payment->get_payment_settings($payment_method->id);
+                $apiClient = new Client();
+                $apiClient->setAuth($settings['yoomoney_shopid'], $settings['yoomoney_password']);
+                $apiClient->setLogger(new YooMoneyLogger($settings['yookassa_debug']));
+
+                /** @var PaymentInterface $payment */
+                try {
+                    $payment = $apiClient->getPaymentInfo($order->payment_details);
+                } catch (Exception $e) {
+                    $payment = null;
+                    $order->invalid_request = $e->getMessage();
+                }
+
+                if ($payment && $payment->status == PaymentStatus::WAITING_FOR_CAPTURE && !$settings['yookassa_api_capture']) {
+                    $order->paid = 1;
+                }
+                $this->design->assign('order', $order);
+            }
 		}
 			
 		// Варианты оплаты
@@ -134,7 +164,7 @@ class OrderView extends View
 		// Загруженные файлы
 		$files = $this->files->get_files(array('object_id'=>$order->id,'type'=>'order'));
 		$this->design->assign('cms_files', $files);  
-		
+
 		// Выводим заказ
 		return $this->body = $this->design->fetch('order.tpl');
 	}

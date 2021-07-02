@@ -651,7 +651,19 @@ function translit(str)
 				});
 			{/literal}
 			</script>
-	
+
+			<div class="block layer">
+				<ul>
+					<li>
+						<label for="delivery_time" class="property" style="width: 123px;">Сроки поставки</label>
+						<input id="delivery_time" class="fivecms_inp" type="text" name="delivery_time" style="width: 459px;" value="{if !empty($product->delivery_time)}{$product->delivery_time|escape}{/if}"/>
+					</li>
+					<li>
+						<label for="video" class="property" style="width: 123px;">Видео</label>
+						<textarea maxlength="255" id="video" style="width: 459px; height: 62px;" name="video" class="fivecms_inp">{if !empty($product->video)}{$product->video}{/if}</textarea>
+					</li>
+				</ul>
+			</div>
 			<!-- Параметры страницы (The End)-->
 			
 			<!-- Свойства товара -->
@@ -676,11 +688,8 @@ function translit(str)
 				<input class="button_green button_save" type="submit" name="" value="{$tr->save|escape}" />			
 			</div>
 			<!-- Свойства товара (The End)-->
-			<h2>Видео</h2>
-			<textarea maxlength="250" id="text-count3" style="width: 100%; height: 62px;" name="video" class="fivecms_inp" />{if !empty($product->video)}{$product->video}{/if}</textarea>
 		</div>
 		<!-- Левая колонка свойств товара (The End)-->
-
 
 		
 		<!-- Правая колонка свойств товара -->	

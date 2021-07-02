@@ -153,7 +153,7 @@
 	</style>
 </head>
 
-<body onload="window.print();">
+<body>
 
 <div id="header">
 	<h1>{$tr->order|escape} №{$order->id}</h1>
@@ -213,6 +213,56 @@
 
 			myPlacemark = new ymaps.Placemark([{$coords}], { content: '1', balloonContent: '{$order->address|escape|wordwrap:3000|strip}}' });
 			myMap.geoObjects.add(myPlacemark);
+
+			unloadMap(callbackUnloadMap);
+		}
+
+		function callbackUnloadMap() {
+			window.print();
+		}
+
+		// Проверяет загружена ли карта и выполняет функцмю
+		function unloadMap(callback) {
+			// Сначала мы получаем первый экземпляр коллекции слоев, потом первый слой коллекции.
+			let layer = myMap.layers.get(0).get(0);
+			// Отслеживаем событие окончания отрисовки тайлов.
+			waitForTilesLoad(layer).then(function() {
+				// Выполнить то что нужно
+				setTimeout(function () {
+					callback();
+				}, 1000);
+			});
+
+			// Получить слой, содержащий тайлы.
+			function getTileContainer(layer) {
+				for (let k in layer) {
+					if (layer.hasOwnProperty(k)) {
+						if (layer[k] instanceof ymaps.layer.tileContainer.CanvasContainer || layer[k] instanceof ymaps.layer.tileContainer.DomContainer) {
+							return layer[k];
+						}
+					}
+				}
+				return null;
+			}
+
+			// Определить, все ли тайлы загружены. Возвращает Promise.
+			function waitForTilesLoad(layer) {
+				return new ymaps.vow.Promise(function (resolve, reject) {
+					let tc = getTileContainer(layer), readyAll = true;
+					tc.tiles.each(function (tile, number) {
+						if (!tile.isReady()) {
+							readyAll = false;
+						}
+					});
+					if (readyAll) {
+						resolve();
+					} else {
+						tc.events.once("ready", function() {
+							resolve();
+						});
+					}
+				});
+			}
 		}
 	</script>
 {else}

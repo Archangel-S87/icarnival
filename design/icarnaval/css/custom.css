@@ -43,3 +43,8 @@
     font-weight: bold;
     font-size: 14px;
 }
+
+.hideBtn {
+    background: transparent url('../images/_plus.gif') no-repeat 6px center;
+    padding: 0 10px 0 20px;
+}

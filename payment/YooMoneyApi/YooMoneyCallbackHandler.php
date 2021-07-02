@@ -41,7 +41,7 @@ class YooMoneyCallbackHandler
         $apiClient->setLogger($logger);
         try {
             $paymentInfo = $apiClient->getPaymentInfo($paymentId);
-            if ($paymentInfo->status == PaymentStatus::WAITING_FOR_CAPTURE) {
+            if ($paymentInfo->status == PaymentStatus::WAITING_FOR_CAPTURE && $settings['yookassa_api_capture']) {
                 $captureResult = $this->capturePayment($apiClient, $paymentInfo);
                 if ($captureResult->status == PaymentStatus::SUCCEEDED) {
                     $this->completePayment($order, $paymentId);

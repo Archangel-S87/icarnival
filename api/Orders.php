@@ -98,7 +98,7 @@ class Orders extends Fivecms
 		$query = $this->db->placehold("SELECT o.id, o.delivery_id, o.delivery_price, o.separate_delivery,
 										o.payment_method_id, o.paid, o.payment_date, o.closed, o.discount, o.bonus_discount, o.discount2, o.discount_group, o.coupon_code, o.coupon_discount,
 										o.date, o.user_id, o.name, o.address, o.phone, o.email, o.comment, o.status,
-										o.url, o.total_price, o.note, o.track, o.bonused, o.shipping_date, o.referer, o.source, o.utm, o.yclid
+										o.url, o.total_price, o.note, o.track, o.bonused, o.shipping_date, o.referer, o.source, o.utm, o.yclid, o.payment_details, o.one_click
 									FROM __orders AS o 
 									LEFT JOIN __orders_labels AS ol ON o.id=ol.order_id 
 									WHERE 1

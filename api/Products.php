@@ -497,7 +497,8 @@ class Products extends Fivecms
                     p.out_of,
 					p.external_id,
 					p.ref_url,
-                    p.video
+                    p.video,
+                    p.delivery_time
 				FROM __products AS p
                 LEFT JOIN __brands b ON p.brand_id = b.id
                 WHERE $filter
@@ -662,7 +663,8 @@ class Products extends Fivecms
             unset($variant->oprice); 
             unset($variant->compare_oprice);
 			$variant->external_id = '';
-    		$this->variants->add_variant($variant);
+			unset($variant->precision);
+			$this->variants->add_variant($variant);
     	}
     	
     	// Дублируем свойства

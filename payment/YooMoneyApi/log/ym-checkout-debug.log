@@ -125,3 +125,335 @@
 [2021-05-17 11:22:08] [info] Message: Response with code 200 received. 
 [2021-05-17 11:23:14] [info] Message: Send request: GET /payments/28343b71-000f-5000-9000-10f442b674fe 
 [2021-05-17 11:23:14] [info] Message: Response with code 200 received. 
+[2021-06-28 21:57:20] [info] Message: Send request: POST /payments 
+[2021-06-28 21:57:21] [info] Message: Response with code 200 received. 
+[2021-06-28 22:00:25] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-28 22:00:26] [info] Message: Response with code 200 received. 
+[2021-06-28 22:00:26] [info] Message: Complete payment #286c2f51-000f-5000-8000-1116082e705e orderId: 26649 
+[2021-06-29 02:20:17] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 02:20:18] [info] Message: Response with code 200 received. 
+[2021-06-29 02:24:50] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 02:24:50] [info] Message: Response with code 200 received. 
+[2021-06-29 02:41:33] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 02:41:33] [info] Message: Response with code 200 received. 
+[2021-06-29 02:43:18] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 02:43:18] [info] Message: Response with code 200 received. 
+[2021-06-29 02:43:39] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 02:43:39] [info] Message: Response with code 200 received. 
+[2021-06-29 02:52:56] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 02:52:56] [info] Message: Response with code 200 received. 
+[2021-06-29 02:53:12] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 02:53:12] [info] Message: Response with code 200 received. 
+[2021-06-29 02:57:16] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 02:57:16] [info] Message: Response with code 200 received. 
+[2021-06-29 02:57:39] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 02:57:39] [info] Message: Response with code 200 received. 
+[2021-06-29 02:57:47] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 02:57:47] [info] Message: Response with code 200 received. 
+[2021-06-29 02:58:34] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 02:58:34] [info] Message: Response with code 200 received. 
+[2021-06-29 02:59:05] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 02:59:06] [info] Message: Response with code 200 received. 
+[2021-06-29 02:59:25] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 02:59:25] [info] Message: Response with code 200 received. 
+[2021-06-29 03:11:36] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 03:11:36] [info] Message: Response with code 200 received. 
+[2021-06-29 03:19:21] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 03:19:21] [info] Message: Response with code 200 received. 
+[2021-06-29 03:19:43] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 03:19:44] [info] Message: Response with code 200 received. 
+[2021-06-29 03:23:07] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 03:23:07] [info] Message: Response with code 200 received. 
+[2021-06-29 03:23:41] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 03:23:41] [info] Message: Response with code 200 received. 
+[2021-06-29 03:23:52] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 03:23:52] [info] Message: Response with code 200 received. 
+[2021-06-29 03:24:29] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 03:24:29] [info] Message: Response with code 200 received. 
+[2021-06-29 03:24:36] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 03:24:36] [info] Message: Response with code 200 received. 
+[2021-06-29 03:24:54] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 03:24:54] [info] Message: Response with code 200 received. 
+[2021-06-29 03:27:43] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 03:27:43] [info] Message: Response with code 200 received. 
+[2021-06-29 03:31:18] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 03:31:18] [info] Message: Response with code 200 received. 
+[2021-06-29 03:31:35] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 03:31:35] [info] Message: Response with code 200 received. 
+[2021-06-29 03:45:30] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 03:45:30] [info] Message: Response with code 200 received. 
+[2021-06-29 03:47:10] [info] Message: Send request: POST /payments/286c2f51-000f-5000-8000-1116082e705e/capture 
+[2021-06-29 03:47:11] [info] Message: Response with code 400 received. 
+[2021-06-29 04:09:30] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 04:09:30] [info] Message: Response with code 200 received. 
+[2021-06-29 04:09:51] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 04:09:51] [info] Message: Response with code 200 received. 
+[2021-06-29 04:09:57] [info] Message: Send request: POST /payments/286c2f51-000f-5000-8000-1116082e705e/cancel 
+[2021-06-29 04:09:57] [info] Message: Response with code 400 received. 
+[2021-06-29 04:10:20] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 04:10:21] [info] Message: Response with code 200 received. 
+[2021-06-29 04:10:27] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 04:10:27] [info] Message: Response with code 200 received. 
+[2021-06-29 04:11:03] [info] Message: Send request: POST /payments/286c2f51-000f-5000-8000-1116082e705e/cancel 
+[2021-06-29 04:11:03] [info] Message: Response with code 400 received. 
+[2021-06-29 04:14:07] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 04:14:07] [info] Message: Response with code 200 received. 
+[2021-06-29 04:14:13] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 04:14:13] [info] Message: Response with code 200 received. 
+[2021-06-29 04:14:21] [info] Message: Send request: POST /payments/286c2f51-000f-5000-8000-1116082e705e/cancel 
+[2021-06-29 04:14:21] [info] Message: Response with code 400 received. 
+[2021-06-29 04:18:32] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 04:18:32] [info] Message: Response with code 200 received. 
+[2021-06-29 04:18:46] [info] Message: Send request: GET /payments/286c2f51-000f-5000-8000-1116082e705e 
+[2021-06-29 04:18:46] [info] Message: Response with code 200 received. 
+[2021-06-29 04:18:51] [info] Message: Send request: POST /payments/286c2f51-000f-5000-8000-1116082e705e/cancel 
+[2021-06-29 04:18:51] [info] Message: Response with code 400 received. 
+[2021-06-29 13:07:21] [info] Message: Send request: POST /payments 
+[2021-06-29 13:07:21] [info] Message: Response with code 200 received. 
+[2021-06-29 13:09:54] [info] Message: Send request: GET /payments/286d049b-000f-5000-9000-1c30b6a787b3 
+[2021-06-29 13:09:54] [info] Message: Response with code 200 received. 
+[2021-06-29 13:09:54] [info] Message: Send request: POST /payments/286d049b-000f-5000-9000-1c30b6a787b3/capture 
+[2021-06-29 13:10:02] [info] Message: Response with code 200 received. 
+[2021-06-29 13:10:02] [info] Message: Complete payment #286d049b-000f-5000-9000-1c30b6a787b3 orderId: 26650 
+[2021-06-29 13:10:46] [info] Message: Send request: GET /payments/286d049b-000f-5000-9000-1c30b6a787b3 
+[2021-06-29 13:10:46] [info] Message: Response with code 200 received. 
+[2021-06-29 13:11:29] [info] Message: Send request: GET /payments/286d049b-000f-5000-9000-1c30b6a787b3 
+[2021-06-29 13:11:29] [info] Message: Response with code 200 received. 
+[2021-06-29 13:13:02] [info] Message: Send request: POST /payments 
+[2021-06-29 13:13:03] [info] Message: Response with code 200 received. 
+[2021-06-29 13:14:03] [info] Message: Send request: GET /payments/286d05f0-000f-5000-8000-16038342d34f 
+[2021-06-29 13:14:03] [info] Message: Response with code 200 received. 
+[2021-06-29 13:14:03] [info] Message: Send request: POST /payments/286d05f0-000f-5000-8000-16038342d34f/capture 
+[2021-06-29 13:14:11] [info] Message: Response with code 200 received. 
+[2021-06-29 13:14:11] [info] Message: Complete payment #286d05f0-000f-5000-8000-16038342d34f orderId: 26642 
+[2021-06-29 13:25:29] [info] Message: Send request: POST /payments 
+[2021-06-29 13:25:29] [info] Message: Response with code 200 received. 
+[2021-06-29 13:26:07] [info] Message: Send request: GET /payments/286d08da-000f-5000-8000-1b065273d451 
+[2021-06-29 13:26:08] [info] Message: Response with code 200 received. 
+[2021-06-29 13:27:17] [info] Message: Send request: GET /payments/286d08da-000f-5000-8000-1b065273d451 
+[2021-06-29 13:27:17] [info] Message: Response with code 200 received. 
+[2021-06-29 13:27:17] [info] Message: Send request: POST /payments/286d08da-000f-5000-8000-1b065273d451/capture 
+[2021-06-29 13:27:21] [info] Message: Response with code 200 received. 
+[2021-06-29 13:27:21] [info] Message: Complete payment #286d08da-000f-5000-8000-1b065273d451 orderId: 26641 
+[2021-06-29 13:33:09] [info] Message: Send request: POST /payments 
+[2021-06-29 13:33:09] [info] Message: Response with code 200 received. 
+[2021-06-29 13:35:34] [info] Message: Send request: GET /payments/286d0aa6-000f-5000-8000-13e838a2b2b7 
+[2021-06-29 13:35:35] [info] Message: Response with code 200 received. 
+[2021-06-29 13:43:20] [info] Message: Send request: POST /payments 
+[2021-06-29 13:43:21] [info] Message: Response with code 200 received. 
+[2021-06-29 13:44:03] [info] Message: Send request: GET /payments/286d0d0a-000f-5000-9000-1bfc20b96927 
+[2021-06-29 13:44:03] [info] Message: Response with code 200 received. 
+[2021-06-29 13:44:03] [info] Message: Cancel order. OrderId: 26629 
+[2021-06-29 13:44:08] [info] Message: Send request: POST /payments 
+[2021-06-29 13:44:09] [info] Message: Response with code 200 received. 
+[2021-06-29 13:45:33] [info] Message: Send request: GET /payments/286d0d3a-000f-5000-a000-1f7df6324f32 
+[2021-06-29 13:45:33] [info] Message: Response with code 200 received. 
+[2021-06-29 13:45:54] [info] Message: Send request: GET /payments/286d0d3a-000f-5000-a000-1f7df6324f32 
+[2021-06-29 13:45:54] [info] Message: Response with code 200 received. 
+[2021-06-29 13:52:53] [info] Message: Send request: GET /payments/286d0d3a-000f-5000-a000-1f7df6324f32 
+[2021-06-29 13:52:53] [info] Message: Response with code 200 received. 
+[2021-06-29 14:31:45] [info] Message: Send request: GET /payments 
+[2021-06-29 14:31:45] [info] Message: Response with code 200 received. 
+[2021-06-29 14:32:17] [info] Message: Send request: GET /payments 
+[2021-06-29 14:32:18] [info] Message: Response with code 200 received. 
+[2021-06-29 14:32:58] [info] Message: Send request: GET /payments 
+[2021-06-29 14:32:58] [info] Message: Response with code 200 received. 
+[2021-06-29 14:36:27] [info] Message: Send request: GET /payments 
+[2021-06-29 14:36:27] [info] Message: Response with code 200 received. 
+[2021-06-29 14:36:36] [info] Message: Send request: GET /payments 
+[2021-06-29 14:36:36] [info] Message: Response with code 200 received. 
+[2021-06-29 14:39:42] [info] Message: Send request: GET /payments 
+[2021-06-29 14:39:43] [info] Message: Response with code 200 received. 
+[2021-06-29 14:43:59] [info] Message: Send request: GET /payments 
+[2021-06-29 14:43:59] [info] Message: Response with code 200 received. 
+[2021-06-29 14:45:37] [info] Message: Send request: GET /payments 
+[2021-06-29 14:45:37] [info] Message: Response with code 200 received. 
+[2021-06-29 14:48:55] [info] Message: Send request: GET /payments 
+[2021-06-29 14:48:55] [info] Message: Response with code 200 received. 
+[2021-06-29 14:53:25] [info] Message: Send request: GET /payments 
+[2021-06-29 14:53:25] [info] Message: Response with code 200 received. 
+[2021-06-29 14:53:49] [info] Message: Send request: GET /payments 
+[2021-06-29 14:53:49] [info] Message: Response with code 200 received. 
+[2021-06-29 14:57:02] [info] Message: Send request: GET /payments 
+[2021-06-29 14:57:02] [info] Message: Response with code 200 received. 
+[2021-06-29 14:57:29] [info] Message: Send request: GET /payments 
+[2021-06-29 14:57:29] [info] Message: Response with code 200 received. 
+[2021-06-29 14:57:36] [info] Message: Send request: GET /payments/286d0d3a-000f-5000-a000-1f7df6324f32 
+[2021-06-29 14:57:36] [info] Message: Response with code 200 received. 
+[2021-06-29 14:57:43] [info] Message: Send request: GET /payments/286d0d3a-000f-5000-a000-1f7df6324f32 
+[2021-06-29 14:57:43] [info] Message: Response with code 200 received. 
+[2021-06-29 14:57:43] [info] Message: Send request: POST /payments/286d0d3a-000f-5000-a000-1f7df6324f32/capture 
+[2021-06-29 14:57:47] [info] Message: Response with code 200 received. 
+[2021-06-29 15:06:07] [info] Message: Send request: GET /payments/286d0d3a-000f-5000-a000-1f7df6324f32 
+[2021-06-29 15:06:08] [info] Message: Response with code 200 received. 
+[2021-06-29 15:06:08] [info] Message: Complete payment #286d0d3a-000f-5000-a000-1f7df6324f32 orderId: 26629 
+[2021-06-29 15:06:42] [info] Message: Send request: GET /payments/286d0d3a-000f-5000-a000-1f7df6324f32 
+[2021-06-29 15:06:43] [info] Message: Response with code 200 received. 
+[2021-06-29 15:06:53] [info] Message: Send request: POST /payments 
+[2021-06-29 15:06:53] [info] Message: Response with code 200 received. 
+[2021-06-29 15:07:38] [info] Message: Send request: GET /payments/286d209f-000f-5000-8000-1c145da128b5 
+[2021-06-29 15:07:38] [info] Message: Response with code 200 received. 
+[2021-06-29 15:07:50] [info] Message: Send request: GET /payments/286d209f-000f-5000-8000-1c145da128b5 
+[2021-06-29 15:07:50] [info] Message: Response with code 200 received. 
+[2021-06-29 20:57:26] [info] Message: Send request: GET /payments/286d209f-000f-5000-8000-1c145da128b5 
+[2021-06-29 20:57:27] [info] Message: Response with code 200 received. 
+[2021-06-29 20:57:34] [info] Message: Send request: GET /payments/286d209f-000f-5000-8000-1c145da128b5 
+[2021-06-29 20:57:34] [info] Message: Response with code 200 received. 
+[2021-06-29 20:57:49] [info] Message: Send request: GET /payments/286d209f-000f-5000-8000-1c145da128b5 
+[2021-06-29 20:57:49] [info] Message: Response with code 200 received. 
+[2021-06-29 20:57:58] [info] Message: Send request: GET /payments/286d209f-000f-5000-8000-1c145da128b5 
+[2021-06-29 20:57:58] [info] Message: Response with code 200 received. 
+[2021-06-29 20:58:30] [info] Message: Send request: GET /payments/286d209f-000f-5000-8000-1c145da128b5 
+[2021-06-29 20:58:30] [info] Message: Response with code 200 received. 
+[2021-06-29 20:58:54] [info] Message: Send request: GET /payments/286d209f-000f-5000-8000-1c145da128b5 
+[2021-06-29 20:58:54] [info] Message: Response with code 200 received. 
+[2021-06-29 20:59:41] [info] Message: Send request: GET /payments/286d209f-000f-5000-8000-1c145da128b5 
+[2021-06-29 20:59:42] [info] Message: Response with code 200 received. 
+[2021-06-29 20:59:58] [info] Message: Send request: GET /payments/286d209f-000f-5000-8000-1c145da128b5 
+[2021-06-29 20:59:59] [info] Message: Response with code 200 received. 
+[2021-06-29 21:03:51] [info] Message: Send request: GET /payments/286d209f-000f-5000-8000-1c145da128b5 
+[2021-06-29 21:03:51] [info] Message: Response with code 200 received. 
+[2021-06-29 21:04:06] [info] Message: Send request: GET /payments/286d209f-000f-5000-8000-1c145da128b5 
+[2021-06-29 21:04:06] [info] Message: Response with code 200 received. 
+[2021-06-29 21:07:20] [info] Message: Send request: GET /payments/286d209f-000f-5000-8000-1c145da128b5 
+[2021-06-29 21:07:20] [info] Message: Response with code 200 received. 
+[2021-06-29 21:09:03] [info] Message: Send request: GET /payments/286d209f-000f-5000-8000-1c145da128b5 
+[2021-06-29 21:09:04] [info] Message: Response with code 200 received. 
+[2021-06-29 21:09:28] [info] Message: Send request: GET /payments/286d209f-000f-5000-8000-1c145da128b5 
+[2021-06-29 21:09:28] [info] Message: Response with code 200 received. 
+[2021-06-29 21:10:03] [info] Message: Send request: GET /payments/286d209f-000f-5000-8000-1c145da128b5 
+[2021-06-29 21:10:04] [info] Message: Response with code 200 received. 
+[2021-06-29 21:10:04] [info] Message: Send request: POST /payments/286d209f-000f-5000-8000-1c145da128b5/cancel 
+[2021-06-29 21:10:07] [info] Message: Response with code 200 received. 
+[2021-06-29 21:10:20] [info] Message: Send request: GET /payments/286d209f-000f-5000-8000-1c145da128b5 
+[2021-06-29 21:10:20] [info] Message: Response with code 200 received. 
+[2021-06-29 21:13:45] [info] Message: Send request: GET /payments 
+[2021-06-29 21:13:45] [info] Message: Response with code 200 received. 
+[2021-07-01 12:32:45] [info] Message: Send request: GET /payments/286d049b-000f-5000-9000-1c30b6a787b3 
+[2021-07-01 12:32:45] [info] Message: Response with code 200 received. 
+[2021-07-01 13:07:55] [info] Message: Send request: POST /payments 
+[2021-07-01 13:07:56] [info] Message: Response with code 200 received. 
+[2021-07-01 13:09:12] [info] Message: Send request: GET /payments/286fa7bd-000f-5000-a000-130db3a9faad 
+[2021-07-01 13:09:13] [info] Message: Response with code 200 received. 
+[2021-07-01 13:09:13] [info] Message: Send request: GET /payments/286fa7bd-000f-5000-a000-130db3a9faad 
+[2021-07-01 13:09:13] [info] Message: Response with code 200 received. 
+[2021-07-01 13:09:32] [info] Message: Send request: GET /payments/286fa7bd-000f-5000-a000-130db3a9faad 
+[2021-07-01 13:09:32] [info] Message: Response with code 200 received. 
+[2021-07-01 13:10:55] [info] Message: Send request: GET /payments/286fa7bd-000f-5000-a000-130db3a9faad 
+[2021-07-01 13:10:55] [info] Message: Response with code 200 received. 
+[2021-07-01 13:11:02] [info] Message: Send request: GET /payments/286fa7bd-000f-5000-a000-130db3a9faad 
+[2021-07-01 13:11:03] [info] Message: Response with code 200 received. 
+[2021-07-01 13:11:19] [info] Message: Send request: GET /payments/286fa7bd-000f-5000-a000-130db3a9faad 
+[2021-07-01 13:11:20] [info] Message: Response with code 200 received. 
+[2021-07-01 13:11:20] [info] Message: Send request: POST /payments/286fa7bd-000f-5000-a000-130db3a9faad/cancel 
+[2021-07-01 13:11:24] [info] Message: Response with code 200 received. 
+[2021-07-01 13:11:30] [info] Message: Send request: GET /payments/286fa7bd-000f-5000-a000-130db3a9faad 
+[2021-07-01 13:11:30] [info] Message: Response with code 200 received. 
+[2021-07-01 13:11:35] [info] Message: Send request: GET /payments/286fa7bd-000f-5000-a000-130db3a9faad 
+[2021-07-01 13:11:35] [info] Message: Response with code 200 received. 
+[2021-07-01 13:11:43] [info] Message: Send request: POST /payments 
+[2021-07-01 13:11:43] [info] Message: Response with code 200 received. 
+[2021-07-01 13:12:04] [info] Message: Send request: GET /payments/286fa8a0-000f-5000-8000-16ab0cd22616 
+[2021-07-01 13:12:04] [info] Message: Response with code 200 received. 
+[2021-07-01 13:12:04] [info] Message: Send request: GET /payments/286fa8a0-000f-5000-8000-16ab0cd22616 
+[2021-07-01 13:12:05] [info] Message: Response with code 200 received. 
+[2021-07-01 13:12:13] [info] Message: Send request: GET /payments/286fa8a0-000f-5000-8000-16ab0cd22616 
+[2021-07-01 13:12:13] [info] Message: Response with code 200 received. 
+[2021-07-01 13:12:26] [info] Message: Send request: GET /payments/286fa8a0-000f-5000-8000-16ab0cd22616 
+[2021-07-01 13:12:26] [info] Message: Response with code 200 received. 
+[2021-07-01 13:12:40] [info] Message: Send request: GET /payments/286fa8a0-000f-5000-8000-16ab0cd22616 
+[2021-07-01 13:12:40] [info] Message: Response with code 200 received. 
+[2021-07-01 13:12:40] [info] Message: Send request: POST /payments 
+[2021-07-01 13:12:41] [info] Message: Response with code 200 received. 
+[2021-07-01 13:13:16] [info] Message: Send request: GET /payments/286fa8d9-000f-5000-8000-12577f409f66 
+[2021-07-01 13:13:17] [info] Message: Response with code 200 received. 
+[2021-07-01 13:13:22] [info] Message: Send request: GET /payments/286fa8d9-000f-5000-8000-12577f409f66 
+[2021-07-01 13:13:22] [info] Message: Response with code 200 received. 
+[2021-07-01 13:13:22] [info] Message: Send request: GET /payments/286fa8d9-000f-5000-8000-12577f409f66 
+[2021-07-01 13:13:22] [info] Message: Response with code 200 received. 
+[2021-07-01 13:13:27] [info] Message: Send request: GET /payments/286fa8d9-000f-5000-8000-12577f409f66 
+[2021-07-01 13:13:27] [info] Message: Response with code 200 received. 
+[2021-07-01 13:13:27] [info] Message: Send request: GET /payments/286fa8d9-000f-5000-8000-12577f409f66 
+[2021-07-01 13:13:27] [info] Message: Response with code 200 received. 
+[2021-07-01 13:31:01] [info] Message: Send request: GET /payments/286fa8d9-000f-5000-8000-12577f409f66 
+[2021-07-01 13:31:01] [info] Message: Response with code 200 received. 
+[2021-07-01 13:32:36] [info] Message: Send request: GET /payments/286fa8d9-000f-5000-8000-12577f409f66 
+[2021-07-01 13:32:37] [info] Message: Response with code 200 received. 
+[2021-07-01 13:32:49] [info] Message: Send request: GET /payments/286fa8d9-000f-5000-8000-12577f409f66 
+[2021-07-01 13:32:49] [info] Message: Response with code 200 received. 
+[2021-07-01 13:43:27] [info] Message: Send request: GET /payments/286fa8d9-000f-5000-8000-12577f409f66 
+[2021-07-01 13:43:27] [info] Message: Response with code 200 received. 
+[2021-07-01 13:43:41] [info] Message: Send request: GET /payments/286fa8d9-000f-5000-8000-12577f409f66 
+[2021-07-01 13:43:41] [info] Message: Response with code 200 received. 
+[2021-07-01 13:43:47] [info] Message: Send request: GET /payments/286fa8d9-000f-5000-8000-12577f409f66 
+[2021-07-01 13:43:47] [info] Message: Response with code 200 received. 
+[2021-07-01 13:43:50] [info] Message: Send request: GET /payments/286fa8d9-000f-5000-8000-12577f409f66 
+[2021-07-01 13:43:50] [info] Message: Response with code 200 received. 
+[2021-07-01 13:44:02] [info] Message: Send request: GET /payments/286fa8d9-000f-5000-8000-12577f409f66 
+[2021-07-01 13:44:02] [info] Message: Response with code 200 received. 
+[2021-07-01 13:44:12] [info] Message: Send request: GET /payments/286fa8d9-000f-5000-8000-12577f409f66 
+[2021-07-01 13:44:13] [info] Message: Response with code 200 received. 
+[2021-07-01 13:44:27] [info] Message: Send request: GET /payments/286fa8d9-000f-5000-8000-12577f409f66 
+[2021-07-01 13:44:27] [info] Message: Response with code 200 received. 
+[2021-07-01 13:44:35] [info] Message: Send request: GET /payments/286fa8d9-000f-5000-8000-12577f409f66 
+[2021-07-01 13:44:36] [info] Message: Response with code 200 received. 
+[2021-07-01 13:44:41] [info] Message: Send request: GET /payments/286fa8d9-000f-5000-8000-12577f409f66 
+[2021-07-01 13:44:42] [info] Message: Response with code 200 received. 
+[2021-07-01 13:44:59] [info] Message: Send request: GET /payments/286fa8d9-000f-5000-8000-12577f409f66 
+[2021-07-01 13:44:59] [info] Message: Response with code 200 received. 
+[2021-07-01 14:00:07] [info] Message: Send request: GET /payments/286fa8d9-000f-5000-8000-12577f409f66 
+[2021-07-01 14:00:08] [info] Message: Response with code 200 received. 
+[2021-07-01 14:09:40] [info] Message: Send request: GET /payments/286fa8d9-000f-5000-8000-12577f409f66 
+[2021-07-01 14:09:41] [info] Message: Response with code 200 received. 
+[2021-07-01 14:10:12] [info] Message: Send request: GET /payments/286fa8d9-000f-5000-8000-12577f409f66 
+[2021-07-01 14:10:12] [info] Message: Response with code 200 received. 
+[2021-07-01 14:10:26] [info] Message: Send request: GET /payments/286fa8d9-000f-5000-8000-12577f409f66 
+[2021-07-01 14:10:26] [info] Message: Response with code 200 received. 
+[2021-07-01 14:10:40] [info] Message: Send request: GET /payments/286fa8d9-000f-5000-8000-12577f409f66 
+[2021-07-01 14:10:40] [info] Message: Response with code 200 received. 
+[2021-07-01 14:24:27] [info] Message: Send request: GET /payments/286fa8d9-000f-5000-8000-12577f409f66 
+[2021-07-01 14:24:28] [info] Message: Response with code 200 received. 
+[2021-07-01 14:24:30] [info] Message: Send request: GET /payments/286fa8d9-000f-5000-8000-12577f409f66 
+[2021-07-01 14:24:30] [info] Message: Response with code 200 received. 
+[2021-07-01 14:24:30] [info] Message: Send request: POST /payments 
+[2021-07-01 14:24:31] [info] Message: Response with code 200 received. 
+[2021-07-01 14:24:46] [info] Message: Send request: GET /payments/286fb9b0-000f-5000-8000-164982004db9 
+[2021-07-01 14:24:46] [info] Message: Response with code 200 received. 
+[2021-07-01 14:24:50] [info] Message: Send request: GET /payments/286fb9b0-000f-5000-8000-164982004db9 
+[2021-07-01 14:24:50] [info] Message: Response with code 200 received. 
+[2021-07-01 14:24:50] [info] Message: Send request: GET /payments/286fb9b0-000f-5000-8000-164982004db9 
+[2021-07-01 14:24:50] [info] Message: Response with code 200 received. 
+[2021-07-01 14:25:33] [info] Message: Send request: GET /payments/286fb9b0-000f-5000-8000-164982004db9 
+[2021-07-01 14:25:33] [info] Message: Response with code 200 received. 
+[2021-07-01 14:25:41] [info] Message: Send request: GET /payments/286fb9b0-000f-5000-8000-164982004db9 
+[2021-07-01 14:25:42] [info] Message: Response with code 200 received. 
+[2021-07-01 14:25:46] [info] Message: Send request: GET /payments/286fb9b0-000f-5000-8000-164982004db9 
+[2021-07-01 14:25:47] [info] Message: Response with code 200 received. 
+[2021-07-01 14:25:47] [info] Message: Send request: GET /payments/286fb9b0-000f-5000-8000-164982004db9 
+[2021-07-01 14:25:47] [info] Message: Response with code 200 received. 
+[2021-07-01 14:25:55] [info] Message: Send request: GET /payments/286fb9b0-000f-5000-8000-164982004db9 
+[2021-07-01 14:25:55] [info] Message: Response with code 200 received. 
+[2021-07-01 14:30:23] [info] Message: Send request: GET /payments/286fb9b0-000f-5000-8000-164982004db9 
+[2021-07-01 14:30:23] [info] Message: Response with code 200 received. 
+[2021-07-01 14:30:41] [info] Message: Send request: GET /payments/286fb9b0-000f-5000-8000-164982004db9 
+[2021-07-01 14:30:41] [info] Message: Response with code 200 received. 
+[2021-07-01 14:30:46] [info] Message: Send request: GET /payments/286fb9b0-000f-5000-8000-164982004db9 
+[2021-07-01 14:30:46] [info] Message: Response with code 200 received. 
+[2021-07-01 14:30:46] [info] Message: Send request: POST /payments/286fb9b0-000f-5000-8000-164982004db9/cancel 
+[2021-07-01 14:30:50] [info] Message: Response with code 200 received. 
+[2021-07-01 14:30:55] [info] Message: Send request: GET /payments/286fb9b0-000f-5000-8000-164982004db9 
+[2021-07-01 14:30:56] [info] Message: Response with code 200 received. 
+[2021-07-01 14:30:57] [info] Message: Send request: GET /payments/286fb9b0-000f-5000-8000-164982004db9 
+[2021-07-01 14:30:58] [info] Message: Response with code 200 received. 
+[2021-07-01 14:30:58] [info] Message: Send request: POST /payments 
+[2021-07-01 14:30:58] [info] Message: Response with code 200 received. 
+[2021-07-01 14:31:21] [info] Message: Send request: GET /payments/286fbb33-000f-5000-8000-1536de55f441 
+[2021-07-01 14:31:21] [info] Message: Response with code 200 received. 
+[2021-07-01 14:31:21] [info] Message: Send request: GET /payments/286fbb33-000f-5000-8000-1536de55f441 
+[2021-07-01 14:31:21] [info] Message: Response with code 200 received. 
+[2021-07-01 14:31:27] [info] Message: Send request: GET /payments/286fbb33-000f-5000-8000-1536de55f441 
+[2021-07-01 14:31:27] [info] Message: Response with code 200 received. 
+[2021-07-01 14:31:31] [info] Message: Send request: GET /payments/286fbb33-000f-5000-8000-1536de55f441 
+[2021-07-01 14:31:31] [info] Message: Response with code 200 received. 
+[2021-07-01 14:31:31] [info] Message: Send request: POST /payments/286fbb33-000f-5000-8000-1536de55f441/capture 
+[2021-07-01 14:31:35] [info] Message: Response with code 200 received. 

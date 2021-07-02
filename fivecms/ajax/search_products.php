@@ -10,7 +10,7 @@
 	// Без учета остатка на складе
 	$fivecms->db->query("SELECT p.id, p.name, i.filename as image FROM __products p
 	                    LEFT JOIN __images i ON i.product_id=p.id AND i.position=(SELECT MIN(position) FROM __images WHERE product_id=p.id LIMIT 1)
-	                    WHERE (p.name LIKE '%$kw%' OR p.meta_keywords LIKE '%$kw%' OR p.id LIKE '%$kw%' OR p.id in (SELECT product_id FROM __variants WHERE sku LIKE '%$kw%')) AND p.visible=1 GROUP BY p.id ORDER BY p.name LIMIT ?", $limit);
+	                    WHERE (p.name LIKE '%$kw%' OR p.meta_keywords LIKE '%$kw%' OR p.id LIKE '%$kw%' OR p.id in (SELECT product_id FROM __variants WHERE sku LIKE '%$kw%')) GROUP BY p.id ORDER BY p.name LIMIT ?", $limit);
 	                    
 	// Вывод только товаров в наличии                    
 	/*$fivecms->db->query("SELECT p.id, p.name, i.filename as image FROM __products p 
